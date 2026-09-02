@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Study Nest Notes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,340;0,9..144,460;0,9..144,560;1,9..144,460&family=Noto+Serif+KR:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body data-theme="milk-cream" data-feel="soft" data-effect="soft-spark" data-paper="lined">
+    <div class="ambient-sheet" aria-hidden="true"></div>
+
+    <header class="app-chrome" aria-label="App controls">
+      <div class="chrome-cluster">
+        <button class="round-icon" id="libraryToggleBtn" type="button" aria-label="Open note library" aria-controls="libraryDrawer" aria-expanded="false">
+          <span class="icon-bars" aria-hidden="true"></span>
+        </button>
+        <span class="save-status" id="saveStatus">Saved</span>
+      </div>
+
+      <div class="chrome-cluster">
+        <button class="round-icon" id="formatToggleBtn" type="button" aria-label="Open formatting tools" aria-controls="formatToolbar" aria-expanded="false">
+          <span class="icon-format" aria-hidden="true">Aa</span>
+        </button>
+        <button class="round-icon" id="timerToggleBtn" type="button" aria-label="Open focus timer" aria-controls="timerPanel" aria-expanded="false">
+          <span class="icon-clock" aria-hidden="true"></span>
+        </button>
+        <button class="round-icon" id="settingsToggleBtn" type="button" aria-label="Open settings" aria-controls="settingsPanel" aria-expanded="false">
+          <span class="icon-gear" aria-hidden="true"></span>
+        </button>
+        <button class="round-icon" id="fullscreenBtn" type="button" aria-label="Toggle full screen">
+          <span class="icon-fullscreen" aria-hidden="true"></span>
+        </button>
+      </div>
+    </header>
+
+    <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+
+    <aside class="sidebar drawer library-drawer" id="libraryDrawer" aria-label="Notes">
+      <div class="drawer-header">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">
+            <span></span>
+          </div>
+          <div>
+            <h1>Study Nest</h1>
+            <p>Library and note details.</p>
+          </div>
+        </div>
+        <button class="round-icon subtle-icon" id="closeLibraryBtn" type="button" aria-label="Close note library">
+          <span class="icon-close" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <button class="primary-action" id="newNoteBtn" type="button">
+        <span aria-hidden="true">+</span>
+        New note
+      </button>
+
+      <label class="search-box">
+        <span aria-hidden="true"></span>
+        <input id="searchInput" type="search" placeholder="Search notes">
+      </label>
+
+      <nav class="quick-filters" aria-label="Note filters">
+        <button class="chip active" data-filter="all" type="button">All</button>
+        <button class="chip" data-filter="favorites" type="button">Pinned</button>
+        <button class="chip" data-filter="recent" type="button">Recent</button>
+      </nav>
+
+      <section class="drawer-section note-details" aria-label="Current note details">
+        <div class="section-heading">
+          <h2>Current Note</h2>
+          <span id="activeNoteCaption">Ready</span>
+        </div>
+        <label>
+          Subject
+          <select id="labelSelect"></select>
+        </label>
+        <label>
+          Folder
+          <input id="folderInput" list="folderList" type="text" placeholder="General">
+          <datalist id="folderList"></datalist>
+        </label>
+        <div class="drawer-actions">
+          <button class="icon-text-button" id="favoriteBtn" type="button" aria-pressed="false">Pin</button>
+          <button class="icon-text-button danger" id="deleteNoteBtn" type="button">Delete</button>
+        </div>
+      </section>
+
+      <section class="drawer-section label-filter" aria-label="Subject labels">
+        <div class="section-heading">
+          <h2>Subjects</h2>
+        </div>
+        <div class="label-stack" id="labelFilterList"></div>
+      </section>
+
+      <section class="drawer-section notes-section" aria-label="Note list">
+        <div class="section-heading">
+          <h2>Notes</h2>
+          <span id="noteCount">0</span>
+        </div>
+        <div class="note-list" id="noteList"></div>
+      </section>
+
+      <figure class="mood-card">
+        <img src="assets/cozy-study-desk.png" alt="Cozy illustrated study desk">
+        <figcaption>Soft desk mode</figcaption>
+      </figure>
+    </aside>
+
+    <main class="app-shell">
+      <section class="editor-panel" aria-label="Writing desk">
+        <header class="editor-topbar">
+          <input id="titleInput" class="title-input" type="text" placeholder="Untitled study note" autocomplete="off">
+          <div class="note-glimpse" aria-live="polite">
+            <span id="wordCount">0 words</span>
+            <span id="charCount">0 chars</span>
+            <span id="updatedAt">Just now</span>
+          </div>
+        </header>
+
+        <section class="paper-stage" aria-label="Writing area">
+          <div class="paper-wrap">
+            <article id="editor" class="editor" contenteditable="true" spellcheck="true" aria-label="Note content"></article>
+          </div>
+        </section>
+
+        <footer class="editor-footer">
+          <button type="button" id="exportBtn">Export</button>
+          <span>Local autosave</span>
+        </footer>
+      </section>
+    </main>
+
+    <div class="toolbar floating-toolbar" id="formatToolbar" role="toolbar" aria-label="Formatting tools">
+      <button type="button" data-command="format" data-value="P">P</button>
+      <button type="button" data-command="format" data-value="H1">H1</button>
+      <button type="button" data-command="format" data-value="H2">H2</button>
+      <span class="toolbar-divider" aria-hidden="true"></span>
+      <button type="button" data-command="bold"><strong>B</strong></button>
+      <button type="button" data-command="italic"><em>I</em></button>
+      <button type="button" data-command="underline"><span class="underline-label">U</span></button>
+      <span class="toolbar-divider" aria-hidden="true"></span>
+      <button type="button" data-command="ul">List</button>
+      <button type="button" data-command="ol">1. List</button>
+      <button type="button" data-command="quote">Quote</button>
+      <button type="button" data-command="checkbox">Check</button>
+      <button type="button" data-command="divider">Line</button>
+      <span class="toolbar-divider" aria-hidden="true"></span>
+      <button class="swatch butter" type="button" data-command="highlight" data-color="#fff0a8" aria-label="Butter highlight"></button>
+      <button class="swatch peach" type="button" data-command="highlight" data-color="#ffd6c9" aria-label="Peach highlight"></button>
+      <button class="swatch rose" type="button" data-command="highlight" data-color="#ffd9e0" aria-label="Rose highlight"></button>
+      <button class="swatch lavender" type="button" data-command="highlight" data-color="#e7d9ff" aria-label="Lavender highlight"></button>
+      <button class="swatch sage" type="button" data-command="highlight" data-color="#d8f4df" aria-label="Sage highlight"></button>
+      <button class="swatch sky" type="button" data-command="highlight" data-color="#d9ebf8" aria-label="Sky highlight"></button>
+    </div>
+
+    <aside class="settings-panel drawer settings-drawer" id="settingsPanel" aria-label="Settings">
+      <div class="drawer-header settings-header">
+        <div>
+          <h2>Studio</h2>
+          <p>Sound, feel, paper, and study rhythm.</p>
+        </div>
+        <button class="round-icon subtle-icon" id="closeSettingsBtn" type="button" aria-label="Close settings">
+          <span class="icon-close" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <section class="setting-group">
+        <div class="section-heading">
+          <h3>Sound</h3>
+        </div>
+        <label class="switch-row">
+          Typing sound
+          <input id="soundEnabled" type="checkbox">
+        </label>
+        <label>
+          Sound pack
+          <select id="soundPackSelect"></select>
+        </label>
+        <label>
+          Volume
+          <input id="volumeRange" type="range" min="0" max="100" step="1">
+        </label>
+        <span class="range-readout" id="volumeReadout">35%</span>
+        <details class="advanced-settings">
+          <summary>More sound options</summary>
+          <label>
+            Sound variation
+            <input id="soundVariationRange" type="range" min="0" max="100" step="5">
+          </label>
+          <span class="range-readout" id="soundVariationReadout">45%</span>
+          <label>
+            Depth &amp; warmth
+            <input id="soundDepthRange" type="range" min="0" max="100" step="5">
+          </label>
+          <span class="range-readout" id="soundDepthReadout">68%</span>
+        </details>
+      </section>
+
+      <section class="setting-group">
+        <div class="section-heading">
+          <h3>Typing</h3>
+        </div>
+        <label>
+          Preset
+          <select id="typingFeelSelect"></select>
+        </label>
+        <p class="micro-copy" id="feelDescription"></p>
+        <details class="advanced-settings">
+          <summary>Fine-tune feel</summary>
+          <label>
+            Animation strength
+            <input id="typingAnimationRange" type="range" min="0" max="100" step="5">
+          </label>
+          <span class="range-readout" id="typingAnimationReadout">54%</span>
+          <label>
+            Caret smoothness
+            <input id="caretSmoothRange" type="range" min="0" max="100" step="5">
+          </label>
+          <span class="range-readout" id="caretSmoothReadout">62%</span>
+          <label>
+            Tactile visual strength
+            <input id="feedbackStrengthRange" type="range" min="0" max="100" step="5">
+          </label>
+          <span class="range-readout" id="feedbackStrengthReadout">56%</span>
+        </details>
+      </section>
+
+      <section class="setting-group">
+        <div class="section-heading">
+          <h3>Effects</h3>
+        </div>
+        <label class="switch-row">
+          Typing FX
+          <input id="effectEnabled" type="checkbox">
+        </label>
+        <label>
+          Visual style
+          <select id="effectModeSelect"></select>
+        </label>
+        <p class="micro-copy" id="effectDescription"></p>
+        <label>
+          Effect intensity
+          <input id="effectIntensityRange" type="range" min="0" max="100" step="5">
+        </label>
+        <span class="range-readout" id="effectIntensityReadout">62%</span>
+        <details class="advanced-settings">
+          <summary>Effect tuning</summary>
+          <label>
+            Glyph motion
+            <input id="glyphMotionRange" type="range" min="0" max="100" step="5">
+          </label>
+          <span class="range-readout" id="glyphMotionReadout">52%</span>
+          <label>
+            Particles
+            <input id="particleAmountRange" type="range" min="0" max="100" step="5">
+          </label>
+          <span class="range-readout" id="particleAmountReadout">48%</span>
+          <label>
+            Glow
+            <input id="glowAmountRange" type="range" min="0" max="100" step="5">
+          </label>
+          <span class="range-readout" id="glowAmountReadout">52%</span>
+          <label>
+            Special moments
+            <input id="specialFrequencyRange" type="range" min="0" max="100" step="5">
+          </label>
+          <span class="range-readout" id="specialFrequencyReadout">18%</span>
+          <label>
+            Micro shake
+            <input id="shakeAmountRange" type="range" min="0" max="100" step="5">
+          </label>
+          <span class="range-readout" id="shakeAmountReadout">12%</span>
+          <label>
+            Effect speed
+            <input id="effectSpeedRange" type="range" min="0" max="100" step="5">
+          </label>
+          <span class="range-readout" id="effectSpeedReadout">50%</span>
+        </details>
+      </section>
+
+      <section class="setting-group">
+        <div class="section-heading">
+          <h3>Page</h3>
+        </div>
+        <label>
+          Theme
+          <select id="themeSelect"></select>
+        </label>
+        <label>
+          Font
+          <select id="fontSelect"></select>
+        </label>
+        <label>
+          Paper
+          <select id="paperStyleSelect">
+            <option value="lined">Lined paper</option>
+            <option value="plain">Plain paper</option>
+          </select>
+        </label>
+        <label>
+          Font size
+          <input id="fontSizeRange" type="range" min="15" max="24" step="1">
+        </label>
+        <span class="range-readout" id="fontSizeReadout">18 px</span>
+        <label>
+          Line spacing
+          <input id="lineHeightRange" type="range" min="145" max="215" step="5">
+        </label>
+        <span class="range-readout" id="lineHeightReadout">170%</span>
+        <label class="switch-row">
+          Reduce motion
+          <input id="reduceMotion" type="checkbox">
+        </label>
+        <details class="advanced-settings">
+          <summary>More page options</summary>
+          <label>
+            Editor width
+            <input id="editorWidthRange" type="range" min="560" max="900" step="10">
+          </label>
+          <span class="range-readout" id="editorWidthReadout">760px</span>
+        </details>
+      </section>
+    </aside>
+
+    <section class="timer-popover" id="timerPanel" aria-label="Study timer">
+      <div class="section-heading">
+        <h3>Study Timer</h3>
+        <span id="timerMode">Study</span>
+      </div>
+      <div class="timer-face" id="timerFace">25:00</div>
+      <div class="segmented">
+        <button class="active" type="button" data-timer-mode="study">Study</button>
+        <button type="button" data-timer-mode="break">Break</button>
+      </div>
+      <div class="timer-actions">
+        <button type="button" id="timerStartPause">Start</button>
+        <button type="button" id="timerReset">Reset</button>
+        <button type="button" id="focusBtn" aria-pressed="false">Focus</button>
+      </div>
+    </section>
+
+    <div class="feedback-layer" id="inkLayer" aria-hidden="true">
+      <canvas class="fx-canvas" id="fxCanvas"></canvas>
+      <span class="caret-glow" id="caretGlow"></span>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
+  </body>
+</html>
