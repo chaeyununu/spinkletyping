@@ -56,8 +56,26 @@
         const win = frame.contentWindow;
         const doc = frame.contentDocument;
         const select = doc.getElementById("effectModeSelect");
+        const effectEnabled = doc.getElementById("effectEnabled");
+        const reduceMotion = doc.getElementById("reduceMotion");
         const editor = doc.getElementById("editor");
+        const frameErrors = [];
 
+        win.addEventListener("error", (event) => {
+          frameErrors.push(event.message || String(event.error || event));
+        });
+        win.addEventListener("unhandledrejection", (event) => {
+          frameErrors.push(String(event.reason && (event.reason.stack || event.reason.message) || event.reason || event));
+        });
+
+        if (effectEnabled && !effectEnabled.checked) {
+          effectEnabled.checked = true;
+          effectEnabled.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+        if (reduceMotion && reduceMotion.checked) {
+          reduceMotion.checked = false;
+          reduceMotion.dispatchEvent(new Event("change", { bubbles: true }));
+        }
         select.value = mode;
         select.dispatchEvent(new Event("change", { bubbles: true }));
         editor.innerHTML = "";
@@ -93,9 +111,14 @@
         });
 
         document.getElementById("report").textContent = JSON.stringify({
+          requestedMode: mode,
           mode: doc.body.dataset.effect,
+          selectValue: select.value,
+          effectEnabled: effectEnabled ? effectEnabled.checked : null,
+          reduceMotion: reduceMotion ? reduceMotion.checked : null,
           editorText: editor.textContent,
           markCount: doc.querySelectorAll(".typing-mark").length,
+          frameErrors,
           glyphs
         }, null, 2);
       }

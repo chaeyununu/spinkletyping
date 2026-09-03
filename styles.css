@@ -1481,16 +1481,11 @@ body.timer-open .timer-popover {
   opacity: var(--caret-active-opacity);
 }
 
-body[data-effect="cyber-pink"] .caret-glow,
-body[data-effect="electric-pop"] .caret-glow {
+body[data-effect="cyber-pink"] .caret-glow {
   background: linear-gradient(180deg, var(--effect-secondary), var(--effect-primary));
   box-shadow:
     0 0 10px color-mix(in srgb, var(--effect-primary) 72%, transparent),
     0 0 calc(18px + var(--effect-glow-size)) var(--effect-aura);
-}
-
-body[data-effect="ink-pulse"] .caret-glow {
-  border-radius: 6px 2px 7px 3px / 4px 8px 3px 6px;
 }
 
 .typing-mark {
@@ -1636,32 +1631,6 @@ body[data-feel="flow"] .typing-core {
   animation-name: flow-core;
 }
 
-body[data-effect="cozy-dust"] .typing-particle {
-  background:
-    radial-gradient(circle, rgba(255, 255, 255, 0.9), color-mix(in srgb, var(--effect-primary) 62%, white) 58%, transparent 72%);
-  filter: blur(0.2px) drop-shadow(0 0 4px var(--effect-aura));
-}
-
-body[data-effect="star-sprinkle"] .typing-core {
-  background: transparent;
-  box-shadow: none;
-}
-
-body[data-effect="star-sprinkle"] .typing-core::before {
-  inset: -1px;
-  border: 0;
-  background: var(--effect-secondary);
-  clip-path: polygon(50% 0, 60% 36%, 98% 36%, 67% 58%, 78% 94%, 50% 72%, 22% 94%, 33% 58%, 2% 36%, 40% 36%);
-  animation: star-core var(--feedback-duration) ease-out forwards;
-}
-
-body[data-effect="star-sprinkle"] .typing-particle {
-  border-radius: 0;
-  clip-path: polygon(50% 0, 60% 36%, 98% 36%, 67% 58%, 78% 94%, 50% 72%, 22% 94%, 33% 58%, 2% 36%, 40% 36%);
-  background: linear-gradient(135deg, var(--effect-secondary), var(--effect-primary));
-  animation-name: star-drift;
-}
-
 body[data-effect="cyber-pink"] .typing-core {
   background: transparent;
   border: 1px solid color-mix(in srgb, var(--effect-primary) 68%, white);
@@ -1683,56 +1652,6 @@ body[data-effect="cyber-pink"] .typing-particle {
   background: linear-gradient(90deg, var(--effect-primary), var(--effect-secondary));
   box-shadow: 0 0 8px var(--effect-aura);
   animation-name: cyber-spark;
-}
-
-body[data-effect="ink-pulse"] .typing-core {
-  border-radius: 43% 57% 49% 51% / 58% 34% 66% 42%;
-  background:
-    radial-gradient(circle at 42% 45%, color-mix(in srgb, var(--effect-secondary) 38%, transparent), transparent 54%),
-    color-mix(in srgb, var(--effect-primary) 72%, var(--text));
-  mix-blend-mode: multiply;
-}
-
-body[data-effect="ink-pulse"] .typing-particle {
-  width: var(--size);
-  height: var(--size);
-  border-radius: 56% 44% 47% 53% / 40% 58% 42% 60%;
-  background: color-mix(in srgb, var(--effect-primary) 72%, var(--text));
-  mix-blend-mode: multiply;
-  animation-name: ink-fleck;
-}
-
-body[data-effect="electric-pop"] .typing-core {
-  background: color-mix(in srgb, var(--effect-secondary) 55%, white);
-  box-shadow:
-    0 0 10px var(--effect-secondary),
-    0 0 calc(16px + var(--effect-glow-size)) var(--effect-aura);
-  animation-name: electric-core;
-}
-
-body[data-effect="electric-pop"] .typing-particle {
-  border-radius: 1px;
-  background: linear-gradient(180deg, var(--effect-secondary), var(--effect-primary));
-  clip-path: polygon(46% 0, 100% 0, 62% 43%, 100% 43%, 28% 100%, 48% 55%, 0 55%);
-  animation-name: electric-snap;
-}
-
-body[data-effect="soft-bounce"] .typing-core {
-  background: transparent;
-  border: 2px solid color-mix(in srgb, var(--effect-primary) 54%, white);
-  animation-name: bounce-ring;
-}
-
-body[data-effect="soft-bounce"] .typing-core::after {
-  inset: 3px;
-  border: 0;
-  background: color-mix(in srgb, var(--effect-secondary) 70%, white);
-  animation: bounce-dot var(--feedback-duration) cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-body[data-effect="soft-bounce"] .typing-particle {
-  background: color-mix(in srgb, var(--effect-primary) 62%, white);
-  animation-name: bounce-particle;
 }
 
 @keyframes typing-shell {
@@ -1959,56 +1878,6 @@ body[data-effect="soft-bounce"] .typing-particle {
   }
 }
 
-@keyframes bounce-ring {
-  0% {
-    opacity: var(--feedback-opacity);
-    transform: scale(0.42);
-  }
-
-  44% {
-    opacity: var(--feedback-opacity);
-    transform: scale(var(--core-scale));
-  }
-
-  100% {
-    opacity: 0;
-    transform: scale(1.72);
-  }
-}
-
-@keyframes bounce-dot {
-  0% {
-    opacity: var(--feedback-opacity);
-    transform: scale(0.25);
-  }
-
-  50% {
-    opacity: var(--feedback-opacity);
-    transform: scale(1);
-  }
-
-  100% {
-    opacity: 0;
-    transform: scale(0.5) translateY(-3px);
-  }
-}
-
-@keyframes bounce-particle {
-  0% {
-    opacity: 0;
-    transform: translate(0, 0) scale(0.5);
-  }
-
-  24% {
-    opacity: var(--particle-alpha);
-  }
-
-  100% {
-    opacity: 0;
-    transform: translate(var(--x), var(--y)) scale(0.42);
-  }
-}
-
 body[data-effect="electric"] .caret-glow,
 body[data-effect="crystal-glass"] .caret-glow,
 body[data-effect="cyber-pink"] .caret-glow,
@@ -2085,6 +1954,14 @@ body[data-effect="velvet-smoke"] .caret-glow {
   z-index: 0;
   pointer-events: none;
   border-radius: 1px;
+  overflow: hidden;
+}
+
+.typing-glyph-mask-tint {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: multiply;
+  pointer-events: none;
 }
 
 .typing-core,
@@ -2669,13 +2546,20 @@ body[data-effect="velvet-smoke"] .caret-glow {
 }
 
 .typing-mark.effect-firefly-glow .typing-core {
+  width: 24px;
+  height: 12px;
+  margin-left: -12px;
+  margin-top: -6px;
+  border: 1px solid color-mix(in srgb, var(--effect-primary) 70%, white);
+  border-radius: 50%;
   background:
-    radial-gradient(circle at 42% 32%, white 0 18%, color-mix(in srgb, var(--effect-secondary) 54%, white) 20% 46%, transparent 62%),
-    color-mix(in srgb, var(--effect-primary) 76%, white);
+    radial-gradient(circle at 72% 42%, white 0 7%, var(--effect-secondary) 8% 15%, transparent 18%),
+    linear-gradient(90deg, transparent, color-mix(in srgb, var(--effect-primary) 32%, transparent), transparent);
   box-shadow:
-    0 0 9px color-mix(in srgb, var(--effect-primary) 64%, transparent),
-    0 0 calc(13px + var(--effect-glow-size)) var(--effect-aura);
-  animation-name: firefly-core-local;
+    inset 0 0 7px color-mix(in srgb, var(--effect-secondary) 34%, transparent),
+    0 0 calc(12px + var(--effect-glow-size)) var(--effect-aura);
+  transform: rotate(-14deg);
+  animation-name: orbit-core-local;
 }
 
 .typing-mark.effect-firefly-glow .typing-glyph {
@@ -2685,58 +2569,70 @@ body[data-effect="velvet-smoke"] .caret-glow {
     0 0 calc(var(--glyph-glow-size) * 0.9) var(--glyph-alt-glow-color);
   animation:
     glyph-impact-settle var(--glyph-impact-life) cubic-bezier(0.16, 1, 0.3, 1) forwards,
-    glyph-firefly-warm var(--glyph-life) cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    glyph-orbit-pulse var(--glyph-life) cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+.typing-mark.effect-firefly-glow .typing-glyph::before {
+  color: var(--glyph-accent-color);
+  animation: glyph-orbit-satellite var(--glyph-life) ease-out forwards;
 }
 
 .typing-mark.effect-firefly-glow .typing-glyph::after {
   color: var(--glyph-alt-color);
-  animation: glyph-firefly-echo var(--glyph-life) ease-out forwards;
+  animation: glyph-orbit-echo var(--glyph-life) ease-out forwards;
 }
 
 .typing-mark.effect-firefly-glow .typing-particle {
   border-radius: 50%;
   background:
-    radial-gradient(circle, #ffffff 0 20%, var(--effect-secondary) 22% 45%, var(--effect-primary) 48% 68%, transparent 72%);
+    radial-gradient(circle at 70% 42%, #ffffff 0 15%, var(--effect-secondary) 16% 26%, transparent 29%),
+    conic-gradient(from 60deg, transparent, var(--effect-primary), var(--effect-secondary), transparent 72%);
   filter: drop-shadow(0 0 6px var(--effect-aura));
-  animation-name: firefly-drift-local;
+  animation-name: orbit-particle-local;
 }
 
 .typing-mark.effect-petal-bloom .typing-core {
+  width: 16px;
+  height: 16px;
+  margin-left: -8px;
+  margin-top: -8px;
+  border-radius: 2px 6px 2px 5px;
   background:
-    radial-gradient(circle at 36% 24%, rgba(255, 255, 255, 0.94), transparent 30%),
-    color-mix(in srgb, var(--effect-primary) 64%, white);
-  border-radius: 56% 44% 54% 46% / 42% 58% 42% 58%;
+    linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0 28%, color-mix(in srgb, var(--effect-primary) 58%, white) 29% 58%, color-mix(in srgb, var(--effect-secondary) 70%, white) 59% 100%);
+  clip-path: polygon(4% 44%, 42% 4%, 96% 48%, 48% 96%);
   box-shadow:
-    0 0 9px color-mix(in srgb, var(--effect-primary) 36%, transparent),
+    0 0 8px color-mix(in srgb, var(--effect-primary) 42%, transparent),
     0 0 calc(8px + var(--effect-glow-size)) var(--effect-aura);
-  animation-name: petal-core-local;
+  animation-name: origami-core-local;
 }
 
 .typing-mark.effect-petal-bloom .typing-glyph {
   color: var(--glyph-hot-color);
+  transform-origin: 48% 54%;
   text-shadow:
     0 0 2px rgba(255, 255, 255, calc(var(--glyph-flash-alpha) * 0.7)),
     0 0 calc(var(--glyph-glow-size) * 0.62) var(--glyph-glow-color);
   animation:
     glyph-impact-settle var(--glyph-impact-life) cubic-bezier(0.22, 1, 0.36, 1) forwards,
-    glyph-petal-bloom var(--glyph-life) cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    glyph-origami-fold var(--glyph-life) cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 .typing-mark.effect-petal-bloom .typing-glyph .glyph-sheen {
-  animation: glyph-petal-sheen var(--glyph-life) ease-out forwards;
+  animation: glyph-origami-sheen var(--glyph-life) ease-out forwards;
 }
 
 .typing-mark.effect-petal-bloom .typing-glyph .glyph-sheen::before {
   color: transparent;
-  background: linear-gradient(115deg, transparent 0 34%, #ffffff 48%, var(--glyph-accent-color) 60%, transparent 74%);
+  background: linear-gradient(135deg, transparent 0 30%, #ffffff 42%, var(--glyph-alt-color) 52%, transparent 68%);
   -webkit-background-clip: text;
   background-clip: text;
 }
 
 .typing-mark.effect-petal-bloom .typing-particle {
-  border-radius: 68% 32% 62% 38% / 54% 44% 56% 46%;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), var(--effect-primary), var(--effect-secondary));
-  animation-name: petal-float-local;
+  border-radius: 1px 5px 1px 4px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), var(--effect-primary) 48%, var(--effect-secondary));
+  clip-path: polygon(6% 44%, 42% 2%, 98% 46%, 48% 98%);
+  animation-name: origami-facet-local;
 }
 
 .typing-mark.effect-neon-rain .typing-core {
@@ -2828,14 +2724,18 @@ body[data-effect="velvet-smoke"] .caret-glow {
 }
 
 .typing-mark.effect-ember-glow .typing-core {
+  width: 28px;
+  height: 7px;
+  margin-left: -14px;
+  margin-top: -4px;
+  border-radius: var(--pill);
   background:
-    radial-gradient(circle at 36% 24%, rgba(255, 255, 255, 0.96), transparent 27%),
-    radial-gradient(circle at 64% 70%, var(--effect-secondary), transparent 48%),
-    var(--effect-primary);
+    linear-gradient(90deg, transparent, color-mix(in srgb, var(--effect-primary) 72%, transparent), #fff8e6 58%, var(--effect-secondary), transparent);
   box-shadow:
-    0 0 10px color-mix(in srgb, var(--effect-secondary) 62%, transparent),
+    0 0 10px color-mix(in srgb, var(--effect-primary) 62%, transparent),
     0 0 calc(12px + var(--effect-glow-size)) var(--effect-aura);
-  animation-name: ember-core-local;
+  transform: rotate(-28deg);
+  animation-name: comet-core-local;
 }
 
 .typing-mark.effect-ember-glow .typing-glyph {
@@ -2846,19 +2746,300 @@ body[data-effect="velvet-smoke"] .caret-glow {
     0 0 calc(var(--glyph-glow-size) * 1.05) var(--glyph-alt-glow-color);
   animation:
     glyph-impact-settle var(--glyph-impact-life) cubic-bezier(0.22, 1, 0.36, 1) forwards,
-    glyph-ember-warm var(--glyph-life) cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    glyph-comet-tail var(--glyph-life) cubic-bezier(0.19, 1, 0.22, 1) forwards;
 }
 
 .typing-mark.effect-ember-glow .typing-glyph::after {
   color: var(--glyph-alt-color);
-  animation: glyph-ember-afterglow var(--glyph-life) ease-out forwards;
+  animation: glyph-comet-afterimage var(--glyph-life) ease-out forwards;
 }
 
 .typing-mark.effect-ember-glow .typing-particle {
-  border-radius: 54% 46% 48% 52% / 70% 36% 64% 30%;
-  background: linear-gradient(180deg, #fff7d7, var(--effect-secondary), var(--effect-primary));
-  box-shadow: 0 0 7px var(--effect-aura);
-  animation-name: ember-rise-local;
+  height: 3px;
+  margin-top: -1.5px;
+  border-radius: var(--pill);
+  background: linear-gradient(90deg, transparent, var(--effect-primary), #fff7df, var(--effect-secondary), transparent);
+  box-shadow: 0 0 8px var(--effect-aura);
+  animation-name: comet-streak-local;
+}
+
+.typing-mark.effect-laser-etch .typing-core {
+  width: 30px;
+  height: 2px;
+  margin-left: -15px;
+  margin-top: -1px;
+  border-radius: var(--pill);
+  background: linear-gradient(90deg, transparent, var(--effect-primary), white 52%, var(--effect-secondary), transparent);
+  box-shadow:
+    0 0 8px color-mix(in srgb, var(--effect-primary) 64%, transparent),
+    0 0 calc(11px + var(--effect-glow-size)) var(--effect-aura);
+  transform: rotate(-13deg);
+  animation-name: laser-core-local;
+}
+
+.typing-mark.effect-laser-etch .typing-glyph {
+  color: transparent;
+  filter: none;
+  text-shadow:
+    -0.8px 0 var(--glyph-glow-color),
+    0.8px 0 var(--glyph-alt-glow-color);
+  animation:
+    glyph-impact-settle var(--glyph-impact-life) steps(4, end) forwards,
+    glyph-laser-etch var(--glyph-life) steps(1, end) forwards;
+}
+
+.typing-mark.effect-laser-etch .typing-glyph::before {
+  color: var(--glyph-accent-color);
+  animation: glyph-laser-red var(--glyph-life) steps(1, end) forwards;
+}
+
+.typing-mark.effect-laser-etch .typing-glyph::after {
+  color: var(--glyph-alt-color);
+  animation: glyph-laser-gold var(--glyph-life) steps(1, end) forwards;
+}
+
+.typing-mark.effect-laser-etch .typing-glyph .glyph-slice {
+  animation: glyph-laser-scan var(--glyph-life) ease-out forwards;
+}
+
+.typing-mark.effect-laser-etch .typing-glyph .glyph-slice::before {
+  color: transparent;
+  background: linear-gradient(103deg, transparent 0 38%, #ffffff 47%, var(--glyph-alt-color) 54%, transparent 64%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.typing-mark.effect-laser-etch .typing-particle {
+  height: 2px;
+  margin-top: -1px;
+  border-radius: var(--pill);
+  background: linear-gradient(90deg, transparent, var(--effect-primary), white, var(--effect-secondary), transparent);
+  animation-name: laser-chip-local;
+}
+
+.typing-mark.effect-keycap-pop .typing-core {
+  width: 24px;
+  height: 18px;
+  margin-left: -12px;
+  margin-top: -9px;
+  border: 1px solid color-mix(in srgb, var(--effect-primary) 42%, white);
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), color-mix(in srgb, var(--effect-primary) 28%, white)),
+    var(--paper);
+  box-shadow:
+    inset 0 -3px 0 color-mix(in srgb, var(--effect-primary) 24%, transparent),
+    0 4px 0 color-mix(in srgb, var(--effect-primary) 30%, transparent),
+    0 0 calc(7px + var(--effect-glow-size)) var(--effect-aura);
+  animation-name: keycap-core-local;
+}
+
+.typing-mark.effect-keycap-pop .typing-glyph {
+  color: var(--glyph-hot-color);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+  animation:
+    glyph-impact-settle var(--glyph-impact-life) cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+    glyph-keycap-pop var(--glyph-life) cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.typing-mark.effect-keycap-pop .typing-glyph .glyph-sheen {
+  animation: glyph-keycap-shine var(--glyph-life) ease-out forwards;
+}
+
+.typing-mark.effect-keycap-pop .typing-glyph .glyph-sheen::before {
+  color: transparent;
+  background: linear-gradient(90deg, transparent 0 28%, white 45%, var(--glyph-alt-color) 54%, transparent 70%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.typing-mark.effect-keycap-pop .typing-particle {
+  border-radius: 3px;
+  background:
+    linear-gradient(180deg, white, var(--effect-primary)),
+    var(--effect-secondary);
+  animation-name: keycap-chip-local;
+}
+
+.typing-mark.effect-magnetic-flip .typing-core {
+  width: 30px;
+  height: 12px;
+  margin-left: -15px;
+  margin-top: -6px;
+  border-radius: var(--pill);
+  background:
+    radial-gradient(circle at 18% 50%, white 0 10%, var(--effect-primary) 11% 27%, transparent 30%),
+    radial-gradient(circle at 82% 50%, white 0 10%, var(--effect-secondary) 11% 27%, transparent 30%),
+    linear-gradient(90deg, color-mix(in srgb, var(--effect-primary) 28%, transparent), transparent, color-mix(in srgb, var(--effect-secondary) 28%, transparent));
+  box-shadow: 0 0 calc(10px + var(--effect-glow-size)) var(--effect-aura);
+  animation-name: magnetic-core-local;
+}
+
+.typing-mark.effect-magnetic-flip .typing-glyph {
+  color: var(--glyph-hot-color);
+  text-shadow:
+    calc(var(--glyph-split) * -0.45) 0 var(--glyph-glow-color),
+    calc(var(--glyph-split) * 0.45) 0 var(--glyph-alt-glow-color);
+  animation:
+    glyph-impact-settle var(--glyph-impact-life) cubic-bezier(0.19, 1, 0.22, 1) forwards,
+    glyph-magnetic-flip var(--glyph-life) cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+.typing-mark.effect-magnetic-flip .typing-glyph::before {
+  color: var(--glyph-accent-color);
+  animation: glyph-magnetic-red var(--glyph-life) ease-out forwards;
+}
+
+.typing-mark.effect-magnetic-flip .typing-glyph::after {
+  color: var(--glyph-alt-color);
+  animation: glyph-magnetic-teal var(--glyph-life) ease-out forwards;
+}
+
+.typing-mark.effect-magnetic-flip .typing-particle {
+  height: 3px;
+  margin-top: -1.5px;
+  border-radius: var(--pill);
+  background: linear-gradient(90deg, var(--effect-primary), white, var(--effect-secondary));
+  animation-name: magnetic-needle-local;
+}
+
+.typing-mark.effect-mosaic-shift .typing-core {
+  width: 18px;
+  height: 18px;
+  margin-left: -9px;
+  margin-top: -9px;
+  border-radius: 3px;
+  background:
+    linear-gradient(90deg, var(--effect-primary) 0 48%, transparent 48% 52%, var(--effect-secondary) 52% 100%),
+    linear-gradient(0deg, transparent 0 48%, rgba(255, 255, 255, 0.88) 48% 52%, transparent 52% 100%);
+  box-shadow: 0 0 calc(8px + var(--effect-glow-size)) var(--effect-aura);
+  animation-name: mosaic-core-local;
+}
+
+.typing-mark.effect-mosaic-shift .typing-glyph {
+  color: var(--glyph-hot-color);
+  text-shadow:
+    calc(var(--glyph-split) * -0.28) 0 var(--glyph-glow-color),
+    calc(var(--glyph-split) * 0.28) 0 var(--glyph-alt-glow-color);
+  animation:
+    glyph-impact-settle var(--glyph-impact-life) steps(4, end) forwards,
+    glyph-mosaic-shift var(--glyph-life) steps(1, end) forwards;
+}
+
+.typing-mark.effect-mosaic-shift .typing-glyph::before {
+  color: var(--glyph-accent-color);
+  clip-path: inset(0 0 48% 0);
+  animation: glyph-mosaic-piece-a var(--glyph-life) steps(1, end) forwards;
+}
+
+.typing-mark.effect-mosaic-shift .typing-glyph::after {
+  color: var(--glyph-alt-color);
+  clip-path: inset(48% 0 0 0);
+  animation: glyph-mosaic-piece-b var(--glyph-life) steps(1, end) forwards;
+}
+
+.typing-mark.effect-mosaic-shift .typing-particle {
+  border-radius: 2px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.9), var(--effect-primary) 48%, var(--effect-secondary));
+  animation-name: mosaic-tile-local;
+}
+
+.typing-mark.effect-ripple-lens .typing-core {
+  width: 26px;
+  height: 20px;
+  margin-left: -13px;
+  margin-top: -10px;
+  border: 1px solid color-mix(in srgb, var(--effect-primary) 45%, white);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 24%, rgba(255, 255, 255, 0.74), transparent 18%),
+    radial-gradient(circle, color-mix(in srgb, var(--effect-primary) 14%, transparent), transparent 58%);
+  box-shadow:
+    inset 0 0 8px color-mix(in srgb, var(--effect-secondary) 30%, transparent),
+    0 0 calc(8px + var(--effect-glow-size)) var(--effect-aura);
+  animation-name: ripple-core-local;
+}
+
+.typing-mark.effect-ripple-lens .typing-glyph {
+  color: var(--glyph-hot-color);
+  text-shadow:
+    -0.4px 0 var(--glyph-glow-color),
+    0.4px 0 var(--glyph-alt-glow-color);
+  animation:
+    glyph-impact-settle var(--glyph-impact-life) cubic-bezier(0.16, 1, 0.3, 1) forwards,
+    glyph-ripple-lens var(--glyph-life) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.typing-mark.effect-ripple-lens .typing-glyph .glyph-sheen {
+  animation: glyph-ripple-glint var(--glyph-life) ease-out forwards;
+}
+
+.typing-mark.effect-ripple-lens .typing-glyph .glyph-sheen::before {
+  color: transparent;
+  background: linear-gradient(112deg, transparent 0 34%, rgba(255, 255, 255, 0.96) 48%, var(--glyph-alt-color) 56%, transparent 72%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.typing-mark.effect-ripple-lens .typing-particle {
+  border: 1px solid color-mix(in srgb, var(--effect-primary) 58%, white);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--effect-secondary) 14%, transparent);
+  animation-name: ripple-drop-local;
+}
+
+.typing-mark.effect-plasma-thread .typing-core {
+  width: 30px;
+  height: 4px;
+  margin-left: -15px;
+  margin-top: -2px;
+  border-radius: var(--pill);
+  background: linear-gradient(90deg, transparent, var(--effect-primary), white, var(--effect-secondary), transparent);
+  box-shadow:
+    0 0 8px color-mix(in srgb, var(--effect-primary) 60%, transparent),
+    0 0 calc(12px + var(--effect-glow-size)) var(--effect-aura);
+  animation-name: plasma-core-local;
+}
+
+.typing-mark.effect-plasma-thread .typing-glyph {
+  color: transparent;
+  text-shadow:
+    -0.7px 0 var(--glyph-glow-color),
+    0.7px 0 var(--glyph-alt-glow-color);
+  filter: none;
+  animation:
+    glyph-impact-settle var(--glyph-impact-life) cubic-bezier(0.19, 1, 0.22, 1) forwards,
+    glyph-plasma-thread var(--glyph-life) steps(1, end) forwards;
+}
+
+.typing-mark.effect-plasma-thread .typing-glyph::before {
+  color: var(--glyph-accent-color);
+  animation: glyph-plasma-blue var(--glyph-life) ease-out forwards;
+}
+
+.typing-mark.effect-plasma-thread .typing-glyph::after {
+  color: var(--glyph-alt-color);
+  animation: glyph-plasma-rose var(--glyph-life) ease-out forwards;
+}
+
+.typing-mark.effect-plasma-thread .typing-glyph .glyph-slice {
+  animation: glyph-plasma-stitch var(--glyph-life) ease-out forwards;
+}
+
+.typing-mark.effect-plasma-thread .typing-glyph .glyph-slice::before {
+  color: transparent;
+  background: repeating-linear-gradient(90deg, transparent 0 10%, white 10% 14%, var(--glyph-accent-color) 14% 18%, transparent 18% 28%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.typing-mark.effect-plasma-thread .typing-particle {
+  height: 2px;
+  margin-top: -1px;
+  border-radius: var(--pill);
+  background: linear-gradient(90deg, transparent, var(--effect-primary), white, var(--effect-secondary), transparent);
+  animation-name: plasma-thread-local;
 }
 
 @keyframes glyph-impact-settle {
@@ -2866,6 +3047,24 @@ body[data-effect="velvet-smoke"] .caret-glow {
     translate: var(--glyph-impact-x) var(--glyph-impact-y);
     scale: var(--glyph-impact-scale);
     rotate: var(--glyph-impact-rotate);
+  }
+
+  30% {
+    translate: var(--glyph-jolt-recoil-x) var(--glyph-jolt-recoil-y);
+    scale: var(--glyph-jolt-recoil-scale);
+    rotate: var(--glyph-jolt-recoil-rotate);
+  }
+
+  52% {
+    translate: var(--glyph-jolt-kick-x) var(--glyph-jolt-kick-y);
+    scale: var(--glyph-jolt-kick-scale);
+    rotate: var(--glyph-jolt-kick-rotate);
+  }
+
+  76% {
+    translate: var(--glyph-jolt-settle-x) var(--glyph-jolt-settle-y);
+    scale: 1.002;
+    rotate: 0deg;
   }
 
   100% {
@@ -3715,6 +3914,82 @@ body[data-effect="velvet-smoke"] .caret-glow {
   }
 }
 
+@keyframes glyph-orbit-pulse {
+  0% {
+    opacity: calc(var(--glyph-alpha) * 0.48);
+    transform: rotate(-4deg) scale(0.99);
+    text-shadow:
+      0 0 calc(var(--glyph-glow-size) * 0.42) var(--glyph-glow-color),
+      0 0 calc(var(--glyph-glow-size) * 0.72) var(--glyph-alt-glow-color);
+  }
+
+  18% {
+    opacity: var(--glyph-alpha);
+    color: var(--glyph-hot-color);
+    transform:
+      translate(calc(var(--glyph-motion-px) * 0.16), calc(var(--glyph-motion-px) * -0.14))
+      rotate(7deg)
+      scale(var(--glyph-scale-pop));
+    text-shadow:
+      0 0 2px rgba(255, 255, 255, var(--glyph-flash-alpha)),
+      0 0 calc(var(--glyph-glow-size) * 0.72) var(--glyph-glow-color),
+      0 0 calc(var(--glyph-glow-size) * 1.12) var(--glyph-alt-glow-color);
+  }
+
+  52% {
+    opacity: calc(var(--glyph-alpha) * 0.44);
+    color: var(--glyph-accent-color);
+    transform:
+      translate(calc(var(--glyph-motion-px) * -0.12), calc(var(--glyph-motion-px) * -0.22))
+      rotate(18deg)
+      scale(1.006);
+  }
+
+  100% {
+    opacity: 0;
+    color: var(--glyph-base-color);
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    text-shadow: none;
+  }
+}
+
+@keyframes glyph-orbit-satellite {
+  0%,
+  18% {
+    opacity: calc(var(--glyph-alpha) * 0.28);
+    transform: translate(calc(var(--glyph-split) * 0.8), calc(var(--glyph-motion-px) * -0.34)) rotate(10deg);
+  }
+
+  46% {
+    opacity: calc(var(--glyph-alpha) * 0.16);
+    transform: translate(calc(var(--glyph-split) * -0.54), calc(var(--glyph-motion-px) * 0.18)) rotate(28deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+
+@keyframes glyph-orbit-echo {
+  0%,
+  26% {
+    opacity: calc(var(--glyph-alpha) * 0.24);
+    filter: blur(calc(var(--glyph-blur) * 0.8));
+    transform: translate(calc(var(--glyph-split) * -0.5), calc(var(--glyph-motion-px) * 0.24)) rotate(-8deg);
+  }
+
+  62% {
+    opacity: calc(var(--glyph-alpha) * 0.1);
+    transform: translate(calc(var(--glyph-split) * 0.2), calc(var(--glyph-motion-px) * -0.42)) rotate(-18deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+
 @keyframes glyph-firefly-warm {
   0% {
     opacity: calc(var(--glyph-alpha) * 0.52);
@@ -3826,6 +4101,68 @@ body[data-effect="velvet-smoke"] .caret-glow {
   100% {
     opacity: 0;
     transform: translateX(90%) rotate(0deg);
+  }
+}
+
+@keyframes glyph-origami-fold {
+  0% {
+    opacity: var(--glyph-alpha);
+    color: var(--glyph-hot-color);
+    transform:
+      translate(calc(var(--glyph-motion-px) * -0.42), calc(var(--glyph-motion-px) * 0.22))
+      skewY(-7deg)
+      rotate(calc(var(--glyph-rotate-amount) * -0.55))
+      scale(var(--glyph-squash-x, 1.08), var(--glyph-squash-y, 0.9));
+    text-shadow: 0 0 calc(var(--glyph-glow-size) * 0.52) var(--glyph-glow-color);
+  }
+
+  22% {
+    opacity: var(--glyph-alpha);
+    color: var(--glyph-accent-color);
+    transform:
+      translate(calc(var(--glyph-motion-px) * 0.28), calc(var(--glyph-motion-px) * -0.5))
+      skewX(5deg)
+      rotate(calc(var(--glyph-rotate-amount) * 0.38))
+      scale(var(--glyph-stretch-x, 0.98), var(--glyph-stretch-y, 1.06));
+  }
+
+  48% {
+    opacity: calc(var(--glyph-alpha) * 0.52);
+    color: var(--glyph-alt-color);
+    transform:
+      translate(calc(var(--glyph-motion-px) * -0.14), calc(var(--glyph-motion-px) * -0.22))
+      skewY(-2deg)
+      rotate(calc(var(--glyph-rotate-amount) * -0.14))
+      scale(1.008);
+  }
+
+  100% {
+    opacity: 0;
+    color: var(--glyph-base-color);
+    transform: translate(0, 0) skew(0deg) rotate(0deg) scale(1);
+    text-shadow: none;
+  }
+}
+
+@keyframes glyph-origami-sheen {
+  0%,
+  12% {
+    opacity: 0;
+    transform: translateX(-70%) rotate(-8deg);
+  }
+
+  32% {
+    opacity: calc(var(--glyph-flash-alpha) * 0.46);
+  }
+
+  62% {
+    opacity: calc(var(--glyph-flash-alpha) * 0.14);
+    transform: translateX(70%) rotate(8deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(92%) rotate(0deg);
   }
 }
 
@@ -3970,6 +4307,485 @@ body[data-effect="velvet-smoke"] .caret-glow {
   100% {
     opacity: 0;
     transform: translate(0, 0);
+  }
+}
+
+@keyframes glyph-comet-tail {
+  0% {
+    opacity: var(--glyph-alpha);
+    color: var(--glyph-hot-color);
+    transform:
+      translate(calc(var(--glyph-motion-px) * 0.52), calc(var(--glyph-motion-px) * -0.38))
+      skewX(-9deg)
+      rotate(calc(var(--glyph-rotate-amount) * -0.26))
+      scale(var(--glyph-scale-pop));
+    text-shadow:
+      -1px 0 calc(var(--glyph-glow-size) * 0.38) var(--glyph-glow-color),
+      1px 0 calc(var(--glyph-glow-size) * 0.62) var(--glyph-alt-glow-color);
+  }
+
+  20% {
+    opacity: var(--glyph-alpha);
+    color: var(--glyph-accent-color);
+    transform:
+      translate(calc(var(--glyph-motion-px) * -0.24), calc(var(--glyph-motion-px) * -0.7))
+      skewX(-5deg)
+      rotate(calc(var(--glyph-rotate-amount) * 0.42))
+      scale(1.014);
+  }
+
+  54% {
+    opacity: calc(var(--glyph-alpha) * 0.44);
+    color: var(--glyph-alt-color);
+    transform:
+      translate(calc(var(--glyph-motion-px) * 0.1), calc(var(--glyph-motion-px) * -0.32))
+      skewX(-2deg)
+      scale(1.004);
+  }
+
+  100% {
+    opacity: 0;
+    color: var(--glyph-base-color);
+    transform: translate(0, 0) skewX(0deg) rotate(0deg) scale(1);
+    text-shadow: none;
+  }
+}
+
+@keyframes glyph-comet-afterimage {
+  0%,
+  24% {
+    opacity: calc(var(--glyph-alpha) * 0.3);
+    filter: blur(calc(var(--glyph-blur) * 0.8));
+    transform:
+      translate(calc(var(--glyph-split) * -0.72), calc(var(--glyph-motion-px) * 0.28))
+      skewX(-10deg);
+  }
+
+  62% {
+    opacity: calc(var(--glyph-alpha) * 0.12);
+    transform:
+      translate(calc(var(--glyph-split) * -0.18), calc(var(--glyph-motion-px) * -0.18))
+      skewX(-4deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(0, 0) skewX(0deg);
+  }
+}
+
+@keyframes glyph-laser-etch {
+  0% {
+    opacity: calc(var(--glyph-alpha) * 0.42);
+    transform: translate(calc(var(--glyph-motion-px) * 0.6), calc(var(--glyph-motion-px) * -0.18)) skewX(-8deg);
+    text-shadow:
+      -1px 0 var(--glyph-glow-color),
+      1px 0 var(--glyph-alt-glow-color);
+  }
+
+  24% {
+    opacity: var(--glyph-alpha);
+    transform: translate(calc(var(--glyph-motion-px) * -0.45), calc(var(--glyph-motion-px) * 0.12)) skewX(5deg);
+  }
+
+  48% {
+    opacity: calc(var(--glyph-alpha) * 0.58);
+    transform: translate(calc(var(--glyph-motion-px) * 0.18), 0) skewX(-2deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(0, 0) skewX(0deg);
+    text-shadow: none;
+  }
+}
+
+@keyframes glyph-laser-red {
+  0%,
+  22% {
+    opacity: calc(var(--glyph-alpha) * 0.62);
+    transform: translate(calc(var(--glyph-split) * -0.7), calc(var(--glyph-motion-px) * -0.16));
+  }
+
+  46% {
+    opacity: calc(var(--glyph-alpha) * 0.22);
+    transform: translate(calc(var(--glyph-split) * 0.22), 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes glyph-laser-gold {
+  0%,
+  22% {
+    opacity: calc(var(--glyph-alpha) * 0.52);
+    transform: translate(calc(var(--glyph-split) * 0.64), calc(var(--glyph-motion-px) * 0.12));
+  }
+
+  46% {
+    opacity: calc(var(--glyph-alpha) * 0.18);
+    transform: translate(calc(var(--glyph-split) * -0.18), 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes glyph-laser-scan {
+  0%,
+  8% {
+    opacity: 0;
+    transform: translateX(-68%) rotate(-4deg);
+  }
+
+  28% {
+    opacity: calc(var(--glyph-flash-alpha) * 0.62);
+  }
+
+  50% {
+    opacity: calc(var(--glyph-flash-alpha) * 0.18);
+    transform: translateX(68%) rotate(4deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(88%) rotate(0deg);
+  }
+}
+
+@keyframes glyph-keycap-pop {
+  0% {
+    opacity: var(--glyph-alpha);
+    color: var(--glyph-hot-color);
+    transform:
+      translateY(calc(var(--glyph-motion-px) * 0.6))
+      scale(var(--glyph-squash-x, 1.08), var(--glyph-squash-y, 0.88));
+    text-shadow: 0 2px 0 color-mix(in srgb, var(--glyph-accent-color) 28%, transparent);
+  }
+
+  26% {
+    opacity: var(--glyph-alpha);
+    color: var(--glyph-accent-color);
+    transform:
+      translateY(calc(var(--glyph-motion-px) * -0.42))
+      scale(var(--glyph-stretch-x, 0.98), var(--glyph-stretch-y, 1.06));
+  }
+
+  56% {
+    opacity: calc(var(--glyph-alpha) * 0.48);
+    color: var(--glyph-alt-color);
+    transform: translateY(calc(var(--glyph-motion-px) * 0.1)) scale(1.006, 0.996);
+  }
+
+  100% {
+    opacity: 0;
+    color: var(--glyph-base-color);
+    transform: translateY(0) scale(1);
+    text-shadow: none;
+  }
+}
+
+@keyframes glyph-keycap-shine {
+  0%,
+  16% {
+    opacity: 0;
+    transform: translateX(-54%);
+  }
+
+  36% {
+    opacity: calc(var(--glyph-flash-alpha) * 0.36);
+  }
+
+  66% {
+    opacity: calc(var(--glyph-flash-alpha) * 0.12);
+    transform: translateX(58%);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(80%);
+  }
+}
+
+@keyframes glyph-magnetic-flip {
+  0% {
+    opacity: var(--glyph-alpha);
+    color: var(--glyph-hot-color);
+    transform:
+      translateX(calc(var(--glyph-motion-px) * 0.62))
+      rotateY(0deg)
+      rotate(calc(var(--glyph-rotate-amount) * 0.3))
+      scale(1.01);
+  }
+
+  22% {
+    opacity: var(--glyph-alpha);
+    color: var(--glyph-accent-color);
+    transform:
+      translateX(calc(var(--glyph-motion-px) * -0.66))
+      rotateY(42deg)
+      rotate(calc(var(--glyph-rotate-amount) * -0.72))
+      scale(1.018);
+  }
+
+  50% {
+    opacity: calc(var(--glyph-alpha) * 0.5);
+    color: var(--glyph-alt-color);
+    transform:
+      translateX(calc(var(--glyph-motion-px) * 0.18))
+      rotateY(-18deg)
+      scale(1.004);
+  }
+
+  100% {
+    opacity: 0;
+    color: var(--glyph-base-color);
+    transform: translateX(0) rotateY(0deg) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes glyph-magnetic-red {
+  0%,
+  24% {
+    opacity: calc(var(--glyph-alpha) * 0.34);
+    transform: translateX(calc(var(--glyph-split) * -0.9));
+  }
+
+  58% {
+    opacity: calc(var(--glyph-alpha) * 0.12);
+    transform: translateX(calc(var(--glyph-split) * 0.22));
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+}
+
+@keyframes glyph-magnetic-teal {
+  0%,
+  24% {
+    opacity: calc(var(--glyph-alpha) * 0.34);
+    transform: translateX(calc(var(--glyph-split) * 0.9));
+  }
+
+  58% {
+    opacity: calc(var(--glyph-alpha) * 0.12);
+    transform: translateX(calc(var(--glyph-split) * -0.22));
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+}
+
+@keyframes glyph-mosaic-shift {
+  0% {
+    opacity: var(--glyph-alpha);
+    color: var(--glyph-hot-color);
+    transform: translate(calc(var(--glyph-motion-px) * -0.42), calc(var(--glyph-motion-px) * 0.2));
+    text-shadow:
+      calc(var(--glyph-split) * -0.5) 0 var(--glyph-glow-color),
+      calc(var(--glyph-split) * 0.44) 0 var(--glyph-alt-glow-color);
+  }
+
+  20% {
+    opacity: var(--glyph-alpha);
+    transform: translate(calc(var(--glyph-motion-px) * 0.38), calc(var(--glyph-motion-px) * -0.22));
+  }
+
+  44% {
+    opacity: calc(var(--glyph-alpha) * 0.66);
+    color: var(--glyph-accent-color);
+    transform: translate(calc(var(--glyph-motion-px) * -0.12), 0);
+  }
+
+  100% {
+    opacity: 0;
+    color: var(--glyph-base-color);
+    transform: translate(0, 0);
+    text-shadow: none;
+  }
+}
+
+@keyframes glyph-mosaic-piece-a {
+  0%,
+  22% {
+    opacity: calc(var(--glyph-alpha) * 0.6);
+    transform: translate(calc(var(--glyph-split) * -0.72), calc(var(--glyph-motion-px) * -0.28));
+  }
+
+  52% {
+    opacity: calc(var(--glyph-alpha) * 0.22);
+    transform: translate(calc(var(--glyph-split) * 0.22), 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes glyph-mosaic-piece-b {
+  0%,
+  22% {
+    opacity: calc(var(--glyph-alpha) * 0.54);
+    transform: translate(calc(var(--glyph-split) * 0.64), calc(var(--glyph-motion-px) * 0.26));
+  }
+
+  52% {
+    opacity: calc(var(--glyph-alpha) * 0.2);
+    transform: translate(calc(var(--glyph-split) * -0.2), 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes glyph-ripple-lens {
+  0% {
+    opacity: calc(var(--glyph-alpha) * 0.5);
+    color: var(--glyph-hot-color);
+    filter: blur(calc(var(--glyph-blur) * 0.8));
+    transform: scale(0.988, 1.022);
+    text-shadow:
+      -0.4px 0 var(--glyph-glow-color),
+      0.4px 0 var(--glyph-alt-glow-color);
+  }
+
+  30% {
+    opacity: var(--glyph-alpha);
+    color: var(--glyph-hot-color);
+    filter: blur(calc(var(--glyph-blur) * 0.4));
+    transform: scale(var(--glyph-scale-pop), 0.99);
+  }
+
+  68% {
+    opacity: calc(var(--glyph-alpha) * 0.28);
+    color: var(--glyph-accent-color);
+    transform: translateY(calc(var(--glyph-motion-px) * -0.18)) scale(1.018, 0.992);
+  }
+
+  100% {
+    opacity: 0;
+    color: var(--glyph-base-color);
+    filter: blur(0);
+    transform: translateY(0) scale(1);
+    text-shadow: none;
+  }
+}
+
+@keyframes glyph-ripple-glint {
+  0%,
+  18% {
+    opacity: 0;
+    transform: translateX(-62%) scaleX(0.7);
+  }
+
+  42% {
+    opacity: calc(var(--glyph-flash-alpha) * 0.34);
+  }
+
+  76% {
+    opacity: calc(var(--glyph-flash-alpha) * 0.1);
+    transform: translateX(66%) scaleX(1.15);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(84%) scaleX(1);
+  }
+}
+
+@keyframes glyph-plasma-thread {
+  0% {
+    opacity: calc(var(--glyph-alpha) * 0.48);
+    transform: translate(calc(var(--glyph-motion-px) * 0.42), calc(var(--glyph-motion-px) * -0.22)) skewX(-7deg);
+    text-shadow:
+      -0.8px 0 var(--glyph-glow-color),
+      0.8px 0 var(--glyph-alt-glow-color);
+  }
+
+  18% {
+    opacity: var(--glyph-alpha);
+    transform: translate(calc(var(--glyph-motion-px) * -0.4), calc(var(--glyph-motion-px) * 0.16)) skewX(6deg);
+  }
+
+  42% {
+    opacity: calc(var(--glyph-alpha) * 0.62);
+    transform: translate(calc(var(--glyph-motion-px) * 0.14), calc(var(--glyph-motion-px) * -0.08)) skewX(-3deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(0, 0) skewX(0deg);
+    text-shadow: none;
+  }
+}
+
+@keyframes glyph-plasma-blue {
+  0%,
+  24% {
+    opacity: calc(var(--glyph-alpha) * 0.55);
+    transform: translate(calc(var(--glyph-split) * -0.6), calc(var(--glyph-motion-px) * -0.18));
+  }
+
+  60% {
+    opacity: calc(var(--glyph-alpha) * 0.16);
+    transform: translate(calc(var(--glyph-split) * 0.18), 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes glyph-plasma-rose {
+  0%,
+  24% {
+    opacity: calc(var(--glyph-alpha) * 0.48);
+    transform: translate(calc(var(--glyph-split) * 0.58), calc(var(--glyph-motion-px) * 0.14));
+  }
+
+  60% {
+    opacity: calc(var(--glyph-alpha) * 0.14);
+    transform: translate(calc(var(--glyph-split) * -0.16), 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes glyph-plasma-stitch {
+  0%,
+  10% {
+    opacity: 0;
+    transform: translateX(-56%);
+  }
+
+  34% {
+    opacity: calc(var(--glyph-flash-alpha) * 0.5);
+  }
+
+  58% {
+    opacity: calc(var(--glyph-flash-alpha) * 0.16);
+    transform: translateX(56%);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(82%);
   }
 }
 
@@ -4321,6 +5137,49 @@ body[data-effect="velvet-smoke"] .caret-glow {
   }
 }
 
+@keyframes orbit-core-local {
+  0% {
+    opacity: 0;
+    transform: rotate(-22deg) scale(0.28, 0.2);
+  }
+
+  28% {
+    opacity: var(--feedback-opacity);
+    transform: rotate(18deg) scale(var(--core-scale), 0.82);
+  }
+
+  58% {
+    opacity: calc(var(--feedback-opacity) * 0.5);
+    transform: rotate(68deg) scale(1.08, 0.72);
+  }
+
+  100% {
+    opacity: 0;
+    transform: rotate(128deg) scale(1.55, 0.42);
+  }
+}
+
+@keyframes orbit-particle-local {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.2) rotate(0deg);
+  }
+
+  18% {
+    opacity: var(--particle-alpha);
+  }
+
+  58% {
+    opacity: calc(var(--particle-alpha) * 0.72);
+    transform: translate(calc(var(--x) * 0.58), calc(var(--y) * 0.4)) scale(0.9) rotate(calc(var(--spin) * 0.5));
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(var(--x), var(--y)) scale(0.36) rotate(var(--spin));
+  }
+}
+
 @keyframes firefly-core-local {
   0% {
     opacity: 0;
@@ -4405,6 +5264,44 @@ body[data-effect="velvet-smoke"] .caret-glow {
   }
 }
 
+@keyframes origami-core-local {
+  0% {
+    opacity: var(--feedback-opacity);
+    transform: scale(0.36, 0.72) rotate(-28deg) skewY(-8deg);
+  }
+
+  34% {
+    opacity: var(--feedback-opacity);
+    transform: scale(var(--core-scale), 0.96) rotate(9deg) skewX(5deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(0.62) translate(-3px, -3px) rotate(42deg) skewX(0deg);
+  }
+}
+
+@keyframes origami-facet-local {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.22, 0.7) rotate(0deg);
+  }
+
+  22% {
+    opacity: var(--particle-alpha);
+  }
+
+  62% {
+    opacity: calc(var(--particle-alpha) * 0.42);
+    transform: translate(calc(var(--x) * 0.62), calc(var(--y) * 0.52)) scale(0.92, 0.7) rotate(calc(var(--spin) * 0.6));
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(var(--x), var(--y)) scale(0.24) rotate(var(--spin));
+  }
+}
+
 @keyframes rain-core-local {
   0% {
     opacity: 0;
@@ -4468,6 +5365,267 @@ body[data-effect="velvet-smoke"] .caret-glow {
   100% {
     opacity: 0;
     transform: translate(var(--x), var(--y)) scale(1.8);
+  }
+}
+
+@keyframes comet-core-local {
+  0% {
+    opacity: var(--feedback-opacity);
+    transform: rotate(-28deg) scaleX(0.22);
+  }
+
+  20% {
+    opacity: var(--feedback-opacity);
+    transform: rotate(-28deg) scaleX(var(--core-scale)) translateX(2px);
+  }
+
+  54% {
+    opacity: calc(var(--feedback-opacity) * 0.46);
+    transform: rotate(-28deg) scaleX(0.72) translate(7px, -2px);
+  }
+
+  100% {
+    opacity: 0;
+    transform: rotate(-28deg) scaleX(0.22) translate(13px, -5px);
+  }
+}
+
+@keyframes comet-streak-local {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scaleX(0.28) rotate(-28deg);
+  }
+
+  14% {
+    opacity: var(--particle-alpha);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(var(--x), var(--y)) scaleX(1.35) rotate(calc(var(--spin) - 28deg));
+  }
+}
+
+@keyframes laser-core-local {
+  0% {
+    opacity: var(--feedback-opacity);
+    transform: rotate(-13deg) scaleX(0.08);
+  }
+
+  18% {
+    opacity: var(--feedback-opacity);
+    transform: rotate(-13deg) scaleX(var(--core-scale));
+  }
+
+  100% {
+    opacity: 0;
+    transform: rotate(-13deg) scaleX(0.24) translateX(10px);
+  }
+}
+
+@keyframes laser-chip-local {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scaleX(0.2) rotate(-13deg);
+  }
+
+  12% {
+    opacity: var(--particle-alpha);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(var(--x), var(--y)) scaleX(0.65) rotate(var(--spin));
+  }
+}
+
+@keyframes keycap-core-local {
+  0% {
+    opacity: var(--feedback-opacity);
+    transform: translateY(2px) scale(0.8, 0.72);
+  }
+
+  32% {
+    opacity: var(--feedback-opacity);
+    transform: translateY(-1px) scale(var(--core-scale), 1.02);
+  }
+
+  58% {
+    opacity: calc(var(--feedback-opacity) * 0.52);
+    transform: translateY(1px) scale(0.94, 0.9);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.78);
+  }
+}
+
+@keyframes keycap-chip-local {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.4) rotate(0deg);
+  }
+
+  20% {
+    opacity: var(--particle-alpha);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(var(--x), var(--y)) scale(0.36) rotate(var(--spin));
+  }
+}
+
+@keyframes magnetic-core-local {
+  0% {
+    opacity: 0;
+    transform: scaleX(0.32);
+  }
+
+  24% {
+    opacity: var(--feedback-opacity);
+    transform: scaleX(var(--core-scale));
+  }
+
+  52% {
+    opacity: calc(var(--feedback-opacity) * 0.48);
+    transform: scaleX(0.72) rotate(5deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scaleX(0.28) rotate(-5deg);
+  }
+}
+
+@keyframes magnetic-needle-local {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scaleX(0.2) rotate(0deg);
+  }
+
+  16% {
+    opacity: var(--particle-alpha);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(var(--x), var(--y)) scaleX(0.5) rotate(var(--spin));
+  }
+}
+
+@keyframes mosaic-core-local {
+  0% {
+    opacity: var(--feedback-opacity);
+    transform: scale(0.58) rotate(0deg);
+  }
+
+  24% {
+    opacity: var(--feedback-opacity);
+    transform: scale(var(--core-scale)) rotate(4deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(0.42) rotate(-8deg);
+  }
+}
+
+@keyframes mosaic-tile-local {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.72) rotate(0deg);
+  }
+
+  12% {
+    opacity: var(--particle-alpha);
+  }
+
+  64% {
+    opacity: calc(var(--particle-alpha) * 0.64);
+    transform: translate(calc(var(--x) * 0.72), calc(var(--y) * 0.72)) scale(0.88) rotate(calc(var(--spin) * 0.5));
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(var(--x), var(--y)) scale(0.28) rotate(var(--spin));
+  }
+}
+
+@keyframes ripple-core-local {
+  0% {
+    opacity: 0;
+    transform: scale(0.42, 0.3);
+  }
+
+  30% {
+    opacity: var(--feedback-opacity);
+    transform: scale(var(--core-scale), 0.92);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.7, 1.18);
+  }
+}
+
+@keyframes ripple-drop-local {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.24);
+  }
+
+  22% {
+    opacity: var(--particle-alpha);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(var(--x), var(--y)) scale(1.2);
+  }
+}
+
+@keyframes plasma-core-local {
+  0% {
+    opacity: 0;
+    transform: scaleX(0.18) skewX(-12deg);
+  }
+
+  22% {
+    opacity: var(--feedback-opacity);
+    transform: scaleX(var(--core-scale)) skewX(8deg);
+  }
+
+  56% {
+    opacity: calc(var(--feedback-opacity) * 0.5);
+    transform: scaleX(0.82) skewX(-5deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scaleX(0.18) skewX(0deg);
+  }
+}
+
+@keyframes plasma-thread-local {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scaleX(0.2) rotate(0deg);
+  }
+
+  14% {
+    opacity: var(--particle-alpha);
+  }
+
+  58% {
+    opacity: calc(var(--particle-alpha) * 0.58);
+    transform: translate(calc(var(--x) * 0.6), calc(var(--y) * 0.6)) scaleX(1.1) rotate(calc(var(--spin) * 0.45));
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(var(--x), var(--y)) scaleX(0.42) rotate(var(--spin));
   }
 }
 

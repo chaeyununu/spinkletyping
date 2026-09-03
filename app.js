@@ -314,8 +314,8 @@ const EFFECT_PRESETS = {
     particles: 7,
     life: 680,
     core: 1.12,
-    spread: 43.5,
-    lift: 7.7,
+    spread: 26.5,
+    lift: 4.2,
     glyphX: -0.42,
     glyphY: 0.18,
     glyphScale: 1.018,
@@ -326,49 +326,49 @@ const EFFECT_PRESETS = {
     aura: "rgba(110, 222, 234, 0.22)"
   },
   "firefly-glow": {
-    label: "Firefly Glow",
-    description: "Warm tiny lights blink near the caret and drift upward like a quiet study lamp.",
-    particles: 7,
-    life: 780,
-    core: 1.04,
-    spread: 35.2,
-    lift: 15.4,
-    glyphX: -0.27,
-    glyphY: 0.54,
-    glyphScale: 1.016,
-    glyphRotate: 0.18,
-    special: 0.24,
-    primary: "#d8b94c",
-    secondary: "#8fcf8d",
-    aura: "rgba(216, 185, 76, 0.2)"
+    label: "Orbit Pulse",
+    description: "Tiny orbital rings and satellite dots snap around the newest glyph.",
+    particles: 8,
+    life: 650,
+    core: 1.16,
+    spread: 22.4,
+    lift: 2.2,
+    glyphX: 0.54,
+    glyphY: -0.18,
+    glyphScale: 1.014,
+    glyphRotate: 0.42,
+    special: 0.27,
+    primary: "#55e6b5",
+    secondary: "#8ea1ff",
+    aura: "rgba(85, 230, 181, 0.22)"
   },
   "petal-bloom": {
-    label: "Petal Bloom",
-    description: "Soft petals open from the typed character with a light rose-and-sage bounce.",
+    label: "Origami Fold",
+    description: "Folded paper facets flip open with a crisp little hinge bounce.",
     particles: 8,
-    life: 720,
-    core: 1.18,
-    spread: 38.5,
-    lift: 10.5,
-    glyphX: -0.36,
-    glyphY: 1.08,
-    glyphScale: 1.032,
-    glyphRotate: -0.42,
-    special: 0.23,
-    primary: "#e9a4b6",
-    secondary: "#9fc3a2",
-    aura: "rgba(233, 164, 182, 0.2)"
+    life: 620,
+    core: 1.2,
+    spread: 20.8,
+    lift: 2.8,
+    glyphX: -0.72,
+    glyphY: 0.54,
+    glyphScale: 1.028,
+    glyphRotate: -0.84,
+    special: 0.25,
+    primary: "#8aa7ff",
+    secondary: "#ffc36f",
+    aura: "rgba(138, 167, 255, 0.2)"
   },
   "neon-rain": {
     label: "Neon Rain",
-    description: "Thin luminous drops scan past the glyph, crisp but still small and local.",
+    description: "Thin luminous drops scan directly through the typed glyph, tight and tactile.",
     particles: 8,
-    life: 430,
+    life: 360,
     core: 1.22,
-    spread: 34.8,
-    lift: -1.4,
-    glyphX: 1.35,
-    glyphY: -0.27,
+    spread: 13.8,
+    lift: 0.4,
+    glyphX: 0.3,
+    glyphY: 1.28,
     glyphScale: 1.01,
     glyphRotate: 0.12,
     special: 0.28,
@@ -382,8 +382,8 @@ const EFFECT_PRESETS = {
     particles: 6,
     life: 820,
     core: 1.08,
-    spread: 28.8,
-    lift: 6.3,
+    spread: 18.8,
+    lift: 3.8,
     glyphX: -0.54,
     glyphY: 0.9,
     glyphScale: 1.018,
@@ -394,21 +394,123 @@ const EFFECT_PRESETS = {
     aura: "rgba(141, 128, 146, 0.16)"
   },
   "ember-glow": {
-    label: "Ember Glow",
-    description: "A gentle amber flash with tiny ember sparks that lift away and fade fast.",
+    label: "Comet Tail",
+    description: "A bright diagonal comet slash pulls a short warm tail off the glyph.",
+    particles: 8,
+    life: 520,
+    core: 1.34,
+    spread: 24.6,
+    lift: 4.2,
+    glyphX: 1.08,
+    glyphY: -0.72,
+    glyphScale: 1.022,
+    glyphRotate: 0.9,
+    special: 0.3,
+    primary: "#ff9b5c",
+    secondary: "#7de7ff",
+    aura: "rgba(255, 155, 92, 0.23)"
+  },
+  "laser-etch": {
+    label: "Laser Etch",
+    description: "A razor-thin laser line engraves through the glyph with tiny hot chips.",
+    particles: 7,
+    life: 420,
+    core: 1.16,
+    spread: 18.5,
+    lift: 0.6,
+    glyphX: 0.95,
+    glyphY: -0.2,
+    glyphScale: 1.01,
+    glyphRotate: -0.72,
+    special: 0.29,
+    primary: "#ff5a57",
+    secondary: "#ffe46b",
+    aura: "rgba(255, 90, 87, 0.24)"
+  },
+  "keycap-pop": {
+    label: "Keycap Pop",
+    description: "A tiny keycap frame compresses around the character and rebounds.",
+    particles: 6,
+    life: 520,
+    core: 1.24,
+    spread: 16.5,
+    lift: 1.2,
+    glyphX: 0,
+    glyphY: 1.05,
+    glyphScale: 1.048,
+    glyphRotate: 0.05,
+    special: 0.2,
+    primary: "#7fb3a6",
+    secondary: "#ffb86f",
+    aura: "rgba(127, 179, 166, 0.18)"
+  },
+  "magnetic-flip": {
+    label: "Magnetic Flip",
+    description: "Two colored poles tug the glyph sideways before it snaps back.",
+    particles: 8,
+    life: 460,
+    core: 1.18,
+    spread: 21,
+    lift: 0,
+    glyphX: 1.2,
+    glyphY: 0,
+    glyphScale: 1.012,
+    glyphRotate: 1.2,
+    special: 0.26,
+    primary: "#e85d75",
+    secondary: "#3dd6c6",
+    aura: "rgba(232, 93, 117, 0.22)"
+  },
+  "mosaic-shift": {
+    label: "Mosaic Shift",
+    description: "Tiny colored tiles click out of the glyph and slot back into place.",
+    particles: 9,
+    life: 500,
+    core: 1.1,
+    spread: 18,
+    lift: 1,
+    glyphX: -0.85,
+    glyphY: 0.4,
+    glyphScale: 1.018,
+    glyphRotate: -0.4,
+    special: 0.25,
+    primary: "#4fa3ff",
+    secondary: "#ffca5f",
+    aura: "rgba(79, 163, 255, 0.2)"
+  },
+  "ripple-lens": {
+    label: "Ripple Lens",
+    description: "A glassy lens ripple bends the character locally like a clear drop.",
+    particles: 6,
+    life: 680,
+    core: 1.28,
+    spread: 17,
+    lift: 2,
+    glyphX: -0.28,
+    glyphY: 0.42,
+    glyphScale: 1.032,
+    glyphRotate: 0.12,
+    special: 0.18,
+    primary: "#75d0da",
+    secondary: "#f4d3ff",
+    aura: "rgba(117, 208, 218, 0.18)"
+  },
+  "plasma-thread": {
+    label: "Plasma Thread",
+    description: "Fine luminous threads stitch across the new glyph, then recoil.",
     particles: 8,
     life: 560,
-    core: 1.26,
-    spread: 37.2,
-    lift: 12.6,
-    glyphX: 0.54,
-    glyphY: -0.36,
-    glyphScale: 1.02,
-    glyphRotate: 0.36,
-    special: 0.27,
-    primary: "#ee9f63",
-    secondary: "#ffe08a",
-    aura: "rgba(238, 159, 99, 0.21)"
+    core: 1.12,
+    spread: 23,
+    lift: 2,
+    glyphX: 1,
+    glyphY: -0.35,
+    glyphScale: 1.012,
+    glyphRotate: 0.56,
+    special: 0.28,
+    primary: "#39d3ff",
+    secondary: "#ff7f9f",
+    aura: "rgba(57, 211, 255, 0.23)"
   }
 };
 
@@ -643,38 +745,38 @@ const GLYPH_EFFECT_PROFILES = {
     alt: "#c7a8ff"
   },
   "firefly-glow": {
-    duration: 520,
-    impact: 0.32,
-    echoDuration: 170,
-    echo: 0.2,
-    motion: 0.34,
-    split: 0.34,
-    scale: 0.86,
-    rotate: 0.08,
-    glow: 1.1,
-    flash: 0.7,
-    alpha: 0.64,
-    blur: 0.08,
-    hot: "#fff7cf",
-    accent: "#d8b94c",
-    alt: "#8fcf8d"
+    duration: 360,
+    impact: 0.72,
+    echoDuration: 120,
+    echo: 0.22,
+    motion: 0.72,
+    split: 0.56,
+    scale: 0.72,
+    rotate: 0.42,
+    glow: 1.15,
+    flash: 0.76,
+    alpha: 0.68,
+    blur: 0.03,
+    hot: "#ecfff7",
+    accent: "#55e6b5",
+    alt: "#8ea1ff"
   },
   "petal-bloom": {
-    duration: 450,
-    impact: 0.58,
-    echoDuration: 125,
-    echo: 0.13,
-    motion: 0.72,
-    split: 0.24,
-    scale: 1.15,
-    rotate: 0.36,
-    glow: 0.72,
-    flash: 0.72,
-    alpha: 0.66,
-    blur: 0.05,
-    hot: "#fff2f6",
-    accent: "#e9a4b6",
-    alt: "#9fc3a2"
+    duration: 300,
+    impact: 0.86,
+    echoDuration: 100,
+    echo: 0.14,
+    motion: 0.95,
+    split: 0.48,
+    scale: 0.88,
+    rotate: 0.7,
+    glow: 0.7,
+    flash: 0.78,
+    alpha: 0.7,
+    blur: 0.02,
+    hot: "#f7f9ff",
+    accent: "#8aa7ff",
+    alt: "#ffc36f"
   },
   "neon-rain": {
     duration: 185,
@@ -711,22 +813,166 @@ const GLYPH_EFFECT_PROFILES = {
     alt: "#d7c7da"
   },
   "ember-glow": {
-    duration: 320,
-    impact: 0.8,
-    echoDuration: 100,
+    duration: 240,
+    impact: 1.05,
+    echoDuration: 90,
     echo: 0.14,
-    motion: 1.05,
-    split: 0.38,
-    scale: 0.72,
-    rotate: 0.42,
-    glow: 1.18,
-    flash: 0.88,
-    alpha: 0.74,
-    blur: 0.06,
-    hot: "#fff1ca",
-    accent: "#ee9f63",
-    alt: "#ffe08a"
+    motion: 1.35,
+    split: 0.46,
+    scale: 0.48,
+    rotate: 0.72,
+    glow: 1.3,
+    flash: 0.9,
+    alpha: 0.78,
+    blur: 0.02,
+    hot: "#fff5db",
+    accent: "#ff9b5c",
+    alt: "#7de7ff"
+  },
+  "laser-etch": {
+    duration: 170,
+    impact: 1.1,
+    echoDuration: 78,
+    echo: 0.18,
+    motion: 1.42,
+    split: 0.9,
+    scale: 0.28,
+    rotate: 0.8,
+    glow: 1.4,
+    flash: 0.95,
+    alpha: 0.82,
+    blur: 0,
+    hot: "#fff8e2",
+    accent: "#ff5a57",
+    alt: "#ffe46b"
+  },
+  "keycap-pop": {
+    duration: 280,
+    impact: 0.95,
+    echoDuration: 92,
+    echo: 0.12,
+    motion: 1,
+    split: 0.16,
+    scale: 1.2,
+    rotate: 0.08,
+    glow: 0.42,
+    flash: 0.7,
+    alpha: 0.65,
+    blur: 0.02,
+    hot: "#f8fff9",
+    accent: "#7fb3a6",
+    alt: "#ffb86f"
+  },
+  "magnetic-flip": {
+    duration: 240,
+    impact: 1,
+    echoDuration: 96,
+    echo: 0.2,
+    motion: 1.6,
+    split: 1.1,
+    scale: 0.4,
+    rotate: 1.2,
+    glow: 1,
+    flash: 0.8,
+    alpha: 0.72,
+    blur: 0.01,
+    hot: "#fff7fa",
+    accent: "#e85d75",
+    alt: "#3dd6c6"
+  },
+  "mosaic-shift": {
+    duration: 220,
+    impact: 0.95,
+    echoDuration: 84,
+    echo: 0.2,
+    motion: 1.1,
+    split: 1.2,
+    scale: 0.3,
+    rotate: 0.45,
+    glow: 0.75,
+    flash: 0.78,
+    alpha: 0.78,
+    blur: 0,
+    hot: "#f4fbff",
+    accent: "#4fa3ff",
+    alt: "#ffca5f"
+  },
+  "ripple-lens": {
+    duration: 420,
+    impact: 0.5,
+    echoDuration: 132,
+    echo: 0.2,
+    motion: 0.45,
+    split: 0.3,
+    scale: 0.9,
+    rotate: 0.1,
+    glow: 0.8,
+    flash: 0.5,
+    alpha: 0.58,
+    blur: 0.08,
+    hot: "#f7ffff",
+    accent: "#75d0da",
+    alt: "#f4d3ff"
+  },
+  "plasma-thread": {
+    duration: 230,
+    impact: 1.15,
+    echoDuration: 88,
+    echo: 0.18,
+    motion: 1.25,
+    split: 0.85,
+    scale: 0.35,
+    rotate: 0.65,
+    glow: 1.5,
+    flash: 0.9,
+    alpha: 0.82,
+    blur: 0.02,
+    hot: "#f3fdff",
+    accent: "#39d3ff",
+    alt: "#ff7f9f"
   }
+};
+
+const GLYPH_JOLT_PRESETS = {
+  "soft-spark": { x: -0.55, y: 0.85, rotate: 0.7, scale: 1.028, strength: 0.72, life: 150, recoil: [-0.32, -0.2], kick: [0.1, 0.06], settle: [-0.02, -0.03] },
+  "cyber-pink": { x: 2.4, y: -0.35, rotate: 0.2, scale: 1.006, strength: 1.05, life: 110, recoil: [-0.55, 0.15], kick: [0.28, -0.08], settle: [-0.08, 0] },
+  "candy-pop": { x: -0.25, y: 1.35, rotate: -0.45, scale: 1.075, strength: 0.85, life: 180, recoil: [-0.15, -0.72], kick: [0.06, 0.22], settle: [0, -0.04] },
+  electric: { x: 2.2, y: -1.15, rotate: 1.1, scale: 1.018, strength: 1.25, life: 105, recoil: [-0.72, 0.65], kick: [0.42, -0.25], settle: [-0.12, 0.06] },
+  "star-dust": { x: -0.3, y: -1.05, rotate: 0.35, scale: 1.03, strength: 0.7, life: 210, recoil: [-0.18, 0.22], kick: [0.06, -0.1], settle: [0, -0.04] },
+  ink: { x: -0.35, y: 1.55, rotate: -0.35, scale: 1.042, strength: 0.78, life: 175, recoil: [0.05, -0.36], kick: [-0.03, 0.1], settle: [0, 0.03] },
+  bubble: { x: 0.15, y: 1.1, rotate: 0.22, scale: 1.055, strength: 0.72, life: 205, recoil: [-0.08, -0.65], kick: [0, 0.28], settle: [0, -0.04] },
+  pixel: { x: 1.6, y: -0.75, rotate: 0, scale: 1.006, strength: 1, life: 115, recoil: [-1, 0.65], kick: [0.55, -0.28], settle: [-0.18, 0.08] },
+  "crystal-glass": { x: -0.42, y: 0.22, rotate: 0.28, scale: 1.022, strength: 0.55, life: 145, recoil: [-0.12, -0.1], kick: [0.05, 0.03], settle: [0, 0] },
+  constellation: { x: -0.5, y: -0.7, rotate: -0.2, scale: 1.018, strength: 0.65, life: 190, recoil: [0.12, 0.24], kick: [-0.04, -0.1], settle: [0, -0.02] },
+  "paper-fiber": { x: 1.15, y: 0.35, rotate: -0.45, scale: 1.01, strength: 0.64, life: 135, recoil: [-0.55, -0.2], kick: [0.22, 0.08], settle: [-0.08, 0.02] },
+  "moon-pearl": { x: -0.3, y: -0.45, rotate: 0.18, scale: 1.032, strength: 0.62, life: 210, recoil: [0.1, 0.24], kick: [-0.04, -0.1], settle: [0, -0.03] },
+  "aurora-veil": { x: -0.85, y: -0.15, rotate: -0.18, scale: 1.026, strength: 0.72, life: 220, recoil: [0.22, -0.16], kick: [-0.12, 0.05], settle: [0.04, 0] },
+  "firefly-glow": { x: 0.55, y: -0.3, rotate: 0.85, scale: 1.03, strength: 0.82, life: 210, recoil: [-0.34, 0.22], kick: [0.16, -0.18], settle: [0.02, -0.02] },
+  "petal-bloom": { x: -0.9, y: 0.5, rotate: -1.15, scale: 1.045, strength: 0.88, life: 165, recoil: [0.38, -0.42], kick: [-0.16, 0.18], settle: [0.05, -0.02] },
+  "neon-rain": { x: 0.25, y: 1.55, rotate: 0.12, scale: 1.008, strength: 1, life: 120, recoil: [-0.12, -0.85], kick: [0.2, 0.44], settle: [-0.06, 0.12] },
+  "velvet-smoke": { x: -0.42, y: 0.72, rotate: -0.18, scale: 1.024, strength: 0.55, life: 240, recoil: [0.08, -0.18], kick: [-0.04, 0.08], settle: [-0.02, -0.02] },
+  "ember-glow": { x: 1.35, y: -0.95, rotate: 0.88, scale: 1.03, strength: 0.95, life: 135, recoil: [-0.48, 0.38], kick: [0.2, -0.16], settle: [-0.05, 0.04] },
+  "laser-etch": { x: 1.65, y: -0.36, rotate: -0.95, scale: 1.012, strength: 1.08, life: 112, recoil: [-0.5, 0.24], kick: [0.28, -0.1], settle: [-0.08, 0.02] },
+  "keycap-pop": { x: 0, y: 1.35, rotate: 0.04, scale: 1.075, strength: 0.92, life: 178, recoil: [0, -0.62], kick: [0, 0.2], settle: [0, -0.04] },
+  "magnetic-flip": { x: 1.45, y: 0.04, rotate: 1.28, scale: 1.016, strength: 0.98, life: 138, recoil: [-0.72, 0], kick: [0.36, 0], settle: [-0.08, 0] },
+  "mosaic-shift": { x: -1.05, y: 0.45, rotate: -0.38, scale: 1.018, strength: 0.92, life: 128, recoil: [-0.46, -0.35], kick: [0.32, 0.2], settle: [-0.1, 0.06] },
+  "ripple-lens": { x: -0.28, y: 0.5, rotate: 0.1, scale: 1.045, strength: 0.58, life: 225, recoil: [0.08, -0.36], kick: [-0.02, 0.16], settle: [0, -0.03] },
+  "plasma-thread": { x: 1.25, y: -0.45, rotate: 0.62, scale: 1.014, strength: 1.08, life: 122, recoil: [-0.62, 0.44], kick: [0.35, -0.2], settle: [-0.08, 0.04] }
+};
+
+const EFFECT_LOCALITY_PRESETS = {
+  "aurora-veil": { originX: 0.52, originY: 0.53, particleBase: 4, spreadScale: 0.42, liftScale: 0.42, xScale: 0.92, yScale: 0.56, coreStarScale: 0.55 },
+  "firefly-glow": { originX: 0.5, originY: 0.52, particleBase: 4, spreadScale: 0.42, liftScale: 0.35, xScale: 0.82, yScale: 0.5, coreStarScale: 0.5 },
+  "petal-bloom": { originX: 0.5, originY: 0.54, particleBase: 4, spreadScale: 0.38, liftScale: 0.36, xScale: 0.82, yScale: 0.54, coreStarScale: 0.5 },
+  "neon-rain": { originX: 0.52, originY: 0.5, particleBase: 2, spreadScale: 0.18, liftScale: 0.08, xScale: 0.35, yScale: 0.52, coreStarScale: 0.36, maxDomParticles: 10 },
+  "velvet-smoke": { originX: 0.5, originY: 0.54, particleBase: 3, spreadScale: 0.34, liftScale: 0.35, xScale: 0.72, yScale: 0.56, coreStarScale: 0.42, maxDomParticles: 10 },
+  "ember-glow": { originX: 0.54, originY: 0.5, particleBase: 3, spreadScale: 0.34, liftScale: 0.3, xScale: 0.88, yScale: 0.48, coreStarScale: 0.48 },
+  "laser-etch": { originX: 0.52, originY: 0.5, particleBase: 2, spreadScale: 0.32, liftScale: 0.08, xScale: 0.9, yScale: 0.38, coreStarScale: 0.42, maxDomParticles: 10 },
+  "keycap-pop": { originX: 0.5, originY: 0.56, particleBase: 3, spreadScale: 0.34, liftScale: 0.2, xScale: 0.72, yScale: 0.5, coreStarScale: 0.44, maxDomParticles: 9 },
+  "magnetic-flip": { originX: 0.5, originY: 0.52, particleBase: 3, spreadScale: 0.4, liftScale: 0.12, xScale: 0.95, yScale: 0.34, coreStarScale: 0.42, maxDomParticles: 11 },
+  "mosaic-shift": { originX: 0.5, originY: 0.53, particleBase: 3, spreadScale: 0.34, liftScale: 0.18, xScale: 0.78, yScale: 0.5, coreStarScale: 0.4, maxDomParticles: 12 },
+  "ripple-lens": { originX: 0.5, originY: 0.54, particleBase: 3, spreadScale: 0.32, liftScale: 0.25, xScale: 0.68, yScale: 0.5, coreStarScale: 0.38, maxDomParticles: 9 },
+  "plasma-thread": { originX: 0.52, originY: 0.5, particleBase: 3, spreadScale: 0.38, liftScale: 0.18, xScale: 0.95, yScale: 0.42, coreStarScale: 0.42, maxDomParticles: 11 }
 };
 
 const SOUND_PACKS = {
@@ -2452,6 +2698,21 @@ function hexToRgba(hex, alpha) {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
+function roundedRectPath(ctx, x, y, w, h, r) {
+  const radius = Math.min(r, Math.abs(w) / 2, Math.abs(h) / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + w - radius, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + radius);
+  ctx.lineTo(x + w, y + h - radius);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - radius, y + h);
+  ctx.lineTo(x + radius, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
+}
+
 function drawFxShape(ctx, p, s) {
   switch (p.shape) {
     case "star8":
@@ -2568,6 +2829,55 @@ function drawFxShape(ctx, p, s) {
       ctx.strokeStyle = p.colorA;
       ctx.stroke();
       break;
+    case "lens": {
+      const lg = ctx.createRadialGradient(-s * 0.16, -s * 0.18, 0, 0, 0, Math.max(s * 0.56, 0.5));
+      lg.addColorStop(0, "rgba(255,255,255,0.7)");
+      lg.addColorStop(0.34, hexToRgba(p.colorA, 0.2));
+      lg.addColorStop(1, "rgba(255,255,255,0)");
+      ctx.beginPath();
+      ctx.ellipse(0, 0, s * 0.52, s * 0.38, 0, 0, Math.PI * 2);
+      ctx.fillStyle = lg;
+      ctx.fill();
+      ctx.lineWidth = Math.max(0.6, s * 0.035);
+      ctx.strokeStyle = hexToRgba(p.colorB || p.colorA, 0.68);
+      ctx.stroke();
+      ctx.globalAlpha *= 0.46;
+      ctx.beginPath();
+      ctx.arc(-s * 0.18, -s * 0.14, s * 0.08, 0, Math.PI * 2);
+      ctx.fillStyle = "#ffffff";
+      ctx.fill();
+      break;
+    }
+    case "orbit": {
+      const extra = p.extra || {};
+      const start = extra.start ?? -Math.PI * 0.34;
+      const end = extra.end ?? start + Math.PI * 1.42;
+      const og = ctx.createLinearGradient(-s / 2, -s * 0.16, s / 2, s * 0.16);
+      og.addColorStop(0, "transparent");
+      og.addColorStop(0.22, p.colorA);
+      og.addColorStop(0.72, p.colorB || p.colorA);
+      og.addColorStop(1, "transparent");
+      ctx.lineCap = "round";
+      ctx.lineWidth = Math.max(0.75, s * 0.055);
+      ctx.strokeStyle = og;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, s * 0.5, s * 0.24, 0, start, end);
+      ctx.stroke();
+      if (extra.satellite) {
+        const sx = Math.cos(end) * s * 0.5;
+        const sy = Math.sin(end) * s * 0.24;
+        const satR = Math.max(1, s * 0.09);
+        const sat = ctx.createRadialGradient(sx - satR * 0.3, sy - satR * 0.35, 0, sx, sy, satR * 1.4);
+        sat.addColorStop(0, "#ffffff");
+        sat.addColorStop(0.46, p.colorB || p.colorA);
+        sat.addColorStop(1, "transparent");
+        ctx.beginPath();
+        ctx.arc(sx, sy, satR, 0, Math.PI * 2);
+        ctx.fillStyle = sat;
+        ctx.fill();
+      }
+      break;
+    }
     case "fiber":
       ctx.strokeStyle = p.colorA;
       ctx.lineWidth = Math.max(0.6, s * 0.16);
@@ -2632,6 +2942,116 @@ function drawFxShape(ctx, p, s) {
       ctx.stroke();
       break;
     }
+    case "fold": {
+      const w = s * 0.95;
+      const h = s * 0.78;
+      const fg = ctx.createLinearGradient(-w / 2, -h / 2, w / 2, h / 2);
+      fg.addColorStop(0, "#ffffff");
+      fg.addColorStop(0.46, p.colorA);
+      fg.addColorStop(1, p.colorB || p.colorA);
+      ctx.beginPath();
+      ctx.moveTo(-w * 0.5, -h * 0.12);
+      ctx.lineTo(-w * 0.08, -h * 0.52);
+      ctx.lineTo(w * 0.5, -h * 0.02);
+      ctx.lineTo(-w * 0.02, h * 0.52);
+      ctx.closePath();
+      ctx.fillStyle = fg;
+      ctx.fill();
+      ctx.globalAlpha *= 0.42;
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = Math.max(0.45, s * 0.035);
+      ctx.beginPath();
+      ctx.moveTo(-w * 0.08, -h * 0.48);
+      ctx.lineTo(-w * 0.02, h * 0.48);
+      ctx.moveTo(-w * 0.42, -h * 0.08);
+      ctx.lineTo(w * 0.36, -h * 0.02);
+      ctx.stroke();
+      break;
+    }
+    case "keycap": {
+      const w = s * 1.08;
+      const h = s * 0.78;
+      const kg = ctx.createLinearGradient(0, -h / 2, 0, h / 2);
+      kg.addColorStop(0, "#ffffff");
+      kg.addColorStop(0.42, p.colorA);
+      kg.addColorStop(1, p.colorB || p.colorA);
+      roundedRectPath(ctx, -w / 2, -h / 2, w, h, Math.max(2, s * 0.18));
+      ctx.fillStyle = kg;
+      ctx.fill();
+      ctx.lineWidth = Math.max(0.7, s * 0.05);
+      ctx.strokeStyle = "rgba(255,255,255,0.78)";
+      ctx.stroke();
+      ctx.globalAlpha *= 0.4;
+      roundedRectPath(ctx, -w * 0.34, -h * 0.25, w * 0.68, h * 0.46, Math.max(1, s * 0.1));
+      ctx.strokeStyle = hexToRgba(p.colorA, 0.65);
+      ctx.stroke();
+      break;
+    }
+    case "needle": {
+      const w = s * 1.05;
+      const h = Math.max(2, s * 0.24);
+      const ng = ctx.createLinearGradient(-w / 2, 0, w / 2, 0);
+      ng.addColorStop(0, p.colorA);
+      ng.addColorStop(0.5, "#ffffff");
+      ng.addColorStop(1, p.colorB || p.colorA);
+      ctx.beginPath();
+      ctx.moveTo(-w / 2, 0);
+      ctx.lineTo(-w * 0.08, -h / 2);
+      ctx.lineTo(w / 2, 0);
+      ctx.lineTo(-w * 0.08, h / 2);
+      ctx.closePath();
+      ctx.fillStyle = ng;
+      ctx.fill();
+      break;
+    }
+    case "tile": {
+      const w = s * 0.82;
+      const tg = ctx.createLinearGradient(-w / 2, -w / 2, w / 2, w / 2);
+      tg.addColorStop(0, "#ffffff");
+      tg.addColorStop(0.34, p.colorA);
+      tg.addColorStop(1, p.colorB || p.colorA);
+      roundedRectPath(ctx, -w / 2, -w / 2, w, w, Math.max(1, s * 0.08));
+      ctx.fillStyle = tg;
+      ctx.fill();
+      ctx.globalAlpha *= 0.38;
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(-w * 0.36, -w * 0.36, w * 0.72, Math.max(0.8, w * 0.08));
+      break;
+    }
+    case "laser": {
+      const w = s * 1.7;
+      const h = Math.max(1, s * 0.1);
+      const lg = ctx.createLinearGradient(-w / 2, 0, w / 2, 0);
+      lg.addColorStop(0, "transparent");
+      lg.addColorStop(0.22, p.colorA);
+      lg.addColorStop(0.5, "#ffffff");
+      lg.addColorStop(0.78, p.colorB || p.colorA);
+      lg.addColorStop(1, "transparent");
+      ctx.fillStyle = lg;
+      ctx.fillRect(-w / 2, -h / 2, w, h);
+      ctx.globalAlpha *= 0.58;
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(-w * 0.12, -h * 1.1, w * 0.24, h * 2.2);
+      break;
+    }
+    case "plasma": {
+      const w = s * 1.55;
+      const h = Math.max(2, s * 0.32);
+      const pg = ctx.createLinearGradient(-w / 2, 0, w / 2, 0);
+      pg.addColorStop(0, "transparent");
+      pg.addColorStop(0.2, p.colorA);
+      pg.addColorStop(0.5, "#ffffff");
+      pg.addColorStop(0.8, p.colorB || p.colorA);
+      pg.addColorStop(1, "transparent");
+      ctx.lineCap = "round";
+      ctx.lineWidth = Math.max(0.9, s * 0.08);
+      ctx.strokeStyle = pg;
+      ctx.beginPath();
+      ctx.moveTo(-w / 2, 0);
+      ctx.bezierCurveTo(-w * 0.24, -h, w * 0.18, h, w / 2, 0);
+      ctx.stroke();
+      break;
+    }
     case "streak": {
       const w = Math.max(1.2, s * 0.16);
       const h = s * 1.45;
@@ -2658,6 +3078,29 @@ function drawFxShape(ctx, p, s) {
       ctx.beginPath();
       ctx.arc(-s * 0.18, s * 0.03, s * 0.34, 0, Math.PI * 2);
       ctx.arc(s * 0.22, -s * 0.08, s * 0.28, 0, Math.PI * 2);
+      ctx.fill();
+      break;
+    }
+    case "comet": {
+      const w = s * 1.9;
+      const h = Math.max(2, s * 0.38);
+      const cg = ctx.createLinearGradient(-w / 2, 0, w / 2, 0);
+      cg.addColorStop(0, "transparent");
+      cg.addColorStop(0.28, p.colorA);
+      cg.addColorStop(0.62, "#fff8e8");
+      cg.addColorStop(0.82, p.colorB || p.colorA);
+      cg.addColorStop(1, "transparent");
+      ctx.beginPath();
+      ctx.moveTo(-w * 0.5, -h * 0.08);
+      ctx.bezierCurveTo(-w * 0.18, -h * 0.9, w * 0.38, -h * 0.58, w * 0.5, 0);
+      ctx.bezierCurveTo(w * 0.28, h * 0.58, -w * 0.18, h * 0.72, -w * 0.5, h * 0.08);
+      ctx.closePath();
+      ctx.fillStyle = cg;
+      ctx.fill();
+      ctx.globalAlpha *= 0.58;
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.arc(w * 0.34, 0, Math.max(0.9, h * 0.32), 0, Math.PI * 2);
       ctx.fill();
       break;
     }
@@ -3533,61 +3976,67 @@ function buildFireflyGlowBurst(opts) {
   const now = performance.now();
   addFxParticle({
     start: now,
-    life: fxRand(520, 740) * speedScale,
+    life: fxRand(420, 620) * speedScale,
     x,
     y,
-    vx: 0,
-    vy: -9,
-    size: fxRand(isSpecial ? 18 : 13, isSpecial ? 25 : 18),
-    shape: "dot",
-    colorA: "#fff1a8",
-    colorB: "#8fcf8d",
-    glow: fxGlow(opts, 11),
-    peakAlpha: 0.9,
+    vx: 1.5,
+    vy: -5,
+    size: fxRand(isSpecial ? 34 : 26, isSpecial ? 48 : 36),
+    rotation: fxRand(-14, 14),
+    rotSpeed: fxRand(68, 128),
+    shape: "orbit",
+    colorA: "#55e6b5",
+    colorB: "#8ea1ff",
+    glow: fxGlow(opts, 9),
+    peakAlpha: 0.86,
     sizeKeyframes: [
-      [0, 0.12],
-      [0.16, 1.05],
-      [0.36, 0.72],
-      [0.58, 1.02],
+      [0, 0.18],
+      [0.18, 1.05],
+      [0.58, 0.92],
       [1, 0.36]
     ],
     alphaKeyframes: [
       [0, 0],
-      [0.14, 1],
-      [0.36, 0.42],
-      [0.55, 0.95],
-      [0.74, 0.36],
+      [0.12, 1],
+      [0.46, 0.62],
+      [0.72, 0.28],
       [1, 0]
-    ]
+    ],
+    extra: { start: -Math.PI * 0.2, end: Math.PI * 1.32, satellite: true }
   });
-  const count = clamp(fxCount(9, opts), 6, 14);
+  const count = clamp(fxCount(10, opts), 7, 16);
   for (let i = 0; i < count; i += 1) {
-    const angle = fxRand(-Math.PI * 0.98, -Math.PI * 0.02);
-    const speed = fxRand(18, 52);
-    const twinkleAt = fxRand(0.42, 0.72);
+    const angle = (Math.PI * 2 * i) / count + fxRand(-0.32, 0.32);
+    const tangent = angle + Math.PI / 2;
+    const speed = fxRand(24, 68);
+    const radius = fxRand(6, isSpecial ? 18 : 14);
+    const isRing = i % 5 === 0;
     addFxParticle({
-      start: now + i * 15,
-      life: fxRand(540, 900) * speedScale,
-      x: x + fxRand(-5, 5),
-      y: y + fxRand(-4, 5),
-      vx: Math.cos(angle) * speed * 0.78,
-      vy: Math.sin(angle) * speed - 12,
-      ax: fxRand(-5, 5),
-      ay: -4,
-      size: fxRand(2.8, isSpecial ? 8 : 6.4),
-      shape: Math.random() < 0.22 ? "star4" : "dot",
-      colorA: Math.random() < 0.5 ? "#fff1a8" : "#d8b94c",
-      colorB: "#8fcf8d",
-      glow: fxGlow(opts, 6),
-      peakAlpha: fxRand(0.62, 0.95),
+      start: now + i * 10,
+      life: fxRand(360, 720) * speedScale,
+      x: x + Math.cos(angle) * radius,
+      y: y + Math.sin(angle) * radius * 0.42,
+      vx: Math.cos(tangent) * speed * 0.54 + Math.cos(angle) * speed * 0.16,
+      vy: Math.sin(tangent) * speed * 0.32 + Math.sin(angle) * speed * 0.08 - 6,
+      ax: -Math.cos(angle) * speed * 0.14,
+      ay: -3,
+      size: isRing ? fxRand(8, isSpecial ? 17 : 13) : fxRand(2.4, isSpecial ? 6.8 : 5.4),
+      rotation: (angle * 180) / Math.PI + fxRand(-24, 24),
+      rotSpeed: fxRand(44, 120),
+      shape: isRing ? "orbit" : Math.random() < 0.62 ? "dot" : "pearl",
+      colorA: Math.random() < 0.58 ? "#55e6b5" : "#ecfff7",
+      colorB: Math.random() < 0.5 ? "#8ea1ff" : "#b5c1ff",
+      glow: fxGlow(opts, isRing ? 4.8 : 5.5),
+      peakAlpha: fxRand(0.58, 0.92),
       alphaKeyframes: [
         [0, 0],
-        [0.18, 0.9],
-        [Math.max(0.2, twinkleAt - 0.18), 0.34],
-        [twinkleAt, 1],
-        [Math.min(0.94, twinkleAt + 0.16), 0.28],
+        [0.14, 1],
+        [0.42, 0.46],
+        [0.64, 0.9],
+        [0.82, 0.28],
         [1, 0]
-      ]
+      ],
+      extra: { start: -Math.PI * 0.35, end: Math.PI * 1.08, satellite: isRing && Math.random() < 0.65 }
     });
   }
 }
@@ -3597,47 +4046,66 @@ function buildPetalBloomBurst(opts) {
   const now = performance.now();
   addFxParticle({
     start: now,
-    life: 360 * speedScale,
+    life: 300 * speedScale,
     x,
     y,
-    vx: 0,
-    vy: -3,
-    size: fxRand(isSpecial ? 28 : 20, isSpecial ? 38 : 28),
-    shape: "ring",
-    colorA: "rgba(233, 164, 182, 0.7)",
-    peakAlpha: 0.64,
+    vx: -3,
+    vy: 2,
+    size: fxRand(isSpecial ? 26 : 19, isSpecial ? 36 : 27),
+    rotation: fxRand(-34, -14),
+    rotSpeed: fxRand(-64, -28),
+    shape: "fold",
+    colorA: "#8aa7ff",
+    colorB: "#ffc36f",
+    glow: fxGlow(opts, 5.8),
+    peakAlpha: 0.76,
     sizeKeyframes: [
-      [0, 0.18],
-      [0.55, 1.25],
-      [1, 1.65]
+      [0, 0.28],
+      [0.2, 1.08],
+      [0.58, 0.86],
+      [1, 0.24]
     ],
     alphaKeyframes: [
-      [0, 0.64],
-      [0.42, 0.38],
+      [0, 0.82],
+      [0.38, 0.62],
       [1, 0]
     ]
   });
-  const count = clamp(fxCount(10, opts), 7, 15);
+  const count = clamp(fxCount(9, opts), 6, 14);
   for (let i = 0; i < count; i += 1) {
-    const angle = (Math.PI * 2 * i) / count + fxRand(-0.24, 0.24);
-    const speed = fxRand(28, 82);
+    const side = i % 2 === 0 ? -1 : 1;
+    const angle = fxRand(-Math.PI * 0.9, Math.PI * 0.15) + side * 0.18;
+    const speed = fxRand(24, 78);
+    const isFacet = Math.random() < 0.74;
     addFxParticle({
-      start: now + i * 8,
-      life: fxRand(420, 760) * speedScale,
-      x,
-      y,
-      vx: Math.cos(angle) * speed * 0.72,
-      vy: Math.sin(angle) * speed * 0.48 - 18,
-      ax: -Math.cos(angle) * speed * 0.22,
-      ay: 26,
-      size: fxRand(7, isSpecial ? 14 : 11),
-      rotation: (angle * 180) / Math.PI + fxRand(-26, 26),
-      rotSpeed: fxRand(-95, 95),
-      shape: "petal",
-      colorA: Math.random() < 0.68 ? "#e9a4b6" : "#f5c6d2",
-      colorB: Math.random() < 0.5 ? "#9fc3a2" : "#f7e4eb",
-      glow: fxGlow(opts, 2.6),
-      peakAlpha: fxRand(0.58, 0.86)
+      start: now + i * 9,
+      life: fxRand(300, 620) * speedScale,
+      x: x + side * fxRand(1, 6),
+      y: y + fxRand(-2, 5),
+      vx: Math.cos(angle) * speed * 0.62 + side * fxRand(3, 14),
+      vy: Math.sin(angle) * speed * 0.36 - fxRand(6, 20),
+      ax: side * fxRand(-7, 10),
+      ay: 18,
+      size: fxRand(5, isSpecial ? 13 : 10),
+      rotation: (angle * 180) / Math.PI + fxRand(-46, 46),
+      rotSpeed: side * fxRand(70, 170),
+      shape: isFacet ? "fold" : Math.random() < 0.5 ? "diamond" : "shard",
+      colorA: Math.random() < 0.58 ? "#8aa7ff" : "#eef2ff",
+      colorB: Math.random() < 0.5 ? "#ffc36f" : "#b8c7ff",
+      glow: fxGlow(opts, isFacet ? 2.4 : 3.4),
+      peakAlpha: fxRand(0.58, 0.88),
+      sizeKeyframes: [
+        [0, 0.34],
+        [0.24, 1],
+        [0.66, 0.72],
+        [1, 0.16]
+      ],
+      alphaKeyframes: [
+        [0, 0],
+        [0.18, 0.95],
+        [0.68, 0.38],
+        [1, 0]
+      ]
     });
   }
 }
@@ -3645,14 +4113,16 @@ function buildPetalBloomBurst(opts) {
 function buildNeonRainBurst(opts) {
   const { x, y, isSpecial, speedScale } = opts;
   const now = performance.now();
+  const glyphWidth = Math.max(8, opts.glyphWidth || 12);
+  const glyphHeight = Math.max(18, opts.glyphHeight || 24);
   addFxParticle({
     start: now,
-    life: 130 * speedScale,
-    x,
+    life: 115 * speedScale,
+    x: x + fxRand(-glyphWidth * 0.12, glyphWidth * 0.12),
     y,
     vx: 0,
     vy: 0,
-    size: fxRand(isSpecial ? 34 : 24, isSpecial ? 48 : 34),
+    size: fxRand(glyphHeight * (isSpecial ? 1.15 : 0.95), glyphHeight * (isSpecial ? 1.45 : 1.22)),
     rotation: 0,
     shape: "streak",
     colorA: "#54e5ff",
@@ -3670,21 +4140,23 @@ function buildNeonRainBurst(opts) {
       [1, 0]
     ]
   });
-  const count = clamp(fxCount(9, opts), 6, 14);
+  const count = clamp(fxCount(8, opts), 5, 11);
   for (let i = 0; i < count; i += 1) {
-    const side = i % 2 === 0 ? -1 : 1;
-    const speed = fxRand(74, 160);
+    const lane = count <= 1 ? 0 : (i / (count - 1) - 0.5);
+    const laneJitter = fxRand(-0.16, 0.16);
+    const speed = fxRand(64, 124);
+    const xLane = x + (lane + laneJitter) * glyphWidth * 0.86;
     addFxParticle({
-      start: now + i * 7,
-      life: fxRand(160, 320) * speedScale,
-      x: x + side * fxRand(2, 28),
-      y: y - fxRand(18, 38),
-      vx: side * fxRand(2, 16),
+      start: now + i * 6,
+      life: fxRand(130, 260) * speedScale,
+      x: xLane,
+      y: y - glyphHeight * fxRand(0.36, 0.62),
+      vx: fxRand(-2, 2),
       vy: speed,
       ax: 0,
-      ay: -speed * 0.42,
-      size: fxRand(9, 22),
-      rotation: fxRand(-5, 5),
+      ay: -speed * 0.36,
+      size: fxRand(glyphHeight * 0.42, glyphHeight * 0.86),
+      rotation: fxRand(-3, 3),
       shape: Math.random() < 0.72 ? "streak" : "square",
       colorA: Math.random() < 0.5 ? "#54e5ff" : "#ff72d2",
       colorB: Math.random() < 0.5 ? "#ffffff" : "#9ef5ff",
@@ -3779,54 +4251,384 @@ function buildEmberGlowBurst(opts) {
   const now = performance.now();
   addFxParticle({
     start: now,
-    life: fxRand(220, 340) * speedScale,
+    life: fxRand(170, 260) * speedScale,
     x,
     y,
-    vx: 0,
-    vy: -4,
-    size: fxRand(isSpecial ? 24 : 17, isSpecial ? 34 : 24),
-    shape: "dot",
-    colorA: "#fff1ca",
-    colorB: "#ee9f63",
+    vx: 9,
+    vy: -8,
+    size: fxRand(isSpecial ? 30 : 22, isSpecial ? 42 : 31),
+    rotation: fxRand(-38, -24),
+    rotSpeed: fxRand(-14, 18),
+    shape: "comet",
+    colorA: "#ff9b5c",
+    colorB: "#7de7ff",
     glow: fxGlow(opts, 12),
     peakAlpha: 0.94,
     sizeKeyframes: [
-      [0, 0.16],
-      [0.18, 1.14],
-      [0.42, 0.72],
-      [1, 0.22]
+      [0, 0.2],
+      [0.16, 1.12],
+      [0.46, 0.68],
+      [1, 0.18]
     ],
     alphaKeyframes: [
-      [0, 0.95],
-      [0.3, 0.7],
+      [0, 1],
+      [0.32, 0.72],
       [1, 0]
     ]
   });
-  const count = clamp(fxCount(10, opts), 7, 15);
+  const count = clamp(fxCount(9, opts), 6, 14);
+  const direction = -Math.PI * 0.22;
   for (let i = 0; i < count; i += 1) {
-    const angle = fxRand(-Math.PI * 0.95, -Math.PI * 0.05);
-    const speed = fxRand(42, 115);
+    const tail = i / Math.max(1, count - 1);
+    const angle = direction + fxRand(-0.32, 0.24);
+    const speed = fxRand(38, 112);
+    const isComet = Math.random() < 0.34;
+    addFxParticle({
+      start: now + i * 7,
+      life: fxRand(190, 460) * speedScale,
+      x: x - Math.cos(direction) * tail * fxRand(5, 18) + fxRand(-2, 2),
+      y: y - Math.sin(direction) * tail * fxRand(4, 14) + fxRand(-2, 3),
+      vx: Math.cos(angle) * speed * (isComet ? 0.7 : 0.48),
+      vy: Math.sin(angle) * speed * (isComet ? 0.68 : 0.45) - 4,
+      ax: -Math.cos(direction) * speed * 0.18,
+      ay: 18,
+      size: isComet ? fxRand(9, isSpecial ? 19 : 14) : fxRand(2.4, isSpecial ? 7 : 5.8),
+      rotation: (direction * 180) / Math.PI + fxRand(-12, 16),
+      rotSpeed: fxRand(-44, 44),
+      shape: isComet ? "comet" : Math.random() < 0.55 ? "shard" : "dot",
+      colorA: Math.random() < 0.58 ? "#ff9b5c" : "#ffd1a0",
+      colorB: Math.random() < 0.42 ? "#7de7ff" : "#fff5db",
+      glow: fxGlow(opts, isComet ? 5.4 : 4.2),
+      peakAlpha: fxRand(0.62, 0.96),
+      sizeKeyframes: [
+        [0, 0.36],
+        [0.2, 1],
+        [0.68, 0.48],
+        [1, 0.12]
+      ],
+      alphaKeyframes: [
+        [0, 0],
+        [0.12, 1],
+        [0.58, 0.55],
+        [1, 0]
+      ]
+    });
+  }
+}
+
+function buildLaserEtchBurst(opts) {
+  const { x, y, isSpecial, speedScale } = opts;
+  const now = performance.now();
+  const glyphWidth = Math.max(8, opts.glyphWidth || 12);
+  const glyphHeight = Math.max(18, opts.glyphHeight || 24);
+  const sizeBase = Math.max(glyphWidth, glyphHeight);
+  const rotation = fxRand(-16, -9);
+  addFxParticle({
+    start: now,
+    life: 120 * speedScale,
+    x,
+    y: y - glyphHeight * 0.02,
+    vx: 0,
+    vy: 0,
+    size: sizeBase * (isSpecial ? 1.55 : 1.25),
+    rotation,
+    shape: "laser",
+    colorA: "#ff5a57",
+    colorB: "#ffe46b",
+    glow: fxGlow(opts, 13),
+    peakAlpha: 0.96,
+    sizeKeyframes: [
+      [0, 0.12],
+      [0.18, 1],
+      [1, 0.22]
+    ],
+    alphaKeyframes: [
+      [0, 1],
+      [0.46, 0.74],
+      [1, 0]
+    ]
+  });
+  const count = clamp(fxCount(7, opts), 5, 11);
+  for (let i = 0; i < count; i += 1) {
+    const along = count <= 1 ? 0 : i / (count - 1) - 0.5;
+    const side = i % 2 === 0 ? -1 : 1;
+    const chipAngle = (-Math.PI * 0.1) + side * fxRand(0.56, 1.05);
+    const speed = fxRand(24, 74);
+    addFxParticle({
+      start: now + i * 5,
+      life: fxRand(140, 300) * speedScale,
+      x: x + along * glyphWidth * 1.18 + fxRand(-1.5, 1.5),
+      y: y - along * glyphHeight * 0.34 + fxRand(-1, 1),
+      vx: Math.cos(chipAngle) * speed * 0.52,
+      vy: Math.sin(chipAngle) * speed * 0.38,
+      ax: -Math.cos(chipAngle) * speed * 0.3,
+      ay: 18,
+      size: fxRand(2.4, isSpecial ? 7 : 5.4),
+      rotation: rotation + side * fxRand(28, 74),
+      rotSpeed: side * fxRand(90, 180),
+      shape: Math.random() < 0.64 ? "shard" : "dot",
+      colorA: Math.random() < 0.58 ? "#ff5a57" : "#fff0a4",
+      colorB: "#ffe46b",
+      glow: fxGlow(opts, 4.8),
+      peakAlpha: fxRand(0.66, 0.94),
+      sizeKeyframes: [
+        [0, 0.45],
+        [0.22, 1],
+        [1, 0.12]
+      ]
+    });
+  }
+}
+
+function buildKeycapPopBurst(opts) {
+  const { x, y, isSpecial, speedScale } = opts;
+  const now = performance.now();
+  const glyphWidth = Math.max(8, opts.glyphWidth || 12);
+  const glyphHeight = Math.max(18, opts.glyphHeight || 24);
+  addFxParticle({
+    start: now,
+    life: 260 * speedScale,
+    x,
+    y: y + glyphHeight * 0.06,
+    vx: 0,
+    vy: 0,
+    size: Math.max(glyphWidth * 1.55, glyphHeight * (isSpecial ? 1.12 : 0.92)),
+    rotation: fxRand(-3, 3),
+    shape: "keycap",
+    colorA: "#f7fffa",
+    colorB: "#7fb3a6",
+    glow: fxGlow(opts, 4.2),
+    peakAlpha: 0.7,
+    sizeKeyframes: [
+      [0, 0.62],
+      [0.18, 1.08],
+      [0.42, 0.9],
+      [1, 0.36]
+    ],
+    alphaKeyframes: [
+      [0, 0.8],
+      [0.36, 0.58],
+      [1, 0]
+    ]
+  });
+  const count = clamp(fxCount(6, opts), 4, 9);
+  for (let i = 0; i < count; i += 1) {
+    const cornerX = i % 2 === 0 ? -1 : 1;
+    const cornerY = i % 3 === 0 ? -1 : 1;
+    const speed = fxRand(18, 48);
+    addFxParticle({
+      start: now + i * 12,
+      life: fxRand(190, 380) * speedScale,
+      x: x + cornerX * glyphWidth * fxRand(0.18, 0.52),
+      y: y + cornerY * glyphHeight * fxRand(0.08, 0.32),
+      vx: cornerX * speed * 0.52,
+      vy: cornerY * speed * 0.28 - 6,
+      ax: -cornerX * speed * 0.36,
+      ay: 22,
+      size: fxRand(3.4, isSpecial ? 8 : 6),
+      rotation: fxRand(-12, 12),
+      rotSpeed: cornerX * fxRand(40, 120),
+      shape: Math.random() < 0.58 ? "keycap" : "tile",
+      colorA: Math.random() < 0.5 ? "#7fb3a6" : "#ffb86f",
+      colorB: "#fff7e4",
+      glow: fxGlow(opts, 2.6),
+      peakAlpha: fxRand(0.5, 0.82)
+    });
+  }
+}
+
+function buildMagneticFlipBurst(opts) {
+  const { x, y, isSpecial, speedScale } = opts;
+  const now = performance.now();
+  const glyphWidth = Math.max(8, opts.glyphWidth || 12);
+  const glyphHeight = Math.max(18, opts.glyphHeight || 24);
+  [-1, 1].forEach((side) => {
+    addFxParticle({
+      start: now,
+      life: fxRand(210, 340) * speedScale,
+      x: x + side * glyphWidth * 0.56,
+      y: y - glyphHeight * 0.02,
+      vx: -side * fxRand(8, 18),
+      vy: 0,
+      size: fxRand(isSpecial ? 9 : 6, isSpecial ? 14 : 10),
+      shape: "dot",
+      colorA: side < 0 ? "#e85d75" : "#3dd6c6",
+      colorB: "#ffffff",
+      glow: fxGlow(opts, 7),
+      peakAlpha: 0.9,
+      sizeKeyframes: [
+        [0, 0.3],
+        [0.24, 1.15],
+        [1, 0.36]
+      ]
+    });
+  });
+  const count = clamp(fxCount(8, opts), 6, 12);
+  for (let i = 0; i < count; i += 1) {
+    const side = i % 2 === 0 ? -1 : 1;
+    const arc = fxRand(-0.42, 0.42);
+    const speed = fxRand(26, 70);
     addFxParticle({
       start: now + i * 8,
-      life: fxRand(260, 560) * speedScale,
-      x: x + fxRand(-3, 3),
-      y,
-      vx: Math.cos(angle) * speed * 0.7,
-      vy: Math.sin(angle) * speed - 8,
-      ax: -Math.cos(angle) * speed * 0.22,
-      ay: 42,
-      size: fxRand(3.2, isSpecial ? 9 : 7),
-      rotation: (angle * 180) / Math.PI + fxRand(-22, 22),
-      rotSpeed: fxRand(-140, 140),
-      shape: Math.random() < 0.62 ? "ember" : "dot",
-      colorA: Math.random() < 0.55 ? "#ee9f63" : "#ffbd74",
-      colorB: "#ffe08a",
-      glow: fxGlow(opts, 5),
-      peakAlpha: fxRand(0.64, 0.95),
+      life: fxRand(180, 380) * speedScale,
+      x: x + side * glyphWidth * fxRand(0.1, 0.48),
+      y: y + fxRand(-glyphHeight * 0.22, glyphHeight * 0.22),
+      vx: -side * speed * 0.5,
+      vy: Math.sin(arc) * speed * 0.28,
+      ax: side * speed * 0.28,
+      ay: 0,
+      size: fxRand(7, isSpecial ? 17 : 13),
+      rotation: side < 0 ? 0 : 180,
+      rotSpeed: side * fxRand(120, 240),
+      shape: Math.random() < 0.72 ? "needle" : "orbit",
+      colorA: "#e85d75",
+      colorB: "#3dd6c6",
+      glow: fxGlow(opts, 4.8),
+      peakAlpha: fxRand(0.58, 0.9),
+      alphaKeyframes: [
+        [0, 0],
+        [0.16, 1],
+        [0.62, 0.5],
+        [1, 0]
+      ],
+      extra: { start: -Math.PI * 0.2, end: Math.PI * 1.18 }
+    });
+  }
+}
+
+function buildMosaicShiftBurst(opts) {
+  const { x, y, isSpecial, speedScale } = opts;
+  const now = performance.now();
+  const glyphWidth = Math.max(8, opts.glyphWidth || 12);
+  const glyphHeight = Math.max(18, opts.glyphHeight || 24);
+  const count = clamp(fxCount(10, opts), 7, 14);
+  for (let i = 0; i < count; i += 1) {
+    const col = (i % 3) - 1;
+    const row = Math.floor(i / 3) % 3 - 1;
+    const popX = col * glyphWidth * fxRand(0.2, 0.44);
+    const popY = row * glyphHeight * fxRand(0.12, 0.28);
+    addFxParticle({
+      start: now + i * 5,
+      life: fxRand(180, 390) * speedScale,
+      x: x + popX * 0.22,
+      y: y + popY * 0.18,
+      vx: popX * fxRand(1.4, 2.8),
+      vy: popY * fxRand(1.2, 2.2),
+      ax: -popX * fxRand(2.6, 4),
+      ay: -popY * fxRand(2.2, 3.6),
+      size: fxRand(4, isSpecial ? 9 : 7),
+      rotation: fxRand(-10, 10),
+      rotSpeed: fxRand(-90, 90),
+      shape: Math.random() < 0.76 ? "tile" : "square",
+      colorA: Math.random() < 0.5 ? "#4fa3ff" : "#ffca5f",
+      colorB: Math.random() < 0.5 ? "#85e0a3" : "#ff8fab",
+      glow: fxGlow(opts, 3.4),
+      peakAlpha: fxRand(0.62, 0.92),
       sizeKeyframes: [
-        [0, 0.42],
-        [0.28, 1],
-        [1, 0.2]
+        [0, 0.8],
+        [0.4, 1],
+        [1, 0.28]
+      ],
+      alphaKeyframes: [
+        [0, 0],
+        [0.12, 1],
+        [0.7, 0.64],
+        [1, 0]
+      ]
+    });
+  }
+}
+
+function buildRippleLensBurst(opts) {
+  const { x, y, isSpecial, speedScale } = opts;
+  const now = performance.now();
+  const glyphWidth = Math.max(8, opts.glyphWidth || 12);
+  const glyphHeight = Math.max(18, opts.glyphHeight || 24);
+  const base = Math.max(glyphWidth * 1.5, glyphHeight * 0.9);
+  for (let i = 0; i < (isSpecial ? 3 : 2); i += 1) {
+    addFxParticle({
+      start: now + i * 70,
+      life: fxRand(360, 620) * speedScale,
+      x,
+      y,
+      vx: 0,
+      vy: -2,
+      size: base + i * 8,
+      rotation: fxRand(-6, 6),
+      shape: "lens",
+      colorA: "#75d0da",
+      colorB: "#f4d3ff",
+      glow: fxGlow(opts, 3.6),
+      peakAlpha: 0.62 - i * 0.1,
+      sizeKeyframes: [
+        [0, 0.32],
+        [0.34, 1.08],
+        [1, 1.34]
+      ],
+      alphaKeyframes: [
+        [0, 0],
+        [0.18, 1],
+        [0.62, 0.38],
+        [1, 0]
+      ]
+    });
+  }
+  const count = clamp(fxCount(5, opts), 3, 8);
+  for (let i = 0; i < count; i += 1) {
+    const angle = fxRand(0, Math.PI * 2);
+    const radius = fxRand(2, Math.max(glyphWidth, glyphHeight) * 0.46);
+    addFxParticle({
+      start: now + i * 18,
+      life: fxRand(300, 520) * speedScale,
+      x: x + Math.cos(angle) * radius,
+      y: y + Math.sin(angle) * radius * 0.58,
+      vx: Math.cos(angle) * fxRand(4, 18),
+      vy: Math.sin(angle) * fxRand(2, 12) - 5,
+      ax: -Math.cos(angle) * fxRand(6, 14),
+      ay: -2,
+      size: fxRand(3, isSpecial ? 8 : 6),
+      shape: Math.random() < 0.55 ? "lens" : "pearl",
+      colorA: "#eaffff",
+      colorB: Math.random() < 0.5 ? "#75d0da" : "#f4d3ff",
+      glow: fxGlow(opts, 2.8),
+      peakAlpha: fxRand(0.42, 0.72)
+    });
+  }
+}
+
+function buildPlasmaThreadBurst(opts) {
+  const { x, y, isSpecial, speedScale } = opts;
+  const now = performance.now();
+  const glyphWidth = Math.max(8, opts.glyphWidth || 12);
+  const glyphHeight = Math.max(18, opts.glyphHeight || 24);
+  const count = clamp(fxCount(8, opts), 6, 12);
+  for (let i = 0; i < count; i += 1) {
+    const lane = i / Math.max(1, count - 1) - 0.5;
+    const side = i % 2 === 0 ? -1 : 1;
+    const rotation = fxRand(-18, 18) + side * 4;
+    const speed = fxRand(18, 58);
+    addFxParticle({
+      start: now + i * 8,
+      life: fxRand(230, 470) * speedScale,
+      x: x + lane * glyphWidth * 0.78,
+      y: y + fxRand(-glyphHeight * 0.22, glyphHeight * 0.22),
+      vx: side * speed * 0.38,
+      vy: fxRand(-16, 10),
+      ax: -side * speed * 0.36,
+      ay: 3,
+      size: fxRand(isSpecial ? 14 : 10, isSpecial ? 26 : 18),
+      rotation,
+      rotSpeed: side * fxRand(60, 160),
+      shape: Math.random() < 0.78 ? "plasma" : "fiber",
+      colorA: Math.random() < 0.55 ? "#39d3ff" : "#b7f7ff",
+      colorB: Math.random() < 0.5 ? "#ff7f9f" : "#fff0a8",
+      glow: fxGlow(opts, 6.2),
+      peakAlpha: fxRand(0.62, 0.94),
+      alphaKeyframes: [
+        [0, 0],
+        [0.12, 1],
+        [0.52, 0.64],
+        [1, 0]
       ]
     });
   }
@@ -3893,7 +4695,13 @@ const BURST_BUILDERS = {
   "petal-bloom": buildPetalBloomBurst,
   "neon-rain": buildNeonRainBurst,
   "velvet-smoke": buildVelvetSmokeBurst,
-  "ember-glow": buildEmberGlowBurst
+  "ember-glow": buildEmberGlowBurst,
+  "laser-etch": buildLaserEtchBurst,
+  "keycap-pop": buildKeycapPopBurst,
+  "magnetic-flip": buildMagneticFlipBurst,
+  "mosaic-shift": buildMosaicShiftBurst,
+  "ripple-lens": buildRippleLensBurst,
+  "plasma-thread": buildPlasmaThreadBurst
 };
 
 function spawnEffectBurst(mode, opts) {
@@ -4047,6 +4855,34 @@ function isOpaqueColor(value) {
   return true;
 }
 
+// Reads the editor's own paper background (grain texture + ruled-line
+// gradient, whichever layers are active for the current paper style) and
+// re-expresses its background-position relative to a given viewport rect,
+// so a mask painted elsewhere in the DOM can continue the exact same
+// texture/line pattern seamlessly rather than showing a flat patch.
+function getPaperBackgroundLayers(rect) {
+  const editorEl = refs.editor;
+  if (!editorEl) return null;
+  const editorRect = editorEl.getBoundingClientRect();
+  const editorStyle = getComputedStyle(editorEl);
+  const image = editorStyle.backgroundImage;
+  if (!image || image === "none") return null;
+  const borderLeft = Number.parseFloat(editorStyle.borderLeftWidth) || 0;
+  const borderTop = Number.parseFloat(editorStyle.borderTopWidth) || 0;
+  const offsetX = rect.left - (editorRect.left + borderLeft);
+  const offsetY = rect.top - (editorRect.top + borderTop);
+  const position = editorStyle.backgroundPosition
+    .split(",")
+    .map((pair) => {
+      const [px, py] = pair.trim().split(/\s+/);
+      const baseX = Number.parseFloat(px) || 0;
+      const baseY = Number.parseFloat(py) || 0;
+      return `${(baseX + offsetX).toFixed(2)}px ${(baseY + offsetY).toFixed(2)}px`;
+    })
+    .join(", ");
+  return { image, size: editorStyle.backgroundSize, position };
+}
+
 // Walks up from a text position to find the nearest ancestor that actually
 // paints a background (e.g. a highlighter span), since background-color is
 // not inherited and the immediate parent may be a plain <b>/<i> wrapper
@@ -4142,15 +4978,33 @@ function appendGlyphOverlay(mark, target, role, originX, originY, profile, setti
   // Occlusion mask: paints over the real (static) character for the
   // overlay's lifetime so the animated clone never gets seen doubled up
   // against the still-visible real glyph underneath. Sized/positioned
-  // identically to the overlay, colored to match the real background
-  // (highlighter color if the text is highlighted, otherwise the paper).
+  // identically to the overlay. Rather than a flat fill (which reads as
+  // a visible white/tinted "block" against the editor's grain texture
+  // and ruled lines), it replicates the editor's own paper background
+  // — grain + line, position-matched so the pattern continues seamlessly
+  // underneath — and, when the glyph sits inside a highlighter span,
+  // layers the highlight color with mix-blend-mode:multiply exactly the
+  // way the real <mark> renders it, instead of substituting a solid
+  // opaque swatch.
   const mask = document.createElement("span");
   mask.className = "typing-glyph-mask";
   mask.style.left = `${(rect.left - originX).toFixed(2)}px`;
   mask.style.top = `${(rect.top - originY).toFixed(2)}px`;
   mask.style.width = `${Math.max(1, rect.width).toFixed(2)}px`;
   mask.style.height = `${Math.max(1, rect.height).toFixed(2)}px`;
-  mask.style.backgroundColor = isOpaqueColor(style.backgroundColor) ? style.backgroundColor : "var(--paper)";
+  mask.style.backgroundColor = "var(--paper)";
+  const paperLayers = getPaperBackgroundLayers(rect);
+  if (paperLayers) {
+    mask.style.backgroundImage = paperLayers.image;
+    mask.style.backgroundSize = paperLayers.size;
+    mask.style.backgroundPosition = paperLayers.position;
+  }
+  if (isOpaqueColor(style.backgroundColor)) {
+    const tint = document.createElement("span");
+    tint.className = "typing-glyph-mask-tint";
+    tint.style.backgroundColor = style.backgroundColor;
+    mask.append(tint);
+  }
   mark.append(mask);
 
   const glyph = document.createElement("span");
@@ -4192,13 +5046,31 @@ function appendGlyphOverlay(mark, target, role, originX, originY, profile, setti
   glyph.style.setProperty("--glyph-stretch-y", (1 + scaleDelta * 1.32).toFixed(3));
   glyph.style.setProperty("--glyph-blur", `${blur.toFixed(2)}px`);
   glyph.style.setProperty("--glyph-rotate-amount", `${rotate.toFixed(2)}deg`);
-  const impactStrength = (profile.impact ?? 1) * (0.35 + settings.glyphMotion * 1.15) * (0.7 + effectLevel * 0.5) * roleStrength;
-  const impactLife = Math.max(60, Math.round((profile.duration * 0.4 + 40) * speedScale * (role === "echo" ? 0.7 : 1)));
-  glyph.style.setProperty("--glyph-impact-x", `${(effect.glyphX * impactStrength * 2.1).toFixed(2)}px`);
-  glyph.style.setProperty("--glyph-impact-y", `${(effect.glyphY * impactStrength * 2.1).toFixed(2)}px`);
-  glyph.style.setProperty("--glyph-impact-scale", (1 + (effect.glyphScale - 1) * impactStrength * 3.2).toFixed(3));
-  glyph.style.setProperty("--glyph-impact-rotate", `${(effect.glyphRotate * impactStrength * 3.2).toFixed(2)}deg`);
+  const jolt = GLYPH_JOLT_PRESETS[settings.effectMode] || GLYPH_JOLT_PRESETS[defaultSettings.effectMode];
+  const impactStrength = (jolt.strength ?? profile.impact ?? 1) * (0.35 + settings.glyphMotion * 1.15) * (0.7 + effectLevel * 0.5) * roleStrength;
+  const impactLife = Math.max(60, Math.round((jolt.life || profile.duration * 0.4 + 40) * speedScale * (role === "echo" ? 0.7 : 1)));
+  const impactX = (jolt.x ?? effect.glyphX) * impactStrength * 2.1;
+  const impactY = (jolt.y ?? effect.glyphY) * impactStrength * 2.1;
+  const impactRotate = (jolt.rotate ?? effect.glyphRotate) * impactStrength * 2.6;
+  const impactScale = 1 + Math.max(0, (jolt.scale ?? effect.glyphScale) - 1) * Math.min(2.4, 0.55 + impactStrength * 1.35);
+  const recoil = jolt.recoil || [-0.34, -0.2];
+  const kick = jolt.kick || [0.12, 0.08];
+  const settle = jolt.settle || [0, 0];
+  glyph.style.setProperty("--glyph-impact-x", `${impactX.toFixed(2)}px`);
+  glyph.style.setProperty("--glyph-impact-y", `${impactY.toFixed(2)}px`);
+  glyph.style.setProperty("--glyph-impact-scale", impactScale.toFixed(3));
+  glyph.style.setProperty("--glyph-impact-rotate", `${impactRotate.toFixed(2)}deg`);
   glyph.style.setProperty("--glyph-impact-life", `${impactLife}ms`);
+  glyph.style.setProperty("--glyph-jolt-recoil-x", `${(impactX * recoil[0]).toFixed(2)}px`);
+  glyph.style.setProperty("--glyph-jolt-recoil-y", `${(impactY * recoil[1]).toFixed(2)}px`);
+  glyph.style.setProperty("--glyph-jolt-recoil-scale", Math.max(0.982, 1 - (impactScale - 1) * 0.56).toFixed(3));
+  glyph.style.setProperty("--glyph-jolt-recoil-rotate", `${(impactRotate * -0.36).toFixed(2)}deg`);
+  glyph.style.setProperty("--glyph-jolt-kick-x", `${(impactX * kick[0]).toFixed(2)}px`);
+  glyph.style.setProperty("--glyph-jolt-kick-y", `${(impactY * kick[1]).toFixed(2)}px`);
+  glyph.style.setProperty("--glyph-jolt-kick-scale", (1 + (impactScale - 1) * 0.24).toFixed(3));
+  glyph.style.setProperty("--glyph-jolt-kick-rotate", `${(impactRotate * 0.15).toFixed(2)}deg`);
+  glyph.style.setProperty("--glyph-jolt-settle-x", `${(impactX * settle[0]).toFixed(2)}px`);
+  glyph.style.setProperty("--glyph-jolt-settle-y", `${(impactY * settle[1]).toFixed(2)}px`);
 
   const slice = document.createElement("span");
   slice.className = "glyph-slice";
@@ -4229,6 +5101,10 @@ function spawnTypingMark(tactile = {}) {
   if (!glyphTargets.current && allowGlyph) {
     glyphTargets.current = fallbackGlyphTarget(tactile.glyph || "", rect);
   }
+  const glyphRect = glyphTargets.current?.rect;
+  const glyphWidth = glyphRect?.width || Math.max(8, (rect.height || 18) * 0.52);
+  const glyphHeight = glyphRect?.height || Math.max(18, rect.height || 18);
+  const locality = EFFECT_LOCALITY_PRESETS[settings.effectMode] || {};
   const keyParticleScale = keyType === "enter" ? 1.25 : keyType === "space" ? 0.82 : keyType === "backspace" ? 0.56 : 1;
   const streakBoost = Math.min(0.22, Math.max(0, Number(tactile.streak || 0)) * 0.006);
   const specialChance = clamp(effect.special * (0.28 + settings.specialFrequency * 1.72) * effectLevel + streakBoost, 0, 0.95);
@@ -4238,13 +5114,14 @@ function spawnTypingMark(tactile = {}) {
   const particleCount = settings.particleAmount <= 0.01
     ? 0
     : Math.round((effect.particles + (isSpecial ? 2 : 0)) * keyParticleScale * (0.32 + settings.particleAmount * 1.42));
-  const maxParticles = clamp(particleCount, 0, 16);
-  const glyphRect = glyphTargets.current?.rect;
-  const originX = glyphRect ? glyphRect.left + glyphRect.width * 0.78 : rect.left;
-  const originY = glyphRect ? glyphRect.top + glyphRect.height * 0.56 : rect.top + rect.height * 0.55;
+  const maxParticles = clamp(particleCount, 0, locality.maxDomParticles || 16);
+  const originX = glyphRect ? glyphRect.left + glyphWidth * (locality.originX ?? 0.78) : rect.left;
+  const originY = glyphRect ? glyphRect.top + glyphHeight * (locality.originY ?? 0.56) : rect.top + rect.height * 0.55;
   spawnEffectBurst(settings.effectMode, {
     x: originX,
     y: originY,
+    glyphWidth,
+    glyphHeight,
     settings,
     isSpecial,
     keyType,
@@ -4282,9 +5159,11 @@ function spawnTypingMark(tactile = {}) {
   for (let index = 0; index < maxParticles; index += 1) {
     const particle = document.createElement("span");
     const angle = seeded01(seed + index, 12) * Math.PI * 2;
-    const distance = (10 + seeded01(seed + index, 21) * effect.spread * 1.6) * effectLevel * (0.7 + settings.particleAmount * 1.1);
-    const x = Math.cos(angle) * distance;
-    const y = Math.sin(angle) * distance - effect.lift * effectLevel * 1.6;
+    const distance = ((locality.particleBase ?? 10) + seeded01(seed + index, 21) * effect.spread * 1.6 * (locality.spreadScale ?? 1))
+      * effectLevel
+      * (0.7 + settings.particleAmount * 1.1);
+    const x = Math.cos(angle) * distance * (locality.xScale ?? 1);
+    const y = Math.sin(angle) * distance * (locality.yScale ?? 1) - effect.lift * effectLevel * 1.6 * (locality.liftScale ?? 1);
     const size = 4 + seeded01(seed + index, 33) * (isSpecial ? 15 : 10);
     particle.className = `typing-particle particle-${index % 4}`;
     particle.style.setProperty("--x", `${x.toFixed(2)}px`);
@@ -4306,7 +5185,7 @@ function spawnTypingMark(tactile = {}) {
       const star = document.createElement("span");
       const starSeed = seed + index * 7 + 401;
       const angle = seeded01(starSeed, 61) * Math.PI * 2;
-      const distance = (12 + seeded01(starSeed, 68) * 26) * (0.7 + settings.particleAmount * 1.2);
+      const distance = (12 + seeded01(starSeed, 68) * 26) * (0.7 + settings.particleAmount * 1.2) * (locality.coreStarScale ?? 1);
       const x = Math.cos(angle) * distance;
       const y = Math.sin(angle) * distance - (6 + seeded01(starSeed, 74) * 8);
       const isBright = isSpecial && index >= coreStarCount - 2;
