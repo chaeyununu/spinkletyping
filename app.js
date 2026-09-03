@@ -36,6 +36,22 @@ const FONTS = {
   mono: {
     label: "Quiet Mono",
     stack: "\"Cascadia Code\", D2Coding, Consolas, \"Malgun Gothic\", monospace"
+  },
+  notoSansKr: {
+    label: "Noto Sans KR",
+    stack: "\"Noto Sans KR\", \"Noto Sans\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", \"Segoe UI\", sans-serif"
+  },
+  gowunDodum: {
+    label: "Gowun Dodum",
+    stack: "\"Gowun Dodum\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", sans-serif"
+  },
+  gowunBatang: {
+    label: "Gowun Batang",
+    stack: "\"Gowun Batang\", \"Noto Serif KR\", Batang, \"Apple SD Gothic Neo\", serif"
+  },
+  nanumMyeongjo: {
+    label: "Nanum Myeongjo",
+    stack: "\"Nanum Myeongjo\", \"Noto Serif KR\", Batang, \"Apple SD Gothic Neo\", serif"
   }
 };
 
@@ -2085,6 +2101,8 @@ function initFxCanvas() {
   fx.ctx = fx.canvas.getContext("2d");
   resizeFxCanvas();
   window.addEventListener("resize", resizeFxCanvas);
+  window.visualViewport?.addEventListener("resize", resizeFxCanvas);
+  window.visualViewport?.addEventListener("scroll", resizeFxCanvas);
 }
 
 function resizeFxCanvas() {
@@ -2166,6 +2184,11 @@ function renderFxParticle(ctx, p, t) {
   if (p.shape === "line") {
     ctx.save();
     ctx.globalAlpha = alpha;
+    ctx.lineCap = "round";
+    if (p.glow) {
+      ctx.shadowBlur = p.glow;
+      ctx.shadowColor = p.colorB || p.colorA;
+    }
     ctx.strokeStyle = p.colorA;
     ctx.lineWidth = p.size;
     ctx.beginPath();
@@ -2868,16 +2891,53 @@ function buildCrystalBurst(opts) {
 }
 
 function buildConstellationBurst(opts) {
-  const { x, y, speedScale } = opts;
-  const count = clamp(fxCount(6, opts), 4, 8);
+  const { x, y, isSpecial, speedScale } = opts;
+  const count = clamp(fxCount(8, opts), 6, 11);
   const points = [];
   const now = performance.now();
+
+  // A single bright anchor star right at the impact point, larger and
+  // sharper than the rest, so the little star map reads as centered on
+  // the character rather than a diffuse scatter.
+  addFxParticle({
+    start: now,
+    life: fxRand(620, 820) * speedScale,
+    x,
+    y,
+    vx: 0,
+    vy: -5,
+    size: fxRand(isSpecial ? 8.5 : 6.5, isSpecial ? 11 : 8.5),
+    shape: "star4",
+    colorA: "#eef1ff",
+    colorB: "#fff3ab",
+    glow: fxGlow(opts, 8),
+    peakAlpha: 1,
+    sizeKeyframes: [
+      [0, 0.15],
+      [0.16, 1.2],
+      [0.5, 0.85],
+      [1, 0.4]
+    ],
+    // twinkle: bright entrance, settle, then a distinct delayed second
+    // flicker partway through life before fading -- a real twinkle
+    // rather than a single fade.
+    alphaKeyframes: [
+      [0, 0],
+      [0.1, 1],
+      [0.32, 0.55],
+      [0.5, 0.95],
+      [0.62, 0.5],
+      [1, 0]
+    ]
+  });
+
   for (let i = 0; i < count; i += 1) {
     const angle = fxRand(0, Math.PI * 2);
-    const distance = fxRand(14, 44);
+    const distance = fxRand(16, 56);
     const px = x + Math.cos(angle) * distance;
     const py = y + Math.sin(angle) * distance;
-    const life = fxRand(500, 780) * speedScale;
+    const life = fxRand(560, 900) * speedScale;
+    const twinkleAt = fxRand(0.45, 0.7);
     points.push({ x: px, y: py, life });
     addFxParticle({
       start: now,
@@ -2886,34 +2946,57 @@ function buildConstellationBurst(opts) {
       y: py,
       vx: 0,
       vy: -6,
-      size: fxRand(2.5, 5.5),
+      size: fxRand(3.5, 7),
       shape: "star4",
       colorA: "#dfe3ff",
       colorB: "#fff0a4",
-      glow: fxGlow(opts, 4),
-      peakAlpha: fxRand(0.7, 1)
+      glow: fxGlow(opts, 6),
+      peakAlpha: fxRand(0.75, 1),
+      sizeKeyframes: [
+        [0, 0.2],
+        [0.18, 1.1],
+        [1, 0.5]
+      ],
+      // each star has its own delayed twinkle beat so the whole map
+      // shimmers in a staggered, alive way instead of fading in unison.
+      alphaKeyframes: [
+        [0, 0],
+        [0.14, 1],
+        [Math.max(0.16, twinkleAt - 0.16), 0.4],
+        [twinkleAt, 0.9],
+        [Math.min(0.94, twinkleAt + 0.18), 0.35],
+        [1, 0]
+      ]
     });
   }
-  const links = Math.min(3, Math.floor(count / 2));
+
+  // more, brighter connecting lines so the constellation shape reads
+  // clearly instead of a faint scatter.
+  const links = Math.min(6, Math.max(3, count - 3));
+  const usedPairs = new Set();
   for (let i = 0; i < links; i += 1) {
     const a = points[Math.floor(Math.random() * points.length)];
     const b = points[Math.floor(Math.random() * points.length)];
     if (!a || !b || a === b) continue;
+    const pairKey = a.x + "," + a.y + "-" + b.x + "," + b.y;
+    if (usedPairs.has(pairKey)) continue;
+    usedPairs.add(pairKey);
     addFxParticle({
       start: now,
-      life: Math.min(a.life, b.life) * 0.9,
+      life: Math.min(a.life, b.life) * 0.92,
       shape: "line",
       x1: a.x,
       y1: a.y,
       x2: b.x,
       y2: b.y,
-      size: 0.6,
-      colorA: "rgba(220, 220, 255, 0.5)",
-      peakAlpha: 0.5,
+      size: 1.1,
+      colorA: "rgba(226, 228, 255, 0.68)",
+      glow: fxGlow(opts, 3),
+      peakAlpha: 0.68,
       alphaKeyframes: [
         [0, 0],
-        [0.2, 1],
-        [0.8, 0.6],
+        [0.22, 1],
+        [0.78, 0.55],
         [1, 0]
       ]
     });
@@ -3259,7 +3342,45 @@ function pointForTextOffset(spans, offset, edge) {
 
 function rectFromRange(range) {
   const rects = [...range.getClientRects()].filter((rect) => rect.width > 0 && rect.height > 0);
-  return rects[rects.length - 1] || null;
+  const rect = rects[rects.length - 1];
+  return rect ? fixedLayerRect(rect) : null;
+}
+
+function fixedLayerRect(rect) {
+  const viewport = window.visualViewport;
+  const offsetLeft = viewport?.offsetLeft || 0;
+  const offsetTop = viewport?.offsetTop || 0;
+  return {
+    left: rect.left + offsetLeft,
+    top: rect.top + offsetTop,
+    width: rect.width,
+    height: rect.height
+  };
+}
+
+function isOpaqueColor(value) {
+  if (!value || value === "transparent") return false;
+  const rgbaMatch = value.match(/rgba?\(([^)]+)\)/);
+  if (rgbaMatch) {
+    const parts = rgbaMatch[1].split(",").map((part) => Number.parseFloat(part.trim()));
+    if (parts.length === 4 && parts[3] <= 0.02) return false;
+  }
+  return true;
+}
+
+// Walks up from a text position to find the nearest ancestor that actually
+// paints a background (e.g. a highlighter span), since background-color is
+// not inherited and the immediate parent may be a plain <b>/<i> wrapper
+// sitting inside a highlighted ancestor.
+function resolveEffectiveBackground(node) {
+  let element = node.nodeType === Node.TEXT_NODE ? node.parentElement : node;
+  while (element && refs.editor.contains(element)) {
+    const bg = getComputedStyle(element).backgroundColor;
+    if (isOpaqueColor(bg)) return bg;
+    if (element === refs.editor) break;
+    element = element.parentElement;
+  }
+  return null;
 }
 
 function computedStyleForRange(range) {
@@ -3268,6 +3389,7 @@ function computedStyleForRange(range) {
   const style = getComputedStyle(element?.nodeType === Node.ELEMENT_NODE ? element : refs.editor);
   return {
     color: style.color,
+    backgroundColor: resolveEffectiveBackground(node),
     fontFamily: style.fontFamily,
     fontSize: style.fontSize,
     fontStyle: style.fontStyle,
@@ -3297,6 +3419,7 @@ function fallbackGlyphTarget(glyph, caret) {
     },
     style: {
       color: style.color,
+      backgroundColor: null,
       fontFamily: style.fontFamily,
       fontSize: style.fontSize,
       fontStyle: style.fontStyle,
@@ -3336,6 +3459,20 @@ function appendGlyphOverlay(mark, target, role, originX, originY, profile, setti
   const blur = profile.blur * (0.35 + effectLevel) * (role === "echo" ? 0.55 : 1);
   const rotate = profile.rotate * settings.glyphMotion * (0.65 + effectLevel * 0.5) * roleStrength;
   const glowSize = Math.round((3 + settings.glowAmount * 18) * profile.glow * (role === "echo" ? 0.62 : 1));
+
+  // Occlusion mask: paints over the real (static) character for the
+  // overlay's lifetime so the animated clone never gets seen doubled up
+  // against the still-visible real glyph underneath. Sized/positioned
+  // identically to the overlay, colored to match the real background
+  // (highlighter color if the text is highlighted, otherwise the paper).
+  const mask = document.createElement("span");
+  mask.className = "typing-glyph-mask";
+  mask.style.left = `${(rect.left - originX).toFixed(2)}px`;
+  mask.style.top = `${(rect.top - originY).toFixed(2)}px`;
+  mask.style.width = `${Math.max(1, rect.width).toFixed(2)}px`;
+  mask.style.height = `${Math.max(1, rect.height).toFixed(2)}px`;
+  mask.style.backgroundColor = isOpaqueColor(style.backgroundColor) ? style.backgroundColor : "var(--paper)";
+  mark.append(mask);
 
   const glyph = document.createElement("span");
   glyph.className = `typing-glyph is-${role}`;
@@ -3526,8 +3663,8 @@ function caretRect() {
   if (!refs.editor.contains(range.startContainer)) return null;
   range.collapse(true);
   const rect = range.getClientRects()[0];
-  if (rect) return rect;
-  const editorRect = refs.editor.getBoundingClientRect();
+  if (rect) return fixedLayerRect(rect);
+  const editorRect = fixedLayerRect(refs.editor.getBoundingClientRect());
   const editorStyle = getComputedStyle(refs.editor);
   return {
     left: editorRect.left + (Number.parseFloat(editorStyle.paddingLeft) || 0),

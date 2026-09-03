@@ -2073,6 +2073,15 @@ body[data-effect="paper-fiber"] .caret-glow {
   z-index: 2;
 }
 
+.typing-glyph-mask {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 1px;
+}
+
 .typing-core,
 .typing-particle,
 .typing-core-star {
@@ -2546,8 +2555,8 @@ body[data-effect="paper-fiber"] .caret-glow {
   text-shadow: none;
   mix-blend-mode: multiply;
   animation:
-    glyph-impact-settle var(--glyph-impact-life) ease-out forwards,
-    glyph-paper-fiber-dry var(--glyph-life) steps(2, end) forwards;
+    glyph-impact-settle var(--glyph-impact-life) steps(3, end) forwards,
+    glyph-paper-fiber-dry var(--glyph-life) steps(3, end) forwards;
 }
 
 .typing-mark.effect-paper-fiber .typing-particle {
@@ -2864,24 +2873,34 @@ body[data-effect="paper-fiber"] .caret-glow {
     color: var(--glyph-hot-color);
     transform:
       translateY(calc(var(--glyph-motion-px) * 0.52))
-      scale(var(--glyph-squash-x, 1.06), var(--glyph-squash-y, 0.92));
+      scale(var(--glyph-squash-x, 1.08), var(--glyph-squash-y, 0.88));
     text-shadow:
       0 0 2px rgba(255, 255, 255, var(--glyph-flash-alpha)),
       0 0 calc(var(--glyph-glow-size) * 0.62) var(--glyph-glow-color);
   }
 
-  34% {
-    opacity: calc(var(--glyph-alpha) * 0.72);
+  26% {
+    opacity: var(--glyph-alpha);
     color: var(--glyph-accent-color);
     transform:
-      translateY(calc(var(--glyph-motion-px) * -0.58))
-      scale(var(--glyph-stretch-x, 0.98), var(--glyph-stretch-y, 1.04));
+      translateY(calc(var(--glyph-motion-px) * -0.7))
+      scale(var(--glyph-stretch-x, 0.96), var(--glyph-stretch-y, 1.08));
   }
 
-  58% {
-    opacity: calc(var(--glyph-alpha) * 0.36);
+  46% {
+    opacity: calc(var(--glyph-alpha) * 0.7);
     color: var(--glyph-alt-color);
-    transform: translateY(calc(var(--glyph-motion-px) * 0.12)) scale(1.012, 0.994);
+    transform: translateY(calc(var(--glyph-motion-px) * 0.24)) scale(1.03, 0.97);
+  }
+
+  64% {
+    opacity: calc(var(--glyph-alpha) * 0.46);
+    transform: translateY(calc(var(--glyph-motion-px) * -0.22)) scale(0.99, 1.02);
+  }
+
+  82% {
+    opacity: calc(var(--glyph-alpha) * 0.2);
+    transform: translateY(calc(var(--glyph-motion-px) * 0.06)) scale(1.008, 0.996);
   }
 
   100% {
@@ -2979,26 +2998,37 @@ body[data-effect="paper-fiber"] .caret-glow {
   0% {
     opacity: var(--glyph-alpha);
     color: var(--glyph-hot-color);
-    filter: blur(var(--glyph-blur));
+    filter: blur(calc(var(--glyph-blur) * 1.5));
     transform:
-      translate(calc(var(--glyph-motion-px) * -0.12), calc(var(--glyph-motion-px) * 0.6))
-      scale(1.01)
-      rotate(calc(var(--glyph-rotate-amount) * -0.5));
-    text-shadow: none;
+      translateY(calc(var(--glyph-motion-px) * -0.9))
+      scale(var(--glyph-stretch-x, 1.04), var(--glyph-stretch-y, 0.8));
+    text-shadow: 0 1px 1px rgba(24, 16, 10, 0.28);
   }
 
-  42% {
-    opacity: calc(var(--glyph-alpha) * 0.48);
+  14% {
+    opacity: var(--glyph-alpha);
+    color: var(--glyph-hot-color);
+    filter: blur(calc(var(--glyph-blur) * 1.1));
+    transform:
+      translateY(calc(var(--glyph-motion-px) * 0.62))
+      scale(var(--glyph-squash-x, 1.16), var(--glyph-squash-y, 0.8));
+    text-shadow: 0 2px 3px rgba(24, 16, 10, 0.45);
+  }
+
+  40% {
+    opacity: calc(var(--glyph-alpha) * 0.64);
     color: var(--glyph-accent-color);
-    filter: blur(0.12px);
-    transform: translate(0, calc(var(--glyph-motion-px) * 0.18)) scale(1.004);
+    filter: blur(0.35px);
+    transform: translateY(calc(var(--glyph-motion-px) * -0.06)) scale(1.018, 1.035);
+    text-shadow: 0 1px 1px rgba(24, 16, 10, 0.18);
   }
 
   100% {
     opacity: 0;
     color: var(--glyph-base-color);
     filter: blur(0);
-    transform: translate(0, 0) scale(1);
+    transform: translateY(0) scale(1);
+    text-shadow: none;
   }
 }
 
@@ -3007,28 +3037,23 @@ body[data-effect="paper-fiber"] .caret-glow {
     opacity: var(--glyph-alpha);
     color: var(--glyph-hot-color);
     transform:
-      translateY(calc(var(--glyph-motion-px) * 0.38))
-      scale(0.985);
+      translateY(calc(var(--glyph-motion-px) * 0.3))
+      scale(0.99);
     text-shadow:
       0 0 calc(var(--glyph-glow-size) * 0.55) var(--glyph-glow-color),
       0 0 var(--glyph-glow-size) var(--glyph-alt-glow-color);
   }
 
-  38% {
-    opacity: calc(var(--glyph-alpha) * 0.58);
+  55% {
+    opacity: calc(var(--glyph-alpha) * 0.5);
     color: var(--glyph-accent-color);
-    transform: translateY(calc(var(--glyph-motion-px) * -0.74)) scale(var(--glyph-scale-pop));
-  }
-
-  68% {
-    opacity: calc(var(--glyph-alpha) * 0.22);
-    transform: translateY(calc(var(--glyph-motion-px) * -0.32)) scale(1.006);
+    transform: translateY(calc(var(--glyph-motion-px) * -0.85)) scale(var(--glyph-scale-pop));
   }
 
   100% {
     opacity: 0;
     color: var(--glyph-base-color);
-    transform: translateY(0) scale(1);
+    transform: translateY(calc(var(--glyph-motion-px) * -1.1)) scale(1);
     text-shadow: none;
   }
 }
@@ -3037,27 +3062,40 @@ body[data-effect="paper-fiber"] .caret-glow {
   0% {
     opacity: var(--glyph-alpha);
     color: var(--glyph-hot-color);
-    transform: translate(calc(var(--glyph-motion-px) * 0.9), 0);
+    transform: translate(calc(var(--glyph-motion-px) * 1.05), calc(var(--glyph-motion-px) * -0.5));
     text-shadow:
       calc(var(--glyph-split) * -0.7) 0 0 var(--glyph-alt-color),
       calc(var(--glyph-split) * 0.65) 0 0 var(--glyph-accent-color);
   }
 
-  24% {
-    opacity: calc(var(--glyph-alpha) * 0.85);
-    transform: translate(calc(var(--glyph-motion-px) * -0.7), calc(var(--glyph-motion-px) * 0.34));
+  16% {
+    opacity: var(--glyph-alpha);
+    transform: translate(calc(var(--glyph-motion-px) * -0.85), calc(var(--glyph-motion-px) * 0.5));
+  }
+
+  32% {
+    opacity: calc(var(--glyph-alpha) * 0.9);
+    transform: translate(calc(var(--glyph-motion-px) * 0.6), calc(var(--glyph-motion-px) * -0.32));
+    text-shadow:
+      calc(var(--glyph-split) * -0.5) 0 0 var(--glyph-alt-color),
+      calc(var(--glyph-split) * 0.46) 0 0 var(--glyph-accent-color);
   }
 
   48% {
-    opacity: calc(var(--glyph-alpha) * 0.5);
-    transform: translate(calc(var(--glyph-motion-px) * 0.32), calc(var(--glyph-motion-px) * -0.24));
-    text-shadow:
-      calc(var(--glyph-split) * -0.38) 0 0 var(--glyph-alt-color),
-      calc(var(--glyph-split) * 0.38) 0 0 var(--glyph-accent-color);
+    opacity: calc(var(--glyph-alpha) * 0.68);
+    transform: translate(calc(var(--glyph-motion-px) * -0.38), calc(var(--glyph-motion-px) * 0.2));
   }
 
-  76% {
-    opacity: calc(var(--glyph-alpha) * 0.2);
+  64% {
+    opacity: calc(var(--glyph-alpha) * 0.42);
+    transform: translate(calc(var(--glyph-motion-px) * 0.2), calc(var(--glyph-motion-px) * -0.1));
+    text-shadow:
+      calc(var(--glyph-split) * -0.2) 0 0 var(--glyph-alt-color),
+      calc(var(--glyph-split) * 0.18) 0 0 var(--glyph-accent-color);
+  }
+
+  82% {
+    opacity: calc(var(--glyph-alpha) * 0.18);
     transform: translate(0, 0);
     text-shadow: none;
   }
@@ -3238,14 +3276,31 @@ body[data-effect="paper-fiber"] .caret-glow {
     color: var(--glyph-hot-color);
     filter: blur(var(--glyph-blur));
     transform:
-      translateX(calc(var(--glyph-motion-px) * 0.58))
-      rotate(calc(var(--glyph-rotate-amount) * -0.6));
+      translateX(calc(var(--glyph-motion-px) * 0.85))
+      rotate(calc(var(--glyph-rotate-amount) * -0.75));
   }
 
-  34% {
-    opacity: calc(var(--glyph-alpha) * 0.46);
+  22% {
+    opacity: var(--glyph-alpha);
+    color: var(--glyph-hot-color);
+    filter: blur(calc(var(--glyph-blur) * 0.7));
+    transform:
+      translateX(calc(var(--glyph-motion-px) * 0.3))
+      rotate(calc(var(--glyph-rotate-amount) * -0.3));
+  }
+
+  46% {
+    opacity: calc(var(--glyph-alpha) * 0.6);
     color: var(--glyph-accent-color);
-    transform: translateX(calc(var(--glyph-motion-px) * -0.18));
+    filter: blur(calc(var(--glyph-blur) * 0.4));
+    transform:
+      translateX(calc(var(--glyph-motion-px) * -0.14))
+      rotate(calc(var(--glyph-rotate-amount) * 0.12));
+  }
+
+  70% {
+    opacity: calc(var(--glyph-alpha) * 0.3);
+    transform: translateX(calc(var(--glyph-motion-px) * -0.04)) rotate(0deg);
   }
 
   100% {
