@@ -307,6 +307,108 @@ const EFFECT_PRESETS = {
     primary: "#b8bddf",
     secondary: "#fff7ce",
     aura: "rgba(184, 189, 223, 0.2)"
+  },
+  "aurora-veil": {
+    label: "Aurora Veil",
+    description: "Iridescent ribbons slide through the newest glyph with a soft glassy afterglow.",
+    particles: 7,
+    life: 680,
+    core: 1.12,
+    spread: 43.5,
+    lift: 7.7,
+    glyphX: -0.42,
+    glyphY: 0.18,
+    glyphScale: 1.018,
+    glyphRotate: -0.24,
+    special: 0.255,
+    primary: "#6edeea",
+    secondary: "#c7a8ff",
+    aura: "rgba(110, 222, 234, 0.22)"
+  },
+  "firefly-glow": {
+    label: "Firefly Glow",
+    description: "Warm tiny lights blink near the caret and drift upward like a quiet study lamp.",
+    particles: 7,
+    life: 780,
+    core: 1.04,
+    spread: 35.2,
+    lift: 15.4,
+    glyphX: -0.27,
+    glyphY: 0.54,
+    glyphScale: 1.016,
+    glyphRotate: 0.18,
+    special: 0.24,
+    primary: "#d8b94c",
+    secondary: "#8fcf8d",
+    aura: "rgba(216, 185, 76, 0.2)"
+  },
+  "petal-bloom": {
+    label: "Petal Bloom",
+    description: "Soft petals open from the typed character with a light rose-and-sage bounce.",
+    particles: 8,
+    life: 720,
+    core: 1.18,
+    spread: 38.5,
+    lift: 10.5,
+    glyphX: -0.36,
+    glyphY: 1.08,
+    glyphScale: 1.032,
+    glyphRotate: -0.42,
+    special: 0.23,
+    primary: "#e9a4b6",
+    secondary: "#9fc3a2",
+    aura: "rgba(233, 164, 182, 0.2)"
+  },
+  "neon-rain": {
+    label: "Neon Rain",
+    description: "Thin luminous drops scan past the glyph, crisp but still small and local.",
+    particles: 8,
+    life: 430,
+    core: 1.22,
+    spread: 34.8,
+    lift: -1.4,
+    glyphX: 1.35,
+    glyphY: -0.27,
+    glyphScale: 1.01,
+    glyphRotate: 0.12,
+    special: 0.28,
+    primary: "#54e5ff",
+    secondary: "#ff72d2",
+    aura: "rgba(84, 229, 255, 0.24)"
+  },
+  "velvet-smoke": {
+    label: "Velvet Smoke",
+    description: "A soft smoky bloom wraps the latest glyph, then dissolves into paper-like haze.",
+    particles: 6,
+    life: 820,
+    core: 1.08,
+    spread: 28.8,
+    lift: 6.3,
+    glyphX: -0.54,
+    glyphY: 0.9,
+    glyphScale: 1.018,
+    glyphRotate: -0.18,
+    special: 0.16,
+    primary: "#8d8092",
+    secondary: "#d7c7da",
+    aura: "rgba(141, 128, 146, 0.16)"
+  },
+  "ember-glow": {
+    label: "Ember Glow",
+    description: "A gentle amber flash with tiny ember sparks that lift away and fade fast.",
+    particles: 8,
+    life: 560,
+    core: 1.26,
+    spread: 37.2,
+    lift: 12.6,
+    glyphX: 0.54,
+    glyphY: -0.36,
+    glyphScale: 1.02,
+    glyphRotate: 0.36,
+    special: 0.27,
+    primary: "#ee9f63",
+    secondary: "#ffe08a",
+    aura: "rgba(238, 159, 99, 0.21)"
   }
 };
 
@@ -522,6 +624,108 @@ const GLYPH_EFFECT_PROFILES = {
     hot: "#fffef2",
     accent: "#b8bddf",
     alt: "#fff7ce"
+  },
+  "aurora-veil": {
+    duration: 430,
+    impact: 0.34,
+    echoDuration: 145,
+    echo: 0.22,
+    motion: 0.28,
+    split: 0.64,
+    scale: 0.72,
+    rotate: 0.12,
+    glow: 1.36,
+    flash: 0.82,
+    alpha: 0.68,
+    blur: 0.04,
+    hot: "#f4fffb",
+    accent: "#6edeea",
+    alt: "#c7a8ff"
+  },
+  "firefly-glow": {
+    duration: 520,
+    impact: 0.32,
+    echoDuration: 170,
+    echo: 0.2,
+    motion: 0.34,
+    split: 0.34,
+    scale: 0.86,
+    rotate: 0.08,
+    glow: 1.1,
+    flash: 0.7,
+    alpha: 0.64,
+    blur: 0.08,
+    hot: "#fff7cf",
+    accent: "#d8b94c",
+    alt: "#8fcf8d"
+  },
+  "petal-bloom": {
+    duration: 450,
+    impact: 0.58,
+    echoDuration: 125,
+    echo: 0.13,
+    motion: 0.72,
+    split: 0.24,
+    scale: 1.15,
+    rotate: 0.36,
+    glow: 0.72,
+    flash: 0.72,
+    alpha: 0.66,
+    blur: 0.05,
+    hot: "#fff2f6",
+    accent: "#e9a4b6",
+    alt: "#9fc3a2"
+  },
+  "neon-rain": {
+    duration: 185,
+    impact: 0.9,
+    echoDuration: 80,
+    echo: 0.25,
+    motion: 1.15,
+    split: 1.05,
+    scale: 0.24,
+    rotate: 0.08,
+    glow: 1.28,
+    flash: 0.86,
+    alpha: 0.78,
+    blur: 0,
+    hot: "#f2fdff",
+    accent: "#54e5ff",
+    alt: "#ff72d2"
+  },
+  "velvet-smoke": {
+    duration: 520,
+    impact: 0.26,
+    echoDuration: 170,
+    echo: 0.16,
+    motion: 0.36,
+    split: 0.18,
+    scale: 0.62,
+    rotate: 0.22,
+    glow: 0.22,
+    flash: 0.34,
+    alpha: 0.48,
+    blur: 1.55,
+    hot: "#5f5363",
+    accent: "#8d8092",
+    alt: "#d7c7da"
+  },
+  "ember-glow": {
+    duration: 320,
+    impact: 0.8,
+    echoDuration: 100,
+    echo: 0.14,
+    motion: 1.05,
+    split: 0.38,
+    scale: 0.72,
+    rotate: 0.42,
+    glow: 1.18,
+    flash: 0.88,
+    alpha: 0.74,
+    blur: 0.06,
+    hot: "#fff1ca",
+    accent: "#ee9f63",
+    alt: "#ffe08a"
   }
 };
 
@@ -2383,6 +2587,94 @@ function drawFxShape(ctx, p, s) {
       ctx.fill();
       break;
     }
+    case "ribbon": {
+      const w = s * 1.85;
+      const h = Math.max(2, s * 0.28);
+      const rg = ctx.createLinearGradient(-w / 2, 0, w / 2, 0);
+      rg.addColorStop(0, "transparent");
+      rg.addColorStop(0.18, p.colorA);
+      rg.addColorStop(0.58, p.colorB || p.colorA);
+      rg.addColorStop(1, "transparent");
+      ctx.beginPath();
+      ctx.moveTo(-w / 2, 0);
+      ctx.bezierCurveTo(-w * 0.28, -h, w * 0.22, -h * 0.8, w / 2, 0);
+      ctx.bezierCurveTo(w * 0.18, h * 0.9, -w * 0.24, h, -w / 2, 0);
+      ctx.closePath();
+      ctx.fillStyle = rg;
+      ctx.fill();
+      ctx.globalAlpha *= 0.45;
+      ctx.strokeStyle = "rgba(255,255,255,0.78)";
+      ctx.lineWidth = Math.max(0.45, h * 0.14);
+      ctx.beginPath();
+      ctx.moveTo(-w * 0.38, -h * 0.08);
+      ctx.bezierCurveTo(-w * 0.12, -h * 0.52, w * 0.18, -h * 0.38, w * 0.38, -h * 0.04);
+      ctx.stroke();
+      break;
+    }
+    case "petal": {
+      const pg = ctx.createLinearGradient(0, -s * 0.56, 0, s * 0.5);
+      pg.addColorStop(0, "#fff7fa");
+      pg.addColorStop(0.46, p.colorA);
+      pg.addColorStop(1, p.colorB || p.colorA);
+      ctx.beginPath();
+      ctx.moveTo(0, -s * 0.56);
+      ctx.bezierCurveTo(s * 0.44, -s * 0.2, s * 0.34, s * 0.32, 0, s * 0.54);
+      ctx.bezierCurveTo(-s * 0.34, s * 0.28, -s * 0.4, -s * 0.18, 0, -s * 0.56);
+      ctx.closePath();
+      ctx.fillStyle = pg;
+      ctx.fill();
+      ctx.globalAlpha *= 0.38;
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = Math.max(0.45, s * 0.035);
+      ctx.beginPath();
+      ctx.moveTo(0, -s * 0.38);
+      ctx.quadraticCurveTo(s * 0.06, 0, 0, s * 0.36);
+      ctx.stroke();
+      break;
+    }
+    case "streak": {
+      const w = Math.max(1.2, s * 0.16);
+      const h = s * 1.45;
+      const sg = ctx.createLinearGradient(0, -h / 2, 0, h / 2);
+      sg.addColorStop(0, "transparent");
+      sg.addColorStop(0.24, p.colorB || p.colorA);
+      sg.addColorStop(0.52, "#ffffff");
+      sg.addColorStop(0.78, p.colorA);
+      sg.addColorStop(1, "transparent");
+      ctx.fillStyle = sg;
+      ctx.fillRect(-w / 2, -h / 2, w, h);
+      break;
+    }
+    case "smoke": {
+      const sg = ctx.createRadialGradient(-s * 0.12, -s * 0.15, 0, 0, 0, Math.max(s * 0.55, 0.5));
+      sg.addColorStop(0, hexToRgba(p.colorB || "#ffffff", 0.52));
+      sg.addColorStop(0.48, hexToRgba(p.colorA, 0.32));
+      sg.addColorStop(1, "rgba(255,255,255,0)");
+      ctx.fillStyle = sg;
+      ctx.beginPath();
+      ctx.arc(0, 0, s * 0.52, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha *= 0.42;
+      ctx.beginPath();
+      ctx.arc(-s * 0.18, s * 0.03, s * 0.34, 0, Math.PI * 2);
+      ctx.arc(s * 0.22, -s * 0.08, s * 0.28, 0, Math.PI * 2);
+      ctx.fill();
+      break;
+    }
+    case "ember": {
+      const eg = ctx.createLinearGradient(0, -s * 0.55, 0, s * 0.5);
+      eg.addColorStop(0, "#fff8dc");
+      eg.addColorStop(0.5, p.colorB || p.colorA);
+      eg.addColorStop(1, p.colorA);
+      ctx.beginPath();
+      ctx.moveTo(0, -s * 0.56);
+      ctx.bezierCurveTo(s * 0.42, -s * 0.1, s * 0.2, s * 0.42, 0, s * 0.52);
+      ctx.bezierCurveTo(-s * 0.24, s * 0.36, -s * 0.34, -s * 0.08, 0, -s * 0.56);
+      ctx.closePath();
+      ctx.fillStyle = eg;
+      ctx.fill();
+      break;
+    }
     default:
       ctx.beginPath();
       ctx.arc(0, 0, s / 2, 0, Math.PI * 2);
@@ -3159,6 +3451,387 @@ function buildMoonPearlBurst(opts) {
   }
 }
 
+function buildAuroraVeilBurst(opts) {
+  const { x, y, isSpecial, speedScale } = opts;
+  const now = performance.now();
+  addFxParticle({
+    start: now,
+    life: fxRand(420, 560) * speedScale,
+    x,
+    y,
+    vx: 0,
+    vy: -3,
+    size: fxRand(isSpecial ? 30 : 24, isSpecial ? 42 : 34),
+    rotation: fxRand(-10, 10),
+    rotSpeed: fxRand(-18, 18),
+    shape: "ribbon",
+    colorA: "#6edeea",
+    colorB: "#c7a8ff",
+    glow: fxGlow(opts, 7),
+    peakAlpha: 0.88,
+    sizeKeyframes: [
+      [0, 0.18],
+      [0.22, 1.08],
+      [0.72, 0.92],
+      [1, 0.36]
+    ],
+    alphaKeyframes: [
+      [0, 0],
+      [0.12, 1],
+      [0.72, 0.58],
+      [1, 0]
+    ]
+  });
+  const ribbonCount = clamp(fxCount(5, opts), 4, 8);
+  for (let i = 0; i < ribbonCount; i += 1) {
+    const angle = fxRand(-0.72, 0.72) + (i % 2 ? 0 : Math.PI);
+    const speed = fxRand(18, 48);
+    addFxParticle({
+      start: now + i * 12,
+      life: fxRand(380, 620) * speedScale,
+      x: x + fxRand(-6, 6),
+      y: y + fxRand(-5, 5),
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 6,
+      ax: -Math.cos(angle) * speed * 0.38,
+      ay: -4,
+      size: fxRand(18, 34),
+      rotation: (angle * 180) / Math.PI + fxRand(-16, 16),
+      rotSpeed: fxRand(-24, 24),
+      shape: "ribbon",
+      colorA: Math.random() < 0.5 ? "#6edeea" : "#b4f0d8",
+      colorB: Math.random() < 0.5 ? "#c7a8ff" : "#f7d7ff",
+      glow: fxGlow(opts, 4.5),
+      peakAlpha: fxRand(0.56, 0.82)
+    });
+  }
+  const moteCount = clamp(fxCount(5, opts), 4, 9);
+  for (let i = 0; i < moteCount; i += 1) {
+    const angle = fxRand(0, Math.PI * 2);
+    const speed = fxRand(20, 62);
+    addFxParticle({
+      start: now + i * 9,
+      life: fxRand(420, 680) * speedScale,
+      x,
+      y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 12,
+      ax: -Math.cos(angle) * speed * 0.3,
+      ay: -8,
+      size: fxRand(2.5, 5.8),
+      shape: Math.random() < 0.62 ? "pearl" : "star4",
+      colorA: "#d7fff6",
+      colorB: Math.random() < 0.5 ? "#6edeea" : "#c7a8ff",
+      glow: fxGlow(opts, 3.5),
+      peakAlpha: fxRand(0.62, 0.9)
+    });
+  }
+}
+
+function buildFireflyGlowBurst(opts) {
+  const { x, y, isSpecial, speedScale } = opts;
+  const now = performance.now();
+  addFxParticle({
+    start: now,
+    life: fxRand(520, 740) * speedScale,
+    x,
+    y,
+    vx: 0,
+    vy: -9,
+    size: fxRand(isSpecial ? 18 : 13, isSpecial ? 25 : 18),
+    shape: "dot",
+    colorA: "#fff1a8",
+    colorB: "#8fcf8d",
+    glow: fxGlow(opts, 11),
+    peakAlpha: 0.9,
+    sizeKeyframes: [
+      [0, 0.12],
+      [0.16, 1.05],
+      [0.36, 0.72],
+      [0.58, 1.02],
+      [1, 0.36]
+    ],
+    alphaKeyframes: [
+      [0, 0],
+      [0.14, 1],
+      [0.36, 0.42],
+      [0.55, 0.95],
+      [0.74, 0.36],
+      [1, 0]
+    ]
+  });
+  const count = clamp(fxCount(9, opts), 6, 14);
+  for (let i = 0; i < count; i += 1) {
+    const angle = fxRand(-Math.PI * 0.98, -Math.PI * 0.02);
+    const speed = fxRand(18, 52);
+    const twinkleAt = fxRand(0.42, 0.72);
+    addFxParticle({
+      start: now + i * 15,
+      life: fxRand(540, 900) * speedScale,
+      x: x + fxRand(-5, 5),
+      y: y + fxRand(-4, 5),
+      vx: Math.cos(angle) * speed * 0.78,
+      vy: Math.sin(angle) * speed - 12,
+      ax: fxRand(-5, 5),
+      ay: -4,
+      size: fxRand(2.8, isSpecial ? 8 : 6.4),
+      shape: Math.random() < 0.22 ? "star4" : "dot",
+      colorA: Math.random() < 0.5 ? "#fff1a8" : "#d8b94c",
+      colorB: "#8fcf8d",
+      glow: fxGlow(opts, 6),
+      peakAlpha: fxRand(0.62, 0.95),
+      alphaKeyframes: [
+        [0, 0],
+        [0.18, 0.9],
+        [Math.max(0.2, twinkleAt - 0.18), 0.34],
+        [twinkleAt, 1],
+        [Math.min(0.94, twinkleAt + 0.16), 0.28],
+        [1, 0]
+      ]
+    });
+  }
+}
+
+function buildPetalBloomBurst(opts) {
+  const { x, y, isSpecial, speedScale } = opts;
+  const now = performance.now();
+  addFxParticle({
+    start: now,
+    life: 360 * speedScale,
+    x,
+    y,
+    vx: 0,
+    vy: -3,
+    size: fxRand(isSpecial ? 28 : 20, isSpecial ? 38 : 28),
+    shape: "ring",
+    colorA: "rgba(233, 164, 182, 0.7)",
+    peakAlpha: 0.64,
+    sizeKeyframes: [
+      [0, 0.18],
+      [0.55, 1.25],
+      [1, 1.65]
+    ],
+    alphaKeyframes: [
+      [0, 0.64],
+      [0.42, 0.38],
+      [1, 0]
+    ]
+  });
+  const count = clamp(fxCount(10, opts), 7, 15);
+  for (let i = 0; i < count; i += 1) {
+    const angle = (Math.PI * 2 * i) / count + fxRand(-0.24, 0.24);
+    const speed = fxRand(28, 82);
+    addFxParticle({
+      start: now + i * 8,
+      life: fxRand(420, 760) * speedScale,
+      x,
+      y,
+      vx: Math.cos(angle) * speed * 0.72,
+      vy: Math.sin(angle) * speed * 0.48 - 18,
+      ax: -Math.cos(angle) * speed * 0.22,
+      ay: 26,
+      size: fxRand(7, isSpecial ? 14 : 11),
+      rotation: (angle * 180) / Math.PI + fxRand(-26, 26),
+      rotSpeed: fxRand(-95, 95),
+      shape: "petal",
+      colorA: Math.random() < 0.68 ? "#e9a4b6" : "#f5c6d2",
+      colorB: Math.random() < 0.5 ? "#9fc3a2" : "#f7e4eb",
+      glow: fxGlow(opts, 2.6),
+      peakAlpha: fxRand(0.58, 0.86)
+    });
+  }
+}
+
+function buildNeonRainBurst(opts) {
+  const { x, y, isSpecial, speedScale } = opts;
+  const now = performance.now();
+  addFxParticle({
+    start: now,
+    life: 130 * speedScale,
+    x,
+    y,
+    vx: 0,
+    vy: 0,
+    size: fxRand(isSpecial ? 34 : 24, isSpecial ? 48 : 34),
+    rotation: 0,
+    shape: "streak",
+    colorA: "#54e5ff",
+    colorB: "#ff72d2",
+    glow: fxGlow(opts, 12),
+    peakAlpha: 0.92,
+    sizeKeyframes: [
+      [0, 0.18],
+      [0.24, 1],
+      [1, 0.22]
+    ],
+    alphaKeyframes: [
+      [0, 1],
+      [0.55, 0.66],
+      [1, 0]
+    ]
+  });
+  const count = clamp(fxCount(9, opts), 6, 14);
+  for (let i = 0; i < count; i += 1) {
+    const side = i % 2 === 0 ? -1 : 1;
+    const speed = fxRand(74, 160);
+    addFxParticle({
+      start: now + i * 7,
+      life: fxRand(160, 320) * speedScale,
+      x: x + side * fxRand(2, 28),
+      y: y - fxRand(18, 38),
+      vx: side * fxRand(2, 16),
+      vy: speed,
+      ax: 0,
+      ay: -speed * 0.42,
+      size: fxRand(9, 22),
+      rotation: fxRand(-5, 5),
+      shape: Math.random() < 0.72 ? "streak" : "square",
+      colorA: Math.random() < 0.5 ? "#54e5ff" : "#ff72d2",
+      colorB: Math.random() < 0.5 ? "#ffffff" : "#9ef5ff",
+      glow: fxGlow(opts, 5.5),
+      peakAlpha: fxRand(0.68, 1),
+      sizeKeyframes: [
+        [0, 0.72],
+        [0.62, 1],
+        [1, 0]
+      ],
+      alphaKeyframes: [
+        [0, 0],
+        [0.12, 1],
+        [0.72, 0.82],
+        [1, 0]
+      ],
+      extra: { trail: [0, -3] }
+    });
+  }
+}
+
+function buildVelvetSmokeBurst(opts) {
+  const { x, y, isSpecial, speedScale } = opts;
+  const now = performance.now();
+  addFxParticle({
+    start: now,
+    life: fxRand(560, 760) * speedScale,
+    x,
+    y,
+    vx: 0,
+    vy: -8,
+    ax: 0,
+    ay: -4,
+    size: fxRand(isSpecial ? 28 : 20, isSpecial ? 40 : 30),
+    rotation: fxRand(-8, 8),
+    rotSpeed: fxRand(-16, 16),
+    shape: "smoke",
+    colorA: "#8d8092",
+    colorB: "#efe6f0",
+    glow: fxGlow(opts, 2),
+    peakAlpha: 0.64,
+    sizeKeyframes: [
+      [0, 0.22],
+      [0.36, 1],
+      [1, 1.82]
+    ],
+    alphaKeyframes: [
+      [0, 0],
+      [0.18, 0.8],
+      [0.62, 0.42],
+      [1, 0]
+    ]
+  });
+  const count = clamp(fxCount(7, opts), 5, 11);
+  for (let i = 0; i < count; i += 1) {
+    const angle = fxRand(-Math.PI, 0);
+    const speed = fxRand(10, 34);
+    addFxParticle({
+      start: now + i * 20,
+      life: fxRand(620, 980) * speedScale,
+      x: x + fxRand(-4, 4),
+      y: y + fxRand(-2, 7),
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 7,
+      ax: fxRand(-4, 4),
+      ay: -3,
+      size: fxRand(8, isSpecial ? 20 : 16),
+      rotation: fxRand(0, 360),
+      rotSpeed: fxRand(-18, 18),
+      shape: "smoke",
+      colorA: "#8d8092",
+      colorB: Math.random() < 0.5 ? "#d7c7da" : "#f2e9ef",
+      glow: 0,
+      peakAlpha: fxRand(0.32, 0.58),
+      sizeKeyframes: [
+        [0, 0.42],
+        [0.5, 1.18],
+        [1, 1.9]
+      ],
+      alphaKeyframes: [
+        [0, 0],
+        [0.2, 0.72],
+        [0.72, 0.26],
+        [1, 0]
+      ]
+    });
+  }
+}
+
+function buildEmberGlowBurst(opts) {
+  const { x, y, isSpecial, speedScale } = opts;
+  const now = performance.now();
+  addFxParticle({
+    start: now,
+    life: fxRand(220, 340) * speedScale,
+    x,
+    y,
+    vx: 0,
+    vy: -4,
+    size: fxRand(isSpecial ? 24 : 17, isSpecial ? 34 : 24),
+    shape: "dot",
+    colorA: "#fff1ca",
+    colorB: "#ee9f63",
+    glow: fxGlow(opts, 12),
+    peakAlpha: 0.94,
+    sizeKeyframes: [
+      [0, 0.16],
+      [0.18, 1.14],
+      [0.42, 0.72],
+      [1, 0.22]
+    ],
+    alphaKeyframes: [
+      [0, 0.95],
+      [0.3, 0.7],
+      [1, 0]
+    ]
+  });
+  const count = clamp(fxCount(10, opts), 7, 15);
+  for (let i = 0; i < count; i += 1) {
+    const angle = fxRand(-Math.PI * 0.95, -Math.PI * 0.05);
+    const speed = fxRand(42, 115);
+    addFxParticle({
+      start: now + i * 8,
+      life: fxRand(260, 560) * speedScale,
+      x: x + fxRand(-3, 3),
+      y,
+      vx: Math.cos(angle) * speed * 0.7,
+      vy: Math.sin(angle) * speed - 8,
+      ax: -Math.cos(angle) * speed * 0.22,
+      ay: 42,
+      size: fxRand(3.2, isSpecial ? 9 : 7),
+      rotation: (angle * 180) / Math.PI + fxRand(-22, 22),
+      rotSpeed: fxRand(-140, 140),
+      shape: Math.random() < 0.62 ? "ember" : "dot",
+      colorA: Math.random() < 0.55 ? "#ee9f63" : "#ffbd74",
+      colorB: "#ffe08a",
+      glow: fxGlow(opts, 5),
+      peakAlpha: fxRand(0.64, 0.95),
+      sizeKeyframes: [
+        [0, 0.42],
+        [0.28, 1],
+        [1, 0.2]
+      ]
+    });
+  }
+}
+
 function buildSoftSparkBurst(opts) {
   const { x, y, speedScale } = opts;
   addFxParticle({
@@ -3214,7 +3887,13 @@ const BURST_BUILDERS = {
   "crystal-glass": buildCrystalBurst,
   constellation: buildConstellationBurst,
   "paper-fiber": buildPaperFiberBurst,
-  "moon-pearl": buildMoonPearlBurst
+  "moon-pearl": buildMoonPearlBurst,
+  "aurora-veil": buildAuroraVeilBurst,
+  "firefly-glow": buildFireflyGlowBurst,
+  "petal-bloom": buildPetalBloomBurst,
+  "neon-rain": buildNeonRainBurst,
+  "velvet-smoke": buildVelvetSmokeBurst,
+  "ember-glow": buildEmberGlowBurst
 };
 
 function spawnEffectBurst(mode, opts) {

@@ -2011,12 +2011,17 @@ body[data-effect="soft-bounce"] .typing-particle {
 
 body[data-effect="electric"] .caret-glow,
 body[data-effect="crystal-glass"] .caret-glow,
-body[data-effect="cyber-pink"] .caret-glow {
+body[data-effect="cyber-pink"] .caret-glow,
+body[data-effect="aurora-veil"] .caret-glow,
+body[data-effect="firefly-glow"] .caret-glow,
+body[data-effect="neon-rain"] .caret-glow,
+body[data-effect="ember-glow"] .caret-glow {
   background: linear-gradient(180deg, var(--effect-secondary), var(--effect-primary));
 }
 
 body[data-effect="ink"] .caret-glow,
-body[data-effect="paper-fiber"] .caret-glow {
+body[data-effect="paper-fiber"] .caret-glow,
+body[data-effect="velvet-smoke"] .caret-glow {
   border-radius: 6px 2px 7px 3px / 4px 8px 3px 6px;
   box-shadow: 0 0 10px color-mix(in srgb, var(--effect-primary) 24%, transparent);
 }
@@ -2605,6 +2610,255 @@ body[data-effect="paper-fiber"] .caret-glow {
     radial-gradient(circle at 34% 24%, white, transparent 32%),
     color-mix(in srgb, var(--effect-primary) 45%, var(--effect-secondary));
   animation-name: pearl-drift-local;
+}
+
+.typing-mark.effect-aurora-veil .typing-core {
+  width: 20px;
+  height: 10px;
+  margin-left: -10px;
+  margin-top: -5px;
+  border-radius: 50%;
+  background:
+    linear-gradient(90deg, transparent, var(--effect-primary), var(--effect-secondary), transparent);
+  filter: blur(0.18px);
+  box-shadow:
+    0 0 9px color-mix(in srgb, var(--effect-primary) 55%, transparent),
+    0 0 calc(12px + var(--effect-glow-size)) var(--effect-aura);
+  animation-name: aurora-core-local;
+}
+
+.typing-mark.effect-aurora-veil .typing-glyph {
+  color: transparent;
+  text-shadow:
+    -0.5px 0 var(--glyph-glow-color),
+    0.5px 0 var(--glyph-alt-glow-color),
+    0 0 calc(var(--glyph-glow-size) * 0.82) var(--glyph-glow-color);
+  filter: none;
+  animation:
+    glyph-impact-settle var(--glyph-impact-life) cubic-bezier(0.22, 1, 0.36, 1) forwards,
+    glyph-aurora-veil var(--glyph-life) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.typing-mark.effect-aurora-veil .typing-glyph::before {
+  color: var(--glyph-accent-color);
+  animation: glyph-aurora-cyan var(--glyph-life) ease-out forwards;
+}
+
+.typing-mark.effect-aurora-veil .typing-glyph::after {
+  color: var(--glyph-alt-color);
+  animation: glyph-aurora-violet var(--glyph-life) ease-out forwards;
+}
+
+.typing-mark.effect-aurora-veil .typing-glyph .glyph-sheen {
+  animation: glyph-aurora-sheen var(--glyph-life) ease-out forwards;
+}
+
+.typing-mark.effect-aurora-veil .typing-glyph .glyph-sheen::before {
+  color: transparent;
+  background: linear-gradient(100deg, transparent 0 28%, #ffffff 45%, var(--glyph-alt-color) 58%, transparent 76%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.typing-mark.effect-aurora-veil .typing-particle {
+  height: 4px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, transparent, var(--effect-primary), var(--effect-secondary), transparent);
+  filter: blur(0.2px) drop-shadow(0 0 7px var(--effect-aura));
+  animation-name: aurora-ribbon-local;
+}
+
+.typing-mark.effect-firefly-glow .typing-core {
+  background:
+    radial-gradient(circle at 42% 32%, white 0 18%, color-mix(in srgb, var(--effect-secondary) 54%, white) 20% 46%, transparent 62%),
+    color-mix(in srgb, var(--effect-primary) 76%, white);
+  box-shadow:
+    0 0 9px color-mix(in srgb, var(--effect-primary) 64%, transparent),
+    0 0 calc(13px + var(--effect-glow-size)) var(--effect-aura);
+  animation-name: firefly-core-local;
+}
+
+.typing-mark.effect-firefly-glow .typing-glyph {
+  color: var(--glyph-hot-color);
+  text-shadow:
+    0 0 calc(var(--glyph-glow-size) * 0.5) var(--glyph-glow-color),
+    0 0 calc(var(--glyph-glow-size) * 0.9) var(--glyph-alt-glow-color);
+  animation:
+    glyph-impact-settle var(--glyph-impact-life) cubic-bezier(0.16, 1, 0.3, 1) forwards,
+    glyph-firefly-warm var(--glyph-life) cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+.typing-mark.effect-firefly-glow .typing-glyph::after {
+  color: var(--glyph-alt-color);
+  animation: glyph-firefly-echo var(--glyph-life) ease-out forwards;
+}
+
+.typing-mark.effect-firefly-glow .typing-particle {
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, #ffffff 0 20%, var(--effect-secondary) 22% 45%, var(--effect-primary) 48% 68%, transparent 72%);
+  filter: drop-shadow(0 0 6px var(--effect-aura));
+  animation-name: firefly-drift-local;
+}
+
+.typing-mark.effect-petal-bloom .typing-core {
+  background:
+    radial-gradient(circle at 36% 24%, rgba(255, 255, 255, 0.94), transparent 30%),
+    color-mix(in srgb, var(--effect-primary) 64%, white);
+  border-radius: 56% 44% 54% 46% / 42% 58% 42% 58%;
+  box-shadow:
+    0 0 9px color-mix(in srgb, var(--effect-primary) 36%, transparent),
+    0 0 calc(8px + var(--effect-glow-size)) var(--effect-aura);
+  animation-name: petal-core-local;
+}
+
+.typing-mark.effect-petal-bloom .typing-glyph {
+  color: var(--glyph-hot-color);
+  text-shadow:
+    0 0 2px rgba(255, 255, 255, calc(var(--glyph-flash-alpha) * 0.7)),
+    0 0 calc(var(--glyph-glow-size) * 0.62) var(--glyph-glow-color);
+  animation:
+    glyph-impact-settle var(--glyph-impact-life) cubic-bezier(0.22, 1, 0.36, 1) forwards,
+    glyph-petal-bloom var(--glyph-life) cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.typing-mark.effect-petal-bloom .typing-glyph .glyph-sheen {
+  animation: glyph-petal-sheen var(--glyph-life) ease-out forwards;
+}
+
+.typing-mark.effect-petal-bloom .typing-glyph .glyph-sheen::before {
+  color: transparent;
+  background: linear-gradient(115deg, transparent 0 34%, #ffffff 48%, var(--glyph-accent-color) 60%, transparent 74%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.typing-mark.effect-petal-bloom .typing-particle {
+  border-radius: 68% 32% 62% 38% / 54% 44% 56% 46%;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), var(--effect-primary), var(--effect-secondary));
+  animation-name: petal-float-local;
+}
+
+.typing-mark.effect-neon-rain .typing-core {
+  width: 8px;
+  height: 22px;
+  margin-left: -4px;
+  margin-top: -11px;
+  border-radius: var(--pill);
+  background: linear-gradient(180deg, transparent, white, var(--effect-primary), var(--effect-secondary), transparent);
+  box-shadow:
+    0 0 9px color-mix(in srgb, var(--effect-primary) 68%, transparent),
+    0 0 calc(12px + var(--effect-glow-size)) var(--effect-aura);
+  animation-name: rain-core-local;
+}
+
+.typing-mark.effect-neon-rain .typing-glyph {
+  color: transparent;
+  text-shadow:
+    0 -1px var(--glyph-glow-color),
+    0 1px var(--glyph-alt-glow-color);
+  filter: none;
+  animation:
+    glyph-impact-settle var(--glyph-impact-life) steps(4, end) forwards,
+    glyph-neon-rain var(--glyph-life) steps(1, end) forwards;
+}
+
+.typing-mark.effect-neon-rain .typing-glyph::before {
+  color: var(--glyph-accent-color);
+  animation: glyph-rain-cyan var(--glyph-life) steps(1, end) forwards;
+}
+
+.typing-mark.effect-neon-rain .typing-glyph::after {
+  color: var(--glyph-alt-color);
+  animation: glyph-rain-magenta var(--glyph-life) steps(1, end) forwards;
+}
+
+.typing-mark.effect-neon-rain .typing-glyph .glyph-slice {
+  animation: glyph-rain-scan var(--glyph-life) steps(1, end) forwards;
+}
+
+.typing-mark.effect-neon-rain .typing-glyph .glyph-slice::before {
+  color: transparent;
+  background: linear-gradient(180deg, transparent 0 12%, #ffffff 28%, var(--glyph-accent-color) 45%, transparent 64%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.typing-mark.effect-neon-rain .typing-particle {
+  width: 2px;
+  border-radius: var(--pill);
+  background: linear-gradient(180deg, transparent, white, var(--effect-primary), transparent);
+  box-shadow: 0 0 8px var(--effect-aura);
+  animation-name: rain-streak-local;
+}
+
+.typing-mark.effect-velvet-smoke .typing-core {
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 38% 35%, color-mix(in srgb, var(--effect-secondary) 48%, transparent), transparent 55%),
+    color-mix(in srgb, var(--effect-primary) 28%, transparent);
+  filter: blur(1px);
+  mix-blend-mode: multiply;
+  box-shadow: 0 0 calc(9px + var(--effect-glow-size)) color-mix(in srgb, var(--effect-primary) 18%, transparent);
+  animation-name: smoke-core-local;
+}
+
+.typing-mark.effect-velvet-smoke .typing-glyph {
+  color: var(--glyph-hot-color);
+  mix-blend-mode: multiply;
+  text-shadow: none;
+  animation:
+    glyph-impact-settle var(--glyph-impact-life) ease-out forwards,
+    glyph-smoke-dissolve var(--glyph-life) ease-out forwards;
+}
+
+.typing-mark.effect-velvet-smoke .typing-glyph::before {
+  color: var(--glyph-alt-color);
+  filter: blur(calc(var(--glyph-blur) * 1.4));
+  animation: glyph-smoke-ghost var(--glyph-life) ease-out forwards;
+}
+
+.typing-mark.effect-velvet-smoke .typing-particle {
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, color-mix(in srgb, var(--effect-secondary) 52%, transparent) 0 32%, color-mix(in srgb, var(--effect-primary) 24%, transparent) 48%, transparent 72%);
+  filter: blur(0.6px);
+  mix-blend-mode: multiply;
+  animation-name: smoke-puff-local;
+}
+
+.typing-mark.effect-ember-glow .typing-core {
+  background:
+    radial-gradient(circle at 36% 24%, rgba(255, 255, 255, 0.96), transparent 27%),
+    radial-gradient(circle at 64% 70%, var(--effect-secondary), transparent 48%),
+    var(--effect-primary);
+  box-shadow:
+    0 0 10px color-mix(in srgb, var(--effect-secondary) 62%, transparent),
+    0 0 calc(12px + var(--effect-glow-size)) var(--effect-aura);
+  animation-name: ember-core-local;
+}
+
+.typing-mark.effect-ember-glow .typing-glyph {
+  color: var(--glyph-hot-color);
+  text-shadow:
+    0 0 2px rgba(255, 255, 255, var(--glyph-flash-alpha)),
+    0 0 calc(var(--glyph-glow-size) * 0.72) var(--glyph-glow-color),
+    0 0 calc(var(--glyph-glow-size) * 1.05) var(--glyph-alt-glow-color);
+  animation:
+    glyph-impact-settle var(--glyph-impact-life) cubic-bezier(0.22, 1, 0.36, 1) forwards,
+    glyph-ember-warm var(--glyph-life) cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+.typing-mark.effect-ember-glow .typing-glyph::after {
+  color: var(--glyph-alt-color);
+  animation: glyph-ember-afterglow var(--glyph-life) ease-out forwards;
+}
+
+.typing-mark.effect-ember-glow .typing-particle {
+  border-radius: 54% 46% 48% 52% / 70% 36% 64% 30%;
+  background: linear-gradient(180deg, #fff7d7, var(--effect-secondary), var(--effect-primary));
+  box-shadow: 0 0 7px var(--effect-aura);
+  animation-name: ember-rise-local;
 }
 
 @keyframes glyph-impact-settle {
@@ -3368,6 +3622,413 @@ body[data-effect="paper-fiber"] .caret-glow {
   }
 }
 
+@keyframes glyph-aurora-veil {
+  0% {
+    opacity: calc(var(--glyph-alpha) * 0.5);
+    transform:
+      translateY(calc(var(--glyph-motion-px) * -0.14))
+      scale(var(--glyph-scale-pop));
+    text-shadow:
+      -0.5px 0 var(--glyph-glow-color),
+      0.5px 0 var(--glyph-alt-glow-color),
+      0 0 calc(var(--glyph-glow-size) * 0.72) var(--glyph-glow-color);
+  }
+
+  18% {
+    opacity: var(--glyph-alpha);
+    transform:
+      translateY(calc(var(--glyph-motion-px) * -0.26))
+      scale(var(--glyph-scale-pop));
+    text-shadow:
+      -0.9px 0 var(--glyph-glow-color),
+      0.9px 0 var(--glyph-alt-glow-color),
+      0 0 calc(var(--glyph-glow-size) * 1.08) var(--glyph-glow-color);
+  }
+
+  58% {
+    opacity: calc(var(--glyph-alpha) * 0.44);
+    transform: translateY(calc(var(--glyph-motion-px) * -0.2)) scale(1.006);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(0) scale(1);
+    text-shadow: none;
+  }
+}
+
+@keyframes glyph-aurora-cyan {
+  0%,
+  24% {
+    opacity: calc(var(--glyph-alpha) * 0.42);
+    transform: translate(calc(var(--glyph-split) * -0.42), calc(var(--glyph-motion-px) * -0.08));
+  }
+
+  62% {
+    opacity: calc(var(--glyph-alpha) * 0.14);
+    transform: translate(calc(var(--glyph-split) * 0.12), 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes glyph-aurora-violet {
+  0%,
+  24% {
+    opacity: calc(var(--glyph-alpha) * 0.36);
+    transform: translate(calc(var(--glyph-split) * 0.42), calc(var(--glyph-motion-px) * 0.08));
+  }
+
+  62% {
+    opacity: calc(var(--glyph-alpha) * 0.12);
+    transform: translate(calc(var(--glyph-split) * -0.1), 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes glyph-aurora-sheen {
+  0%,
+  18% {
+    opacity: 0;
+    transform: translateX(-76%);
+  }
+
+  42% {
+    opacity: calc(var(--glyph-flash-alpha) * 0.5);
+  }
+
+  76% {
+    opacity: calc(var(--glyph-flash-alpha) * 0.12);
+    transform: translateX(82%);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(96%);
+  }
+}
+
+@keyframes glyph-firefly-warm {
+  0% {
+    opacity: calc(var(--glyph-alpha) * 0.52);
+    transform:
+      translateY(calc(var(--glyph-motion-px) * -0.08))
+      scale(var(--glyph-scale-pop));
+    text-shadow:
+      0 0 calc(var(--glyph-glow-size) * 0.48) var(--glyph-glow-color),
+      0 0 calc(var(--glyph-glow-size) * 0.84) var(--glyph-alt-glow-color);
+  }
+
+  18% {
+    opacity: var(--glyph-alpha);
+    transform:
+      translateY(calc(var(--glyph-motion-px) * -0.2))
+      scale(var(--glyph-scale-pop));
+    text-shadow:
+      0 0 2px rgba(255, 255, 255, var(--glyph-flash-alpha)),
+      0 0 calc(var(--glyph-glow-size) * 0.74) var(--glyph-glow-color),
+      0 0 calc(var(--glyph-glow-size) * 1.08) var(--glyph-alt-glow-color);
+  }
+
+  44% {
+    opacity: calc(var(--glyph-alpha) * 0.38);
+    transform: translateY(calc(var(--glyph-motion-px) * -0.34)) scale(1.006);
+  }
+
+  58% {
+    opacity: calc(var(--glyph-alpha) * 0.62);
+    transform: translateY(calc(var(--glyph-motion-px) * -0.26)) scale(1.012);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(0) scale(1);
+    text-shadow: none;
+  }
+}
+
+@keyframes glyph-firefly-echo {
+  0%,
+  26% {
+    opacity: calc(var(--glyph-alpha) * 0.22);
+    filter: blur(calc(var(--glyph-blur) * 0.7));
+    transform: translateY(calc(var(--glyph-motion-px) * -0.28));
+  }
+
+  60% {
+    opacity: calc(var(--glyph-alpha) * 0.12);
+    transform: translateY(calc(var(--glyph-motion-px) * -0.46));
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glyph-petal-bloom {
+  0% {
+    opacity: var(--glyph-alpha);
+    color: var(--glyph-hot-color);
+    transform:
+      translateY(calc(var(--glyph-motion-px) * 0.34))
+      rotate(calc(var(--glyph-rotate-amount) * -0.4))
+      scale(var(--glyph-squash-x, 1.08), var(--glyph-squash-y, 0.9));
+    text-shadow: 0 0 calc(var(--glyph-glow-size) * 0.56) var(--glyph-glow-color);
+  }
+
+  24% {
+    opacity: var(--glyph-alpha);
+    color: var(--glyph-accent-color);
+    transform:
+      translateY(calc(var(--glyph-motion-px) * -0.62))
+      rotate(calc(var(--glyph-rotate-amount) * 0.42))
+      scale(var(--glyph-stretch-x, 0.98), var(--glyph-stretch-y, 1.06));
+  }
+
+  52% {
+    opacity: calc(var(--glyph-alpha) * 0.48);
+    color: var(--glyph-alt-color);
+    transform: translateY(calc(var(--glyph-motion-px) * -0.28)) rotate(0deg) scale(1.01);
+  }
+
+  100% {
+    opacity: 0;
+    color: var(--glyph-base-color);
+    transform: translateY(0) rotate(0deg) scale(1);
+    text-shadow: none;
+  }
+}
+
+@keyframes glyph-petal-sheen {
+  0%,
+  16% {
+    opacity: 0;
+    transform: translateX(-66%) rotate(-2deg);
+  }
+
+  38% {
+    opacity: calc(var(--glyph-flash-alpha) * 0.4);
+  }
+
+  68% {
+    opacity: calc(var(--glyph-flash-alpha) * 0.12);
+    transform: translateX(72%) rotate(2deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(90%) rotate(0deg);
+  }
+}
+
+@keyframes glyph-neon-rain {
+  0% {
+    opacity: calc(var(--glyph-alpha) * 0.36);
+    transform: translateY(calc(var(--glyph-motion-px) * -0.7));
+    text-shadow:
+      0 -1px var(--glyph-glow-color),
+      0 1px var(--glyph-alt-glow-color);
+  }
+
+  18% {
+    opacity: var(--glyph-alpha);
+    transform: translateY(calc(var(--glyph-motion-px) * 0.4));
+  }
+
+  36% {
+    opacity: calc(var(--glyph-alpha) * 0.68);
+    transform: translateY(calc(var(--glyph-motion-px) * -0.24));
+    text-shadow:
+      0 -2px var(--glyph-glow-color),
+      0 2px var(--glyph-alt-glow-color);
+  }
+
+  58% {
+    opacity: calc(var(--glyph-alpha) * 0.32);
+    transform: translateY(calc(var(--glyph-motion-px) * 0.1));
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(0);
+    text-shadow: none;
+  }
+}
+
+@keyframes glyph-rain-cyan {
+  0%,
+  22% {
+    opacity: calc(var(--glyph-alpha) * 0.58);
+    transform: translate(0, calc(var(--glyph-motion-px) * -0.55));
+  }
+
+  44% {
+    opacity: calc(var(--glyph-alpha) * 0.26);
+    transform: translate(calc(var(--glyph-split) * -0.18), calc(var(--glyph-motion-px) * 0.25));
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes glyph-rain-magenta {
+  0%,
+  22% {
+    opacity: calc(var(--glyph-alpha) * 0.48);
+    transform: translate(calc(var(--glyph-split) * 0.24), calc(var(--glyph-motion-px) * 0.42));
+  }
+
+  44% {
+    opacity: calc(var(--glyph-alpha) * 0.2);
+    transform: translate(calc(var(--glyph-split) * -0.08), calc(var(--glyph-motion-px) * -0.16));
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes glyph-rain-scan {
+  0%,
+  14% {
+    opacity: 0;
+    transform: translateY(-72%);
+  }
+
+  28% {
+    opacity: calc(var(--glyph-flash-alpha) * 0.56);
+  }
+
+  52% {
+    opacity: calc(var(--glyph-flash-alpha) * 0.2);
+    transform: translateY(42%);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(74%);
+  }
+}
+
+@keyframes glyph-smoke-dissolve {
+  0% {
+    opacity: var(--glyph-alpha);
+    color: var(--glyph-hot-color);
+    filter: blur(calc(var(--glyph-blur) * 0.95));
+    transform:
+      translateY(calc(var(--glyph-motion-px) * 0.12))
+      scale(var(--glyph-scale-pop));
+  }
+
+  30% {
+    opacity: calc(var(--glyph-alpha) * 0.62);
+    color: var(--glyph-accent-color);
+    filter: blur(calc(var(--glyph-blur) * 0.7));
+    transform:
+      translateY(calc(var(--glyph-motion-px) * -0.24))
+      rotate(calc(var(--glyph-rotate-amount) * 0.3))
+      scale(1.02);
+  }
+
+  70% {
+    opacity: calc(var(--glyph-alpha) * 0.22);
+    filter: blur(calc(var(--glyph-blur) * 0.5));
+    transform: translateY(calc(var(--glyph-motion-px) * -0.46)) scale(1.035);
+  }
+
+  100% {
+    opacity: 0;
+    color: var(--glyph-base-color);
+    filter: blur(0);
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes glyph-smoke-ghost {
+  0%,
+  28% {
+    opacity: calc(var(--glyph-alpha) * 0.22);
+    transform: translate(calc(var(--glyph-split) * -0.4), calc(var(--glyph-motion-px) * -0.18));
+  }
+
+  72% {
+    opacity: calc(var(--glyph-alpha) * 0.08);
+    transform: translate(calc(var(--glyph-split) * 0.16), calc(var(--glyph-motion-px) * -0.44));
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes glyph-ember-warm {
+  0% {
+    opacity: var(--glyph-alpha);
+    color: var(--glyph-hot-color);
+    transform:
+      translate(calc(var(--glyph-motion-px) * 0.18), calc(var(--glyph-motion-px) * -0.36))
+      rotate(calc(var(--glyph-rotate-amount) * -0.28))
+      scale(var(--glyph-scale-pop));
+    text-shadow:
+      0 0 2px rgba(255, 255, 255, var(--glyph-flash-alpha)),
+      0 0 calc(var(--glyph-glow-size) * 0.8) var(--glyph-glow-color),
+      0 0 calc(var(--glyph-glow-size) * 1.2) var(--glyph-alt-glow-color);
+  }
+
+  22% {
+    opacity: var(--glyph-alpha);
+    color: var(--glyph-accent-color);
+    transform:
+      translate(calc(var(--glyph-motion-px) * -0.22), calc(var(--glyph-motion-px) * -0.7))
+      rotate(calc(var(--glyph-rotate-amount) * 0.4))
+      scale(1.018);
+  }
+
+  58% {
+    opacity: calc(var(--glyph-alpha) * 0.42);
+    color: var(--glyph-alt-color);
+    transform: translateY(calc(var(--glyph-motion-px) * -0.36)) scale(1.006);
+  }
+
+  100% {
+    opacity: 0;
+    color: var(--glyph-base-color);
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    text-shadow: none;
+  }
+}
+
+@keyframes glyph-ember-afterglow {
+  0%,
+  28% {
+    opacity: calc(var(--glyph-alpha) * 0.26);
+    transform: translateY(calc(var(--glyph-motion-px) * 0.22));
+    filter: blur(calc(var(--glyph-blur) * 0.8));
+  }
+
+  66% {
+    opacity: calc(var(--glyph-alpha) * 0.1);
+    transform: translateY(calc(var(--glyph-motion-px) * -0.4));
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+}
+
 @keyframes dust-rise-local {
   0% {
     opacity: 0;
@@ -3624,6 +4285,227 @@ body[data-effect="paper-fiber"] .caret-glow {
   100% {
     opacity: 0;
     transform: translate(var(--x), var(--y)) scale(0.72);
+  }
+}
+
+@keyframes aurora-core-local {
+  0% {
+    opacity: 0;
+    transform: scaleX(0.32) rotate(-8deg);
+  }
+
+  32% {
+    opacity: var(--feedback-opacity);
+    transform: scaleX(var(--core-scale)) rotate(4deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scaleX(0.7) translateY(-3px) rotate(9deg);
+  }
+}
+
+@keyframes aurora-ribbon-local {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scaleX(0.25) rotate(0deg);
+  }
+
+  20% {
+    opacity: var(--particle-alpha);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(var(--x), var(--y)) scaleX(1.45) rotate(var(--spin));
+  }
+}
+
+@keyframes firefly-core-local {
+  0% {
+    opacity: 0;
+    transform: scale(0.24);
+  }
+
+  20% {
+    opacity: var(--feedback-opacity);
+    transform: scale(var(--core-scale));
+  }
+
+  42% {
+    opacity: calc(var(--feedback-opacity) * 0.48);
+    transform: scale(0.72);
+  }
+
+  60% {
+    opacity: var(--feedback-opacity);
+    transform: scale(1.04);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(0.46) translateY(-5px);
+  }
+}
+
+@keyframes firefly-drift-local {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.2);
+  }
+
+  18% {
+    opacity: var(--particle-alpha);
+  }
+
+  48% {
+    opacity: calc(var(--particle-alpha) * 0.38);
+  }
+
+  64% {
+    opacity: calc(var(--particle-alpha) * 0.9);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(var(--x), var(--y)) scale(0.62);
+  }
+}
+
+@keyframes petal-core-local {
+  0% {
+    opacity: var(--feedback-opacity);
+    transform: scale(0.44, 0.7) rotate(-10deg);
+  }
+
+  38% {
+    opacity: var(--feedback-opacity);
+    transform: scale(var(--core-scale), 0.96) rotate(5deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(0.82) translateY(-4px) rotate(16deg);
+  }
+}
+
+@keyframes petal-float-local {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.34) rotate(0deg);
+  }
+
+  22% {
+    opacity: var(--particle-alpha);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(var(--x), var(--y)) scale(0.72) rotate(var(--spin));
+  }
+}
+
+@keyframes rain-core-local {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scaleY(0.25);
+  }
+
+  16% {
+    opacity: var(--feedback-opacity);
+    transform: translateY(0) scaleY(var(--core-scale));
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(10px) scaleY(0.42);
+  }
+}
+
+@keyframes rain-streak-local {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) scaleY(0.44);
+  }
+
+  14% {
+    opacity: var(--particle-alpha);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(var(--x), var(--y)) scaleY(0.8);
+  }
+}
+
+@keyframes smoke-core-local {
+  0% {
+    opacity: 0;
+    transform: scale(0.38);
+  }
+
+  28% {
+    opacity: var(--feedback-opacity);
+    transform: scale(var(--core-scale));
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.9) translateY(-5px);
+  }
+}
+
+@keyframes smoke-puff-local {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.42);
+  }
+
+  26% {
+    opacity: var(--particle-alpha);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(var(--x), var(--y)) scale(1.8);
+  }
+}
+
+@keyframes ember-core-local {
+  0% {
+    opacity: var(--feedback-opacity);
+    transform: scale(0.26);
+  }
+
+  22% {
+    opacity: var(--feedback-opacity);
+    transform: scale(var(--core-scale));
+  }
+
+  52% {
+    opacity: calc(var(--feedback-opacity) * 0.44);
+    transform: scale(0.76) translateY(-2px);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(0.36) translateY(-7px);
+  }
+}
+
+@keyframes ember-rise-local {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.38) rotate(0deg);
+  }
+
+  16% {
+    opacity: var(--particle-alpha);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(var(--x), var(--y)) scale(0.32) rotate(var(--spin));
   }
 }
 
