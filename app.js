@@ -1601,6 +1601,8 @@ let typingStreak = 0;
 let lastStreakAt = 0;
 let graphemeSegmenter = null;
 
+const TRANSIENT_GLYPH_SELECTOR = ".typing-real-glyph";
+
 document.addEventListener("DOMContentLoaded", init);
 
 function init() {
@@ -1761,7 +1763,7 @@ function bindEvents() {
 
   refs.toolbar.addEventListener("mousedown", (event) => event.preventDefault());
   refs.toolbar.addEventListener("click", runToolbarCommand);
-  refs.editor.addEventListener("input", updateEditorContent);
+  refs.editor.addEventListener("input", handleEditorInput);
   refs.editor.addEventListener("beforeinput", handleBeforeInputFallback);
   refs.editor.addEventListener("compositionstart", handleCompositionStart);
   refs.editor.addEventListener("compositionupdate", handleCompositionUpdate);
@@ -2110,7 +2112,7 @@ function renderTimer() {
 }
 
 function renderCounts() {
-  const text = plainText(refs.editor.innerHTML);
+  const text = plainText(serializeEditorContent());
   const words = countWords(text);
   refs.wordCount.textContent = `${words} ${words === 1 ? "word" : "words"}`;
   refs.charCount.textContent = `${text.length} ${text.length === 1 ? "char" : "chars"}`;
@@ -2219,15 +2221,36 @@ function updateFolder() {
   renderNotes();
 }
 
+function handleEditorInput(event) {
+  updateEditorContent();
+  maybeTriggerInputVisual(event);
+}
+
 function updateEditorContent() {
   if (isHydrating) return;
   const note = getActiveNote();
   syncCheckboxAttributes();
-  note.content = refs.editor.innerHTML;
+  note.content = serializeEditorContent();
   touch(note);
   scheduleSave();
   renderCounts();
   renderNotes();
+}
+
+function serializeEditorContent() {
+  const clone = refs.editor.cloneNode(true);
+  stripTransientGlyphs(clone);
+  return clone.innerHTML;
+}
+
+function stripTransientGlyphs(root) {
+  root.querySelectorAll(TRANSIENT_GLYPH_SELECTOR).forEach((glyph) => {
+    while (glyph.firstChild) {
+      glyph.parentNode.insertBefore(glyph.firstChild, glyph);
+    }
+    glyph.remove();
+  });
+  return root;
 }
 
 function toggleFavorite() {
@@ -2266,6 +2289,7 @@ function getActiveNote() {
 function runToolbarCommand(event) {
   const button = event.target.closest("[data-command]");
   if (!button) return;
+  flushCommittedGlyphAnimations({ preserveSelection: true });
   refs.editor.focus();
   document.execCommand("styleWithCSS", false, true);
   const command = button.dataset.command;
@@ -2303,6 +2327,7 @@ function runToolbarCommand(event) {
 
 function pastePlainText(event) {
   event.preventDefault();
+  flushCommittedGlyphAnimations({ preserveSelection: true });
   const text = event.clipboardData.getData("text/plain");
   document.execCommand("insertText", false, text);
 }
@@ -2403,6 +2428,10 @@ function handleTypingKey(event) {
   const isEditorTarget = target === refs.editor || refs.editor.contains(target);
   const isTitleTarget = target === refs.titleInput;
   if (!isEditorTarget && !isTitleTarget) return;
+  if ((event.ctrlKey || event.metaKey) && isUndoRedoShortcut(event) && isEditorTarget) {
+    flushCommittedGlyphAnimations({ preserveSelection: true });
+    return;
+  }
   if (event.ctrlKey || event.metaKey || event.altKey) return;
 
   const keyType = getKeyType(event);
@@ -2429,7 +2458,7 @@ function handleCompositionUpdate() {}
 function handleCompositionEnd(event) {
   compositionActive = false;
   updateEditorContent();
-  const composed = event && typeof event.data === "string" ? event.data.slice(-1) : "";
+  const composed = lastGrapheme(event && typeof event.data === "string" ? event.data : "");
   if (composed && composed.trim()) triggerTypingVisualOnly(composed);
 }
 
@@ -2449,6 +2478,25 @@ function triggerTypingVisualOnly(glyph) {
     allowGlyph: true
   };
   requestAnimationFrame(() => cueTypingVisual(tactile));
+}
+
+function maybeTriggerInputVisual(event) {
+  if (!event || !isTypingTarget(event.target)) return;
+  const inputType = event.inputType || "";
+  if (inputType !== "insertText" && inputType !== "insertReplacementText") return;
+  if (event.isComposing || compositionActive || /Composition/i.test(inputType)) return;
+
+  const now = performance.now();
+  if (now - lastTactileAt < 90) return;
+
+  const glyph = lastGrapheme(typeof event.data === "string" ? event.data : "");
+  if (glyph && !isRenderableGlyph(glyph)) return;
+  triggerTypingVisualOnly(glyph);
+}
+
+function lastGrapheme(value) {
+  const segments = segmentGraphemes(value || "");
+  return segments.length ? segments[segments.length - 1].text : "";
 }
 
 function triggerTypingTactile(keyType, visualTargetIsEditor, event) {
@@ -2502,6 +2550,11 @@ function getKeyType(event) {
   return "";
 }
 
+function isUndoRedoShortcut(event) {
+  const key = String(event.key || "").toLowerCase();
+  return key === "z" || key === "y";
+}
+
 function isCharacterCode(code) {
   return /^(Key|Digit|Numpad|Intl|Bracket|Quote|Semicolon|Comma|Period|Slash|Backquote|Minus|Equal)/.test(code || "");
 }
@@ -2513,6 +2566,10 @@ function isTypingTarget(target) {
 function cueTypingVisual(tactile = {}) {
   if (state.settings.reduceMotion) return;
   const effect = EFFECT_PRESETS[state.settings.effectMode] || EFFECT_PRESETS[defaultSettings.effectMode];
+  const keyType = tactile.keyType || "normal";
+  const allowGlyph = tactile.allowGlyph !== false && keyType === "normal";
+  const glyphTargets = allowGlyph ? resolveGlyphTargets() : { current: null, previous: null };
+  const realGlyphAnimated = animateCommittedGlyph(glyphTargets.current, tactile);
   refs.editor.classList.add("is-typing");
   document.body.classList.add("typing-live");
   window.clearTimeout(typingPulseTimer);
@@ -2520,7 +2577,7 @@ function cueTypingVisual(tactile = {}) {
   typingPulseTimer = window.setTimeout(() => refs.editor.classList.remove("is-typing"), 140);
   moodPulseTimer = window.setTimeout(() => document.body.classList.remove("typing-live"), Math.min(360, effect.life * 0.48));
   updateCaretGlow();
-  spawnTypingMark(tactile);
+  spawnTypingMark({ ...tactile, realGlyphAnimated }, glyphTargets);
 }
 
 function updateCaretGlow() {
@@ -4715,6 +4772,484 @@ function getGlyphProfile(mode) {
   return GLYPH_EFFECT_PROFILES[mode] || GLYPH_EFFECT_PROFILES[defaultSettings.effectMode];
 }
 
+function animateCommittedGlyph(target, tactile = {}) {
+  const settings = state.settings;
+  const keyType = tactile.keyType || "normal";
+  if (keyType !== "normal" || tactile.allowGlyph === false || compositionActive) return false;
+  if (!target?.range || !isRenderableGlyph(target.glyph)) return false;
+  if (!settings.effectEnabled || settings.effectIntensity <= 0.01 || settings.feedbackStrength <= 0.01) return false;
+  if (settings.glyphMotion <= 0.01 || !rangeWithinEditor(target.range) || rangeTouchesTransientGlyph(target.range)) return false;
+
+  const selection = window.getSelection();
+  if (!selection || !selection.rangeCount || !selection.isCollapsed) return false;
+
+  const wrapper = document.createElement("span");
+  wrapper.className = "typing-real-glyph";
+  wrapper.dataset.effect = settings.effectMode;
+  wrapper.dataset.glyph = target.glyph;
+  wrapper.setAttribute("spellcheck", "false");
+
+  try {
+    target.range.surroundContents(wrapper);
+  } catch (error) {
+    return false;
+  }
+
+  if (!wrapper.textContent) {
+    unwrapCommittedGlyph(wrapper);
+    return false;
+  }
+
+  collapseSelectionAfterNode(wrapper);
+  startCommittedGlyphAnimation(wrapper, settings);
+  capCommittedGlyphAnimations();
+  return true;
+}
+
+function startCommittedGlyphAnimation(wrapper, settings) {
+  const vars = committedGlyphMotionVars(settings);
+  const motion = buildCommittedGlyphMotion(settings.effectMode, vars);
+  let cleaned = false;
+  const cleanup = () => {
+    if (cleaned) return;
+    cleaned = true;
+    unwrapCommittedGlyph(wrapper, { preserveSelection: true });
+  };
+
+  wrapper.style.setProperty("--real-glyph-glow", vars.glow);
+  wrapper.style.setProperty("--real-glyph-alt-glow", vars.altGlow);
+
+  if (typeof wrapper.animate !== "function") {
+    window.setTimeout(cleanup, motion.duration);
+    return;
+  }
+
+  const animation = wrapper.animate(motion.keyframes, {
+    duration: motion.duration,
+    easing: motion.easing,
+    fill: "both"
+  });
+  animation.addEventListener("finish", cleanup, { once: true });
+  animation.addEventListener("cancel", cleanup, { once: true });
+  window.setTimeout(cleanup, motion.duration + 90);
+}
+
+function committedGlyphMotionVars(settings) {
+  const mode = settings.effectMode;
+  const effect = EFFECT_PRESETS[mode] || EFFECT_PRESETS[defaultSettings.effectMode];
+  const profile = getGlyphProfile(mode);
+  const jolt = GLYPH_JOLT_PRESETS[mode] || GLYPH_JOLT_PRESETS[defaultSettings.effectMode];
+  const speedScale = 1.18 - settings.effectSpeed * 0.46;
+  const effectLevel = clamp(settings.effectIntensity, 0.05, 1);
+  const motionLevel = clamp01(settings.glyphMotion);
+  const strength = (jolt.strength ?? profile.impact ?? 1) * (0.52 + motionLevel * 1.24) * (0.72 + effectLevel * 0.5);
+  let x = (jolt.x ?? effect.glyphX) * strength * 2.2;
+  let y = (jolt.y ?? effect.glyphY) * strength * 2.2;
+  const distance = Math.hypot(x, y);
+  const minDistance = 2.2 + motionLevel * 1.5;
+
+  if (distance > 0 && distance < minDistance) {
+    const scalar = minDistance / distance;
+    x *= scalar;
+    y *= scalar;
+  } else if (distance === 0) {
+    y = -minDistance;
+  }
+
+  const scalePop = 1 + Math.max(0.018, Math.max(0, (jolt.scale ?? effect.glyphScale) - 1) * (0.95 + strength * 1.35));
+  const squash = clamp((scalePop - 1) * 1.4, 0.018, 0.16);
+  return {
+    x,
+    y,
+    rotate: (jolt.rotate ?? effect.glyphRotate) * strength * 2.1,
+    scale: scalePop,
+    squash,
+    split: profile.split * (0.42 + motionLevel * 0.9),
+    duration: Math.round(clamp((jolt.life || profile.duration * 0.44 + 54) * speedScale + 70, 120, 360)),
+    glow: hexToRgba(profile.accent, Math.min(0.48, profile.glow * settings.glowAmount * effectLevel * 0.22)),
+    altGlow: hexToRgba(profile.alt, Math.min(0.38, profile.glow * settings.glowAmount * effectLevel * 0.18))
+  };
+}
+
+function buildCommittedGlyphMotion(mode, v) {
+  const neutral = "translate3d(0, 0, 0) rotate(0deg) scale(1, 1)";
+  const settle = [
+    { transform: transformGlyph(v.x, v.y, v.rotate, v.scale, v.scale), offset: 0 },
+    { transform: transformGlyph(v.x * -0.32, v.y * -0.45, v.rotate * -0.26, 1 - (v.scale - 1) * 0.28, 1 + (v.scale - 1) * 0.16), offset: 0.38 },
+    { transform: transformGlyph(v.x * 0.12, v.y * 0.1, v.rotate * 0.1, 1.006, 0.998), offset: 0.68 },
+    { transform: neutral, offset: 1 }
+  ];
+
+  switch (mode) {
+    case "candy-pop":
+      return {
+        duration: v.duration + 70,
+        easing: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        keyframes: [
+          { transform: transformGlyph(0, Math.abs(v.y) * 0.95, v.rotate * 0.2, 1 + v.squash * 1.8, 1 - v.squash * 1.35), offset: 0 },
+          { transform: transformGlyph(v.x * 0.22, -Math.abs(v.y) * 1.05, v.rotate * -0.3, 1 - v.squash * 0.45, 1 + v.squash * 1.55), offset: 0.28 },
+          { transform: transformGlyph(0, Math.abs(v.y) * 0.26, v.rotate * 0.16, 1 + v.squash * 0.55, 1 - v.squash * 0.34), offset: 0.52 },
+          { transform: neutral, offset: 1 }
+        ]
+      };
+    case "electric":
+      return {
+        duration: Math.max(120, v.duration - 20),
+        easing: "steps(1, end)",
+        keyframes: [
+          { transform: `translate3d(${v.x.toFixed(2)}px, ${v.y.toFixed(2)}px, 0) skewX(-8deg) rotate(${v.rotate.toFixed(2)}deg)`, offset: 0 },
+          { transform: `translate3d(${(v.x * -0.78).toFixed(2)}px, ${(v.y * 0.62).toFixed(2)}px, 0) skewX(7deg) rotate(${(v.rotate * -0.8).toFixed(2)}deg)`, offset: 0.2 },
+          { transform: `translate3d(${(v.x * 0.24).toFixed(2)}px, ${(v.y * -0.75).toFixed(2)}px, 0) skewY(-4deg) scale(1.012)`, offset: 0.42 },
+          { transform: transformGlyph(v.x * -0.16, v.y * 0.12, 0, 1, 1), offset: 0.7 },
+          { transform: neutral, offset: 1 }
+        ]
+      };
+    case "pixel":
+      return {
+        duration: Math.max(130, v.duration - 8),
+        easing: "steps(4, end)",
+        keyframes: [
+          { transform: transformGlyph(v.x, v.y, 0, 1.01, 0.99), offset: 0 },
+          { transform: transformGlyph(v.x * -0.82, v.y * -0.58, 0, 0.995, 1.005), offset: 0.34 },
+          { transform: transformGlyph(v.x * 0.32, v.y * 0.24, 0, 1, 1), offset: 0.68 },
+          { transform: neutral, offset: 1 }
+        ]
+      };
+    case "star-dust":
+      return {
+        duration: v.duration + 60,
+        easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+        keyframes: [
+          { transform: transformGlyph(v.x * 0.28, -Math.abs(v.y) * 0.45, v.rotate * 0.35, 1.018, 1.018), offset: 0 },
+          { transform: transformGlyph(v.x * 0.18, -Math.abs(v.y) * 1.18, v.rotate * -0.18, 1.032, 1.032), offset: 0.34 },
+          { transform: transformGlyph(0, -Math.abs(v.y) * 0.3, 0, 1.006, 1.006), offset: 0.72 },
+          { transform: neutral, offset: 1 }
+        ]
+      };
+    case "cyber-pink":
+      return {
+        duration: Math.max(130, v.duration - 10),
+        easing: "steps(3, end)",
+        keyframes: [
+          { transform: transformGlyph(v.x, v.y * 0.3, v.rotate * 0.2, 1.006, 1), filter: `drop-shadow(${(-v.split).toFixed(2)}px 0 var(--real-glyph-glow))`, offset: 0 },
+          { transform: transformGlyph(v.x * -0.6, v.y * -0.18, 0, 1, 1), filter: `drop-shadow(${v.split.toFixed(2)}px 0 var(--real-glyph-alt-glow))`, offset: 0.33 },
+          { transform: transformGlyph(v.x * 0.16, 0, 0, 1, 1), filter: "none", offset: 0.66 },
+          { transform: neutral, filter: "none", offset: 1 }
+        ]
+      };
+    case "ink":
+      return {
+        duration: v.duration + 35,
+        easing: "cubic-bezier(0.2, 0.9, 0.25, 1)",
+        keyframes: [
+          { transform: transformGlyph(v.x * 0.28, -Math.abs(v.y) * 0.5, v.rotate * 0.55, 0.98, 1.08), offset: 0 },
+          { transform: transformGlyph(v.x * -0.12, Math.abs(v.y) * 0.9, v.rotate * -0.22, 1.07, 0.9), offset: 0.3 },
+          { transform: transformGlyph(0, Math.abs(v.y) * 0.12, 0, 1.01, 0.995), offset: 0.65 },
+          { transform: neutral, offset: 1 }
+        ]
+      };
+    case "bubble":
+      return {
+        duration: v.duration + 55,
+        easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+        keyframes: [
+          { transform: transformGlyph(0, Math.abs(v.y) * 0.5, v.rotate * 0.2, 1 + v.squash, 1 - v.squash * 0.7), offset: 0 },
+          { transform: transformGlyph(v.x * 0.18, -Math.abs(v.y) * 1.12, v.rotate * -0.12, 1.025, 1.04), offset: 0.48 },
+          { transform: neutral, offset: 1 }
+        ]
+      };
+    case "crystal-glass":
+      return {
+        duration: v.duration + 55,
+        easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+        keyframes: [
+          { transform: transformGlyph(v.x * 0.58, v.y * 0.32, v.rotate, 1.026, 1.026), filter: "drop-shadow(0 0 2px var(--real-glyph-glow))", offset: 0 },
+          { transform: transformGlyph(v.x * -0.18, -Math.abs(v.y) * 0.26, v.rotate * -0.3, 0.998, 1.018), filter: "drop-shadow(0 0 3px var(--real-glyph-alt-glow))", offset: 0.42 },
+          { transform: neutral, filter: "none", offset: 1 }
+        ]
+      };
+    case "constellation":
+    case "moon-pearl":
+      return {
+        duration: v.duration + 55,
+        easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+        keyframes: [
+          { transform: transformGlyph(v.x * 0.34, -Math.abs(v.y) * 0.34, v.rotate * 0.35, 1.012, 1.012), offset: 0 },
+          { transform: transformGlyph(v.x * 0.12, -Math.abs(v.y) * 0.78, v.rotate * -0.22, 1.024, 1.024), filter: "drop-shadow(0 0 2px var(--real-glyph-glow))", offset: 0.42 },
+          { transform: neutral, filter: "none", offset: 1 }
+        ]
+      };
+    case "paper-fiber":
+      return {
+        duration: Math.max(130, v.duration - 5),
+        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+        keyframes: [
+          { transform: transformGlyph(v.x, v.y * 0.36, v.rotate, 1.006, 0.998), offset: 0 },
+          { transform: transformGlyph(v.x * -0.34, v.y * -0.14, v.rotate * -0.25, 0.998, 1.004), offset: 0.46 },
+          { transform: neutral, offset: 1 }
+        ]
+      };
+    case "aurora-veil":
+      return {
+        duration: v.duration + 80,
+        easing: "cubic-bezier(0.19, 1, 0.22, 1)",
+        keyframes: [
+          { transform: transformGlyph(v.x * 0.8, v.y * 0.44, v.rotate, 1.018, 1.026), offset: 0 },
+          { transform: transformGlyph(v.x * -0.28, -Math.abs(v.y) * 0.5, v.rotate * -0.22, 1.026, 1.012), filter: "drop-shadow(0 0 2px var(--real-glyph-glow))", offset: 0.46 },
+          { transform: neutral, filter: "none", offset: 1 }
+        ]
+      };
+    case "firefly-glow":
+      return {
+        duration: v.duration + 45,
+        easing: "cubic-bezier(0.18, 1.1, 0.28, 1)",
+        keyframes: [
+          { transform: transformGlyph(v.x * 0.52, v.y * 0.4, v.rotate, 1.018, 1.018), offset: 0 },
+          { transform: transformGlyph(v.x * -0.28, -Math.abs(v.y) * 0.8, v.rotate * -0.55, 1.03, 1.006), offset: 0.4 },
+          { transform: transformGlyph(v.x * 0.1, v.y * 0.1, v.rotate * 0.14, 1, 1), offset: 0.72 },
+          { transform: neutral, offset: 1 }
+        ]
+      };
+    case "petal-bloom":
+      return {
+        duration: v.duration + 30,
+        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+        keyframes: [
+          { transform: `translate3d(${v.x.toFixed(2)}px, ${v.y.toFixed(2)}px, 0) rotate(${v.rotate.toFixed(2)}deg) skewY(-6deg) scale(${(1 + v.squash).toFixed(3)}, ${(1 - v.squash * 0.55).toFixed(3)})`, offset: 0 },
+          { transform: transformGlyph(v.x * -0.22, v.y * -0.36, v.rotate * -0.35, 0.992, 1.025), offset: 0.44 },
+          { transform: neutral, offset: 1 }
+        ]
+      };
+    case "neon-rain":
+      return {
+        duration: Math.max(125, v.duration - 12),
+        easing: "steps(3, end)",
+        keyframes: [
+          { transform: transformGlyph(v.x * 0.3, Math.abs(v.y), v.rotate, 1.004, 0.996), offset: 0 },
+          { transform: transformGlyph(v.x * -0.14, -Math.abs(v.y) * 0.92, v.rotate * -0.2, 0.996, 1.012), offset: 0.42 },
+          { transform: transformGlyph(0, Math.abs(v.y) * 0.16, 0, 1, 1), offset: 0.72 },
+          { transform: neutral, offset: 1 }
+        ]
+      };
+    case "velvet-smoke":
+      return {
+        duration: v.duration + 90,
+        easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+        keyframes: [
+          { transform: transformGlyph(v.x * 0.38, Math.abs(v.y) * 0.52, v.rotate * 0.4, 1.024, 0.982), filter: "blur(0.2px)", offset: 0 },
+          { transform: transformGlyph(v.x * -0.12, -Math.abs(v.y) * 0.35, v.rotate * -0.16, 0.996, 1.018), filter: "blur(0.1px)", offset: 0.48 },
+          { transform: neutral, filter: "none", offset: 1 }
+        ]
+      };
+    case "ember-glow":
+      return {
+        duration: v.duration + 25,
+        easing: "cubic-bezier(0.19, 1, 0.22, 1)",
+        keyframes: [
+          { transform: transformGlyph(v.x, v.y, v.rotate, 1.024, 1.024), filter: "drop-shadow(0 0 2px var(--real-glyph-glow))", offset: 0 },
+          { transform: transformGlyph(v.x * -0.38, v.y * -0.28, v.rotate * -0.22, 0.998, 1.012), filter: "none", offset: 0.45 },
+          { transform: neutral, filter: "none", offset: 1 }
+        ]
+      };
+    case "laser-etch":
+      return {
+        duration: Math.max(120, v.duration - 10),
+        easing: "steps(2, end)",
+        keyframes: [
+          { transform: `translate3d(${v.x.toFixed(2)}px, ${v.y.toFixed(2)}px, 0) skewX(-8deg) rotate(${v.rotate.toFixed(2)}deg)`, offset: 0 },
+          { transform: `translate3d(${(v.x * -0.46).toFixed(2)}px, ${(v.y * -0.18).toFixed(2)}px, 0) skewX(5deg) rotate(${(v.rotate * -0.28).toFixed(2)}deg)`, offset: 0.46 },
+          { transform: neutral, offset: 1 }
+        ]
+      };
+    case "keycap-pop":
+      return {
+        duration: v.duration + 45,
+        easing: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        keyframes: [
+          { transform: transformGlyph(0, Math.abs(v.y), v.rotate, 1 + v.squash * 1.45, 1 - v.squash * 1.3), offset: 0 },
+          { transform: transformGlyph(0, -Math.abs(v.y) * 0.5, v.rotate * -0.2, 0.992, 1.045), offset: 0.38 },
+          { transform: neutral, offset: 1 }
+        ]
+      };
+    case "magnetic-flip":
+      return {
+        duration: v.duration + 20,
+        easing: "cubic-bezier(0.19, 1, 0.22, 1)",
+        keyframes: [
+          { transform: `translate3d(${v.x.toFixed(2)}px, 0, 0) rotateY(0deg) rotate(${v.rotate.toFixed(2)}deg) scale(1.01)`, offset: 0 },
+          { transform: `translate3d(${(v.x * -0.7).toFixed(2)}px, 0, 0) rotateY(18deg) rotate(${(v.rotate * -0.38).toFixed(2)}deg) scale(0.998)`, offset: 0.42 },
+          { transform: transformGlyph(v.x * 0.12, 0, v.rotate * 0.12, 1, 1), offset: 0.7 },
+          { transform: neutral, offset: 1 }
+        ]
+      };
+    case "mosaic-shift":
+      return {
+        duration: Math.max(125, v.duration),
+        easing: "steps(3, end)",
+        keyframes: [
+          { transform: transformGlyph(v.x, v.y, v.rotate, 1.012, 0.998), offset: 0 },
+          { transform: transformGlyph(v.x * -0.42, v.y * -0.5, v.rotate * -0.24, 0.998, 1.008), offset: 0.38 },
+          { transform: transformGlyph(v.x * 0.16, v.y * 0.18, 0, 1, 1), offset: 0.7 },
+          { transform: neutral, offset: 1 }
+        ]
+      };
+    case "ripple-lens":
+      return {
+        duration: v.duration + 70,
+        easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+        keyframes: [
+          { transform: transformGlyph(v.x * 0.36, v.y * 0.38, v.rotate, 0.982, 1.05), offset: 0 },
+          { transform: transformGlyph(v.x * -0.12, -Math.abs(v.y) * 0.34, v.rotate * -0.18, 1.052, 0.986), filter: "drop-shadow(0 0 2px var(--real-glyph-alt-glow))", offset: 0.44 },
+          { transform: neutral, filter: "none", offset: 1 }
+        ]
+      };
+    case "plasma-thread":
+      return {
+        duration: Math.max(125, v.duration),
+        easing: "steps(2, end)",
+        keyframes: [
+          { transform: `translate3d(${v.x.toFixed(2)}px, ${v.y.toFixed(2)}px, 0) skewX(-7deg) rotate(${v.rotate.toFixed(2)}deg)`, offset: 0 },
+          { transform: `translate3d(${(v.x * -0.55).toFixed(2)}px, ${(v.y * -0.36).toFixed(2)}px, 0) skewX(6deg) rotate(${(v.rotate * -0.3).toFixed(2)}deg)`, offset: 0.42 },
+          { transform: neutral, offset: 1 }
+        ]
+      };
+    case "soft-spark":
+    default:
+      return {
+        duration: v.duration,
+        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+        keyframes: settle
+      };
+  }
+}
+
+function transformGlyph(x, y, rotate, scaleX, scaleY) {
+  return `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) rotate(${rotate.toFixed(2)}deg) scale(${scaleX.toFixed(3)}, ${scaleY.toFixed(3)})`;
+}
+
+function capCommittedGlyphAnimations() {
+  const active = [...refs.editor.querySelectorAll(TRANSIENT_GLYPH_SELECTOR)];
+  const overflow = active.length - 42;
+  if (overflow <= 0) return;
+  active.slice(0, overflow).forEach((glyph) => unwrapCommittedGlyph(glyph));
+}
+
+function flushCommittedGlyphAnimations(options = {}) {
+  const active = [...refs.editor.querySelectorAll(TRANSIENT_GLYPH_SELECTOR)];
+  if (!active.length) return;
+  const saved = options.preserveSelection ? getEditorSelectionOffsets() : null;
+  active.forEach((glyph) => unwrapCommittedGlyph(glyph));
+  if (saved) restoreEditorSelectionOffsets(saved);
+}
+
+function unwrapCommittedGlyph(wrapper, options = {}) {
+  if (!wrapper || !wrapper.isConnected || !wrapper.matches(TRANSIENT_GLYPH_SELECTOR)) return;
+  const saved = options.preserveSelection ? getEditorSelectionOffsets() : null;
+  const parent = wrapper.parentNode;
+  if (!parent) return;
+  while (wrapper.firstChild) {
+    parent.insertBefore(wrapper.firstChild, wrapper);
+  }
+  parent.removeChild(wrapper);
+  parent.normalize();
+  if (saved) restoreEditorSelectionOffsets(saved);
+}
+
+function collapseSelectionAfterNode(node) {
+  const selection = window.getSelection();
+  if (!selection) return;
+  const range = document.createRange();
+  range.setStartAfter(node);
+  range.collapse(true);
+  selection.removeAllRanges();
+  selection.addRange(range);
+}
+
+function rangeWithinEditor(range) {
+  return isEditorRangePoint(range.startContainer) && isEditorRangePoint(range.endContainer);
+}
+
+function rangeTouchesTransientGlyph(range) {
+  return Boolean(
+    closestTransientGlyph(range.startContainer) ||
+    closestTransientGlyph(range.endContainer) ||
+    closestTransientGlyph(range.commonAncestorContainer)
+  );
+}
+
+function closestTransientGlyph(node) {
+  const element = node?.nodeType === Node.ELEMENT_NODE ? node : node?.parentElement;
+  return element?.closest ? element.closest(TRANSIENT_GLYPH_SELECTOR) : null;
+}
+
+function selectionWithinEditor() {
+  const selection = window.getSelection();
+  if (!selection || !selection.rangeCount) return false;
+  const range = selection.getRangeAt(0);
+  return rangeWithinEditor(range);
+}
+
+function isEditorRangePoint(node) {
+  return node === refs.editor || refs.editor.contains(node);
+}
+
+function getEditorSelectionOffsets() {
+  if (!selectionWithinEditor()) return null;
+  const selection = window.getSelection();
+  const range = selection.getRangeAt(0);
+  const startRange = range.cloneRange();
+  const endRange = range.cloneRange();
+  startRange.collapse(true);
+  endRange.collapse(false);
+  return {
+    start: collectTextBeforeCaret(startRange).text.length,
+    end: collectTextBeforeCaret(endRange).text.length
+  };
+}
+
+function restoreEditorSelectionOffsets(saved) {
+  if (!saved) return;
+  const spans = collectEditorTextSpans();
+  const start = pointForEditorTextOffset(spans, saved.start);
+  const end = pointForEditorTextOffset(spans, saved.end);
+  const range = document.createRange();
+  range.setStart(start.node, start.offset);
+  range.setEnd(end.node, end.offset);
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+}
+
+function collectEditorTextSpans() {
+  const spans = [];
+  let offset = 0;
+  const walker = document.createTreeWalker(refs.editor, NodeFilter.SHOW_TEXT);
+  let node = walker.nextNode();
+  while (node) {
+    const start = offset;
+    offset += node.nodeValue.length;
+    spans.push({ node, start, end: offset });
+    node = walker.nextNode();
+  }
+  return spans;
+}
+
+function pointForEditorTextOffset(spans, offset) {
+  if (!spans.length) return { node: refs.editor, offset: refs.editor.childNodes.length };
+  const max = spans[spans.length - 1].end;
+  const safeOffset = clamp(Number(offset) || 0, 0, max);
+  for (const span of spans) {
+    if (safeOffset <= span.end) {
+      return {
+        node: span.node,
+        offset: clamp(safeOffset - span.start, 0, span.node.nodeValue.length)
+      };
+    }
+  }
+  const last = spans[spans.length - 1];
+  return { node: last.node, offset: last.node.nodeValue.length };
+}
+
 function resolveGlyphTargets() {
   const selection = window.getSelection();
   if (!selection || !selection.rangeCount) return { current: null, previous: null };
@@ -4800,6 +5335,7 @@ function glyphTargetFromSegment(segment, spans) {
   if (!rect) return null;
   return {
     glyph: segment.text,
+    range,
     rect,
     style: computedStyleForRange(range)
   };
@@ -4853,34 +5389,6 @@ function isOpaqueColor(value) {
     if (parts.length === 4 && parts[3] <= 0.02) return false;
   }
   return true;
-}
-
-// Reads the editor's own paper background (grain texture + ruled-line
-// gradient, whichever layers are active for the current paper style) and
-// re-expresses its background-position relative to a given viewport rect,
-// so a mask painted elsewhere in the DOM can continue the exact same
-// texture/line pattern seamlessly rather than showing a flat patch.
-function getPaperBackgroundLayers(rect) {
-  const editorEl = refs.editor;
-  if (!editorEl) return null;
-  const editorRect = editorEl.getBoundingClientRect();
-  const editorStyle = getComputedStyle(editorEl);
-  const image = editorStyle.backgroundImage;
-  if (!image || image === "none") return null;
-  const borderLeft = Number.parseFloat(editorStyle.borderLeftWidth) || 0;
-  const borderTop = Number.parseFloat(editorStyle.borderTopWidth) || 0;
-  const offsetX = rect.left - (editorRect.left + borderLeft);
-  const offsetY = rect.top - (editorRect.top + borderTop);
-  const position = editorStyle.backgroundPosition
-    .split(",")
-    .map((pair) => {
-      const [px, py] = pair.trim().split(/\s+/);
-      const baseX = Number.parseFloat(px) || 0;
-      const baseY = Number.parseFloat(py) || 0;
-      return `${(baseX + offsetX).toFixed(2)}px ${(baseY + offsetY).toFixed(2)}px`;
-    })
-    .join(", ");
-  return { image, size: editorStyle.backgroundSize, position };
 }
 
 // Walks up from a text position to find the nearest ancestor that actually
@@ -4975,38 +5483,6 @@ function appendGlyphOverlay(mark, target, role, originX, originY, profile, setti
   const rotate = profile.rotate * settings.glyphMotion * (0.65 + effectLevel * 0.5) * roleStrength;
   const glowSize = Math.round((3 + settings.glowAmount * 18) * profile.glow * (role === "echo" ? 0.62 : 1));
 
-  // Occlusion mask: paints over the real (static) character for the
-  // overlay's lifetime so the animated clone never gets seen doubled up
-  // against the still-visible real glyph underneath. Sized/positioned
-  // identically to the overlay. Rather than a flat fill (which reads as
-  // a visible white/tinted "block" against the editor's grain texture
-  // and ruled lines), it replicates the editor's own paper background
-  // — grain + line, position-matched so the pattern continues seamlessly
-  // underneath — and, when the glyph sits inside a highlighter span,
-  // layers the highlight color with mix-blend-mode:multiply exactly the
-  // way the real <mark> renders it, instead of substituting a solid
-  // opaque swatch.
-  const mask = document.createElement("span");
-  mask.className = "typing-glyph-mask";
-  mask.style.left = `${(rect.left - originX).toFixed(2)}px`;
-  mask.style.top = `${(rect.top - originY).toFixed(2)}px`;
-  mask.style.width = `${Math.max(1, rect.width).toFixed(2)}px`;
-  mask.style.height = `${Math.max(1, rect.height).toFixed(2)}px`;
-  mask.style.backgroundColor = "var(--paper)";
-  const paperLayers = getPaperBackgroundLayers(rect);
-  if (paperLayers) {
-    mask.style.backgroundImage = paperLayers.image;
-    mask.style.backgroundSize = paperLayers.size;
-    mask.style.backgroundPosition = paperLayers.position;
-  }
-  if (isOpaqueColor(style.backgroundColor)) {
-    const tint = document.createElement("span");
-    tint.className = "typing-glyph-mask-tint";
-    tint.style.backgroundColor = style.backgroundColor;
-    mask.append(tint);
-  }
-  mark.append(mask);
-
   const glyph = document.createElement("span");
   glyph.className = `typing-glyph is-${role}`;
   glyph.textContent = target.glyph;
@@ -5085,7 +5561,7 @@ function appendGlyphOverlay(mark, target, role, originX, originY, profile, setti
   mark.append(glyph);
 }
 
-function spawnTypingMark(tactile = {}) {
+function spawnTypingMark(tactile = {}, resolvedGlyphTargets = null) {
   const rect = caretRect();
   if (!rect) return;
   const settings = state.settings;
@@ -5097,7 +5573,7 @@ function spawnTypingMark(tactile = {}) {
   const keyType = tactile.keyType || "normal";
   const seed = tactile.seed || Math.floor(performance.now() * 10);
   const allowGlyph = tactile.allowGlyph !== false && keyType === "normal";
-  const glyphTargets = allowGlyph ? resolveGlyphTargets() : { current: null, previous: null };
+  const glyphTargets = resolvedGlyphTargets || (allowGlyph ? resolveGlyphTargets() : { current: null, previous: null });
   if (!glyphTargets.current && allowGlyph) {
     glyphTargets.current = fallbackGlyphTarget(tactile.glyph || "", rect);
   }
@@ -5154,7 +5630,9 @@ function spawnTypingMark(tactile = {}) {
   }
 
   appendGlyphOverlay(mark, glyphTargets.previous, "echo", originX, originY, profile, settings, effectLevel, speedScale, isSpecial, effect);
-  appendGlyphOverlay(mark, glyphTargets.current, "current", originX, originY, profile, settings, effectLevel, speedScale, isSpecial, effect);
+  if (!tactile.realGlyphAnimated) {
+    appendGlyphOverlay(mark, glyphTargets.current, "current", originX, originY, profile, settings, effectLevel, speedScale, isSpecial, effect);
+  }
 
   for (let index = 0; index < maxParticles; index += 1) {
     const particle = document.createElement("span");
@@ -5860,6 +6338,10 @@ function toggleFullscreen() {
 }
 
 function handleGlobalKeys(event) {
+  if ((event.ctrlKey || event.metaKey) && isUndoRedoShortcut(event) && selectionWithinEditor()) {
+    flushCommittedGlyphAnimations({ preserveSelection: true });
+    return;
+  }
   if (event.key !== "Escape") return;
   if (document.body.classList.contains("focus-mode")) {
     document.body.classList.remove("focus-mode");

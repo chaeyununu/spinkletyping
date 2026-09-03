@@ -640,6 +640,25 @@ body[data-paper="plain"] .editor {
   border-color: color-mix(in srgb, var(--effect-primary) 10%, var(--paper-edge));
 }
 
+.typing-real-glyph {
+  display: inline-block;
+  position: relative;
+  vertical-align: baseline;
+  white-space: pre;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  text-decoration: inherit;
+  transform-origin: 50% 68%;
+  backface-visibility: hidden;
+  will-change: transform, filter;
+}
+
+.typing-real-glyph[data-effect="pixel"],
+.typing-real-glyph[data-effect="mosaic-shift"] {
+  image-rendering: pixelated;
+}
+
 .editor:empty::before {
   content: "Start typing your study notes...";
 }
@@ -1945,23 +1964,6 @@ body[data-effect="velvet-smoke"] .caret-glow {
 
 .typing-glyph.is-echo {
   z-index: 2;
-}
-
-.typing-glyph-mask {
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 0;
-  pointer-events: none;
-  border-radius: 1px;
-  overflow: hidden;
-}
-
-.typing-glyph-mask-tint {
-  position: absolute;
-  inset: 0;
-  mix-blend-mode: multiply;
-  pointer-events: none;
 }
 
 .typing-core,
