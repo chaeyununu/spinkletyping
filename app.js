@@ -550,11 +550,11 @@ const EFFECT_MIGRATION = {
 // wrapper is temporary (unwrapped right after the animation, stripped before
 // save), so this never touches the note's actual stored text color.
 const GLYPH_FLASH_PRESETS = {
-  "cyber-pink": { colors: ["#ff62c7", "#6fe8ff"], life: 230, easing: "steps(3, end)" },
-  electric: { colors: ["#fffef2", "#ffe45f"], life: 190, easing: "ease-out" },
-  "candy-pop": { colors: ["#ff9fc2", "#ffcf70"], life: 300, easing: "cubic-bezier(0.34, 1.56, 0.64, 1)" },
-  ink: { colors: ["#3f2f22"], life: 320, easing: "ease-out" },
-  "crystal-glass": { colors: ["#ffffff", "#95d9ff"], life: 280, easing: "ease-out" }
+  "cyber-pink": { colors: ["#ff62c7", "#6fe8ff"], life: 130, easing: "steps(3, end)" },
+  electric: { colors: ["#fffef2", "#ffe45f"], life: 110, easing: "ease-out" },
+  "candy-pop": { colors: ["#ff9fc2", "#ffcf70"], life: 160, easing: "cubic-bezier(0.34, 1.56, 0.64, 1)" },
+  ink: { colors: ["#3f2f22"], life: 170, easing: "ease-out" },
+  "crystal-glass": { colors: ["#ffffff", "#95d9ff"], life: 150, easing: "ease-out" }
 };
 
 // Modes where the pressed/tactile feel (squash-and-settle) should read more
@@ -5045,15 +5045,15 @@ function startCommittedGlyphAnimation(wrapper, settings, target) {
 
   wrapper.style.setProperty("--real-glyph-glow", vars.glow);
   wrapper.style.setProperty("--real-glyph-alt-glow", vars.altGlow);
-
-  // The color flash is allowed to run a touch longer than the snap-back
-  // motion itself (color doesn't need to be tied to position), so the
-  // wrapper's actual lifetime is whichever of the two is longer.
-  const flashDuration = startGlyphColorFlash(wrapper, settings, target);
-  const totalLife = Math.max(motion.duration, flashDuration);
+  // Capped to the character's own motion duration on purpose: this is a
+  // quick per-character "impact" flash, not a lingering wash. At normal
+  // typing speed a longer flash ends up overlapping 2-3 already-typed
+  // characters at once, which reads as "everything turned magenta"
+  // instead of "that letter just got hit."
+  startGlyphColorFlash(wrapper, settings, target, motion.duration);
 
   if (typeof wrapper.animate !== "function") {
-    window.setTimeout(cleanup, totalLife);
+    window.setTimeout(cleanup, motion.duration);
     return;
   }
 
@@ -5062,51 +5062,39 @@ function startCommittedGlyphAnimation(wrapper, settings, target) {
     easing: motion.easing,
     fill: "both"
   });
+  animation.addEventListener("finish", cleanup, { once: true });
   animation.addEventListener("cancel", cleanup, { once: true });
-  if (flashDuration <= motion.duration) {
-    animation.addEventListener("finish", cleanup, { once: true });
-  }
-  window.setTimeout(cleanup, totalLife + 90);
+  window.setTimeout(cleanup, motion.duration + 90);
 }
 
-// Fires alongside the main glyph motion: a bold, FX-tinted color change that
-// holds for a beat before fading back to the character's real (inherited)
-// ink color. Runs on the temporary wrapper only, so the note's saved
-// HTML/color is never touched. Returns the duration used (0 if skipped),
-// so the caller can keep the wrapper alive long enough to see it through.
-function startGlyphColorFlash(wrapper, settings, target) {
-  if (typeof wrapper.animate !== "function") return 0;
+// Fires alongside the main glyph motion: a quick, FX-tinted color+glow
+// impact that snaps back to the character's real (inherited) ink color
+// well before the wrapper itself is cleaned up. Runs on the temporary
+// wrapper only, so the note's saved HTML/color is never touched.
+function startGlyphColorFlash(wrapper, settings, target, motionDuration) {
+  if (typeof wrapper.animate !== "function") return;
   const trueColor = target?.style?.color;
-  if (!trueColor) return 0;
+  if (!trueColor) return;
   const effectLevel = clamp(settings.effectIntensity, 0.05, 1);
   const strength = clamp01(settings.glyphMotion) * effectLevel;
-  if (strength <= 0.04) return 0;
+  if (strength <= 0.04) return;
   const flash = GLYPH_FLASH_PRESETS[settings.effectMode] || defaultGlyphFlash(settings.effectMode);
   const speedScale = 1.18 - settings.effectSpeed * 0.46;
-  const duration = Math.max(150, Math.round((flash.life || 240) * speedScale * (1.05 + strength * 0.5)));
-  // Hold at full flash color for over half the duration instead of
-  // starting the fade immediately, so the color change actually reads
-  // before it reverts.
-  const hold = 0.6;
-  const keyframes = flash.colors.length > 1
-    ? [
-        { color: flash.colors[0], offset: 0 },
-        { color: flash.colors[1], offset: hold * 0.6 },
-        { color: flash.colors[1], offset: hold },
-        { color: trueColor, offset: 1 }
-      ]
-    : [
-        { color: flash.colors[0], offset: 0 },
-        { color: flash.colors[0], offset: hold },
-        { color: trueColor, offset: 1 }
-      ];
+  const duration = Math.max(90, Math.min(motionDuration, Math.round((flash.life || 150) * speedScale)));
+  const hold = 0.38;
+  const c0 = flash.colors[0];
+  const c1 = flash.colors.length > 1 ? flash.colors[1] : flash.colors[0];
+  const glow = (color, size) => `0 0 ${size}px ${color}, 0 0 ${Math.max(1, size - 3)}px ${color}`;
+  const keyframes = [
+    { color: c0, textShadow: glow(c0, 8), offset: 0 },
+    { color: c1, textShadow: glow(c1, 6), offset: hold },
+    { color: trueColor, textShadow: "0 0 0px transparent", offset: 1 }
+  ];
   try {
-    wrapper.animate(keyframes, { duration, easing: "cubic-bezier(0.3, 0, 0.2, 1)", fill: "forwards" });
-    return duration;
+    wrapper.animate(keyframes, { duration, easing: "ease-out", fill: "forwards" });
   } catch (error) {
-    // Older browsers may reject animating `color`; the transform motion
-    // still plays fine without the flash.
-    return 0;
+    // Older browsers may reject animating `color`/`textShadow`; the
+    // transform motion still plays fine without the flash.
   }
 }
 
@@ -5116,7 +5104,7 @@ function defaultGlyphFlash(mode) {
   // for its particles), not the paler glow/"hot" tone — that pale tone
   // barely showed up against light paper themes, which is why the flash
   // felt almost absent on non-tailored presets.
-  return { colors: [effect.secondary, effect.primary], life: 280, easing: "ease-out" };
+  return { colors: [effect.secondary, effect.primary], life: 150, easing: "ease-out" };
 }
 
 // A fast, sharply-decaying echo through the 1-3 characters typed just before
