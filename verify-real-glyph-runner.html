@@ -165,13 +165,71 @@
         };
       }
 
+      async function runFastInputCase(app, label, mode, text, composition) {
+        const { win, doc, editor, select } = app;
+        select.value = mode;
+        select.dispatchEvent(new Event("change", { bubbles: true }));
+        editor.innerHTML = "";
+        placeCaretAtEnd(win, doc, editor);
+        const baselineRect = editor.getBoundingClientRect();
+        let maxLeftDelta = 0;
+        let maxWidthDelta = 0;
+        const trackEditorBox = () => {
+          const rect = editor.getBoundingClientRect();
+          maxLeftDelta = Math.max(maxLeftDelta, Math.abs(rect.left - baselineRect.left));
+          maxWidthDelta = Math.max(maxWidthDelta, Math.abs(rect.width - baselineRect.width));
+        };
+
+        for (const glyph of Array.from(text)) {
+          if (composition) {
+            editor.dispatchEvent(new CompositionEvent("compositionstart", { data: "", bubbles: true }));
+            doc.execCommand("insertText", false, glyph);
+            editor.dispatchEvent(new CompositionEvent("compositionend", { data: glyph, bubbles: true }));
+          } else {
+            editor.dispatchEvent(new KeyboardEvent("keydown", { key: glyph, bubbles: true }));
+            doc.execCommand("insertText", false, glyph);
+            editor.dispatchEvent(new InputEvent("input", { inputType: "insertText", data: glyph, bubbles: true }));
+          }
+          trackEditorBox();
+          await wait(8);
+          trackEditorBox();
+        }
+
+        await wait(380);
+        trackEditorBox();
+        if (typeof win.flushCommittedGlyphAnimations === "function") {
+          win.flushCommittedGlyphAnimations({ preserveSelection: true });
+        }
+        await wait(40);
+        trackEditorBox();
+
+        const selection = win.getSelection();
+        const serialized = typeof win.serializeEditorContent === "function" ? win.serializeEditorContent() : editor.innerHTML;
+        return {
+          label,
+          mode,
+          text,
+          resultText: editor.textContent,
+          textOk: editor.textContent === text,
+          caretCollapsed: Boolean(selection && selection.rangeCount && selection.isCollapsed),
+          serializedClean: !serialized.includes("typing-real-glyph"),
+          wrappersAfterCleanup: doc.querySelectorAll(".typing-real-glyph").length,
+          editorLeftDelta: Number(maxLeftDelta.toFixed(3)),
+          editorWidthDelta: Number(maxWidthDelta.toFixed(3))
+        };
+      }
+
       async function runVerification() {
         const app = await setupApp();
         const cases = [
           await runCase(app, "English", "candy-pop", "A", false),
-          await runCase(app, "Korean", "electric", "한", true)
+          await runCase(app, "Korean", "electric", "\ud55c", true)
         ];
-        const passed = cases.every((item) =>
+        const fastCases = [
+          await runFastInputCase(app, "Fast English", "electric", "thequickbrownfoxiiiiijumps", false),
+          await runFastInputCase(app, "Fast Korean", "candy-pop", "\ud55c\uae00\ud14c\uc2a4\ud2b8", true)
+        ];
+        const singleGlyphPassed = cases.every((item) =>
           item.moved &&
           item.serializedClean &&
           item.wrappersAfterCleanup === 0 &&
@@ -179,7 +237,16 @@
           item.canvasHidden &&
           item.oldGlyphLayerHidden
         );
-        document.getElementById("report").textContent = JSON.stringify({ passed, cases }, null, 2);
+        const fastInputPassed = fastCases.every((item) =>
+          item.textOk &&
+          item.caretCollapsed &&
+          item.serializedClean &&
+          item.wrappersAfterCleanup === 0 &&
+          item.editorLeftDelta <= 0.5 &&
+          item.editorWidthDelta <= 0.5
+        );
+        const passed = singleGlyphPassed && fastInputPassed;
+        document.getElementById("report").textContent = JSON.stringify({ passed, cases, fastCases }, null, 2);
       }
 
       runVerification().catch((error) => {

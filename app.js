@@ -52,6 +52,30 @@ const FONTS = {
   nanumMyeongjo: {
     label: "Nanum Myeongjo",
     stack: "\"Nanum Myeongjo\", \"Noto Serif KR\", Batang, \"Apple SD Gothic Neo\", serif"
+  },
+  compact: {
+    label: "Compact Plex",
+    stack: "\"IBM Plex Sans KR\", \"IBM Plex Sans\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", \"Segoe UI\", sans-serif"
+  },
+  codeMono: {
+    label: "Code Mono",
+    stack: "\"JetBrains Mono\", \"D2Coding\", Consolas, \"Malgun Gothic\", monospace"
+  },
+  geometricSans: {
+    label: "Geometric Sans",
+    stack: "\"Poppins\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", \"Noto Sans KR\", sans-serif"
+  },
+  roundedSoft: {
+    label: "Rounded Soft",
+    stack: "\"Quicksand\", \"Gowun Dodum\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", sans-serif"
+  },
+  gothicA1: {
+    label: "Gothic A1",
+    stack: "\"Gothic A1\", \"Apple SD Gothic Neo\", \"Malgun Gothic\", \"Segoe UI\", sans-serif"
+  },
+  songMyung: {
+    label: "Song Myung",
+    stack: "\"Song Myung\", \"Noto Serif KR\", Batang, \"Apple SD Gothic Neo\", serif"
   }
 };
 
@@ -520,6 +544,91 @@ const EFFECT_MIGRATION = {
   "ink-pulse": "ink",
   "electric-pop": "electric",
   "soft-bounce": "candy-pop"
+};
+
+// Brief per-keystroke color flash on the freshly committed glyph only. The
+// wrapper is temporary (unwrapped right after the animation, stripped before
+// save), so this never touches the note's actual stored text color.
+const GLYPH_FLASH_PRESETS = {
+  "cyber-pink": { colors: ["#ff62c7", "#6fe8ff"], life: 230, easing: "steps(3, end)" },
+  electric: { colors: ["#fffef2", "#ffe45f"], life: 190, easing: "ease-out" },
+  "candy-pop": { colors: ["#ff9fc2", "#ffcf70"], life: 300, easing: "cubic-bezier(0.34, 1.56, 0.64, 1)" },
+  ink: { colors: ["#3f2f22"], life: 320, easing: "ease-out" },
+  "crystal-glass": { colors: ["#ffffff", "#95d9ff"], life: 280, easing: "ease-out" }
+};
+
+// Modes where the pressed/tactile feel (squash-and-settle) should read more
+// clearly, per the "typing feels physically pressed" request.
+const PRESSURE_MODES = new Set(["candy-pop", "keycap-pop", "ink", "bubble"]);
+
+const PERSONALITY_PRESETS = {
+  "cream-writer": {
+    label: "Cream Writer",
+    description: "Warm milky paper, soft caret bloom, unhurried serif lines.",
+    typingFeel: "soft",
+    effectMode: "soft-spark",
+    font: "serif",
+    theme: "milk-cream",
+    typingAnimation: 0.58,
+    feedbackStrength: 0.5,
+    effectIntensity: 0.8,
+    glowAmount: 0.7,
+    particleAmount: 0.6
+  },
+  "cyber-note": {
+    label: "Cyber Note",
+    description: "Fast neon feedback and a crisp mono cadence for late-night sprints.",
+    typingFeel: "crisp",
+    effectMode: "cyber-pink",
+    font: "codeMono",
+    theme: "lavender-study",
+    typingAnimation: 0.62,
+    feedbackStrength: 0.68,
+    effectIntensity: 0.95,
+    glowAmount: 0.95,
+    particleAmount: 0.85,
+    shakeAmount: 0.4
+  },
+  "tiny-researcher": {
+    label: "Tiny Researcher",
+    description: "Small, compact type and a quiet pixel-precise click for dense notes.",
+    typingFeel: "crisp",
+    effectMode: "pixel",
+    font: "compact",
+    theme: "classic-ivory",
+    fontSize: 16,
+    typingAnimation: 0.34,
+    feedbackStrength: 0.4,
+    effectIntensity: 0.55,
+    glowAmount: 0.35,
+    particleAmount: 0.4
+  },
+  "candy-diary": {
+    label: "Candy Diary",
+    description: "Bouncy, cushioned pops in a playful rounded hand.",
+    typingFeel: "bouncy",
+    effectMode: "candy-pop",
+    font: "roundedSoft",
+    theme: "peach-cloud",
+    typingAnimation: 0.72,
+    feedbackStrength: 0.72,
+    effectIntensity: 0.95,
+    glowAmount: 0.8,
+    particleAmount: 0.9
+  },
+  "ink-scholar": {
+    label: "Ink Scholar",
+    description: "Slow analog pigment settling into a quiet serif page.",
+    typingFeel: "ink",
+    effectMode: "ink",
+    font: "gowunBatang",
+    theme: "classic-ivory",
+    typingAnimation: 0.5,
+    feedbackStrength: 0.62,
+    effectIntensity: 0.7,
+    glowAmount: 0.3,
+    particleAmount: 0.4
+  }
 };
 
 const GLYPH_EFFECT_PROFILES = {
@@ -1599,7 +1708,12 @@ let lastTactileAt = 0;
 let compositionActive = false;
 let typingStreak = 0;
 let lastStreakAt = 0;
+let lastStreakRewardAt = 0;
+let typingSpeedFactor = 0;
+let recentKeyIntervals = [];
 let graphemeSegmenter = null;
+
+const STREAK_REWARD_STEP = 24;
 
 const TRANSIENT_GLYPH_SELECTOR = ".typing-real-glyph";
 
@@ -1694,6 +1808,7 @@ function cacheRefs() {
   refs.editorWidthRange = document.getElementById("editorWidthRange");
   refs.editorWidthReadout = document.getElementById("editorWidthReadout");
   refs.reduceMotion = document.getElementById("reduceMotion");
+  refs.personalitySelect = document.getElementById("personalitySelect");
   refs.timerFace = document.getElementById("timerFace");
   refs.timerMode = document.getElementById("timerMode");
   refs.timerStartPause = document.getElementById("timerStartPause");
@@ -1707,6 +1822,22 @@ function populateStaticControls() {
   fillSelect(refs.effectModeSelect, EFFECT_PRESETS, "label");
   fillSelect(refs.themeSelect, THEMES);
   fillSelect(refs.fontSelect, FONTS, "label");
+  populatePersonalitySelect();
+}
+
+function populatePersonalitySelect() {
+  if (!refs.personalitySelect) return;
+  refs.personalitySelect.innerHTML = "";
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = "Choose a mood…";
+  refs.personalitySelect.append(placeholder);
+  Object.entries(PERSONALITY_PRESETS).forEach(([value, data]) => {
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = data.label;
+    refs.personalitySelect.append(option);
+  });
 }
 
 function fillSelect(select, source, labelKey) {
@@ -1804,6 +1935,7 @@ function bindEvents() {
   refs.lineHeightRange.addEventListener("input", updateSettingsFromControls);
   refs.editorWidthRange.addEventListener("input", updateSettingsFromControls);
   refs.reduceMotion.addEventListener("change", updateSettingsFromControls);
+  refs.personalitySelect?.addEventListener("change", applyPersonalityPreset);
 
   document.querySelectorAll("[data-timer-mode]").forEach((button) => {
     button.addEventListener("click", () => setTimerMode(button.dataset.timerMode));
@@ -2371,6 +2503,25 @@ function updateSettingsFromControls() {
   soundEngine.ensurePack(state.settings.soundPack);
 }
 
+function applyPersonalityPreset() {
+  const key = refs.personalitySelect.value;
+  const preset = PERSONALITY_PRESETS[key];
+  refs.personalitySelect.value = "";
+  if (!preset) return;
+  Object.entries(preset).forEach(([field, value]) => {
+    if (field === "label" || field === "description") return;
+    state.settings[field] = value;
+  });
+  // A preset only bundles a starting point — every field it touched stays a
+  // normal, independently editable setting afterward.
+  state.settings = migrateSettings(state.settings);
+  applySettings();
+  renderSettingsControls();
+  saveStateNow();
+  soundEngine.ensurePack(state.settings.soundPack);
+  showToast(`${preset.label} applied`);
+}
+
 function applySettings() {
   const settings = state.settings;
   const feel = FEEL_PRESETS[settings.typingFeel];
@@ -2468,6 +2619,7 @@ function triggerTypingVisualOnly(glyph) {
   // once composition settles (mid-composition jamo are never rendered as a
   // ghost glyph, since they are not the final character yet).
   const now = performance.now();
+  registerKeystrokeInterval(now);
   lastTactileAt = now;
   updateTypingStreak(now, "normal");
   const tactile = {
@@ -2500,17 +2652,24 @@ function lastGrapheme(value) {
 }
 
 function triggerTypingTactile(keyType, visualTargetIsEditor, event) {
-  lastTactileAt = performance.now();
+  const now = performance.now();
+  registerKeystrokeInterval(now);
+  lastTactileAt = now;
   soundEngine.play(keyType);
   updateTypingStreak(lastTactileAt, keyType);
   if (visualTargetIsEditor) {
-    const allowGlyph = !compositionActive && !event?.isComposing && !/Composition/i.test(event?.inputType || "");
+    // Composing Hangul is still allowed to resolve/show a glyph visual here:
+    // it's only ever rendered through the decorative overlay (appendGlyphOverlay,
+    // never touches the real note DOM), because animateCommittedGlyph has its
+    // own independent `compositionActive` check and always refuses to wrap the
+    // live composition text. That's what lets each jamo keystroke feel just as
+    // alive as an English letter, without ever risking the composition itself.
     const tactile = {
       keyType,
       glyph: getVisualGlyph(event, keyType),
       seed: Math.floor(lastTactileAt * 10) + Math.floor(Math.random() * 1000),
       streak: typingStreak,
-      allowGlyph
+      allowGlyph: true
     };
     requestAnimationFrame(() => cueTypingVisual(tactile));
   }
@@ -2528,6 +2687,74 @@ function updateTypingStreak(now, keyType) {
     typingStreak = 1;
   }
   lastStreakAt = now;
+  maybeSpawnStreakReward(now, keyType);
+}
+
+// Tracks the rolling gap between recent keystrokes so motion/glow/particles
+// can respond a little to how fast someone is typing, without any visible
+// speed readout. Smoothed rather than snapping, and decays quickly back to
+// neutral after a pause.
+function registerKeystrokeInterval(now) {
+  if (lastTactileAt) {
+    const interval = now - lastTactileAt;
+    if (interval > 0 && interval < 900) {
+      recentKeyIntervals.push(interval);
+      if (recentKeyIntervals.length > 6) recentKeyIntervals.shift();
+    } else {
+      recentKeyIntervals = [];
+    }
+  }
+  if (recentKeyIntervals.length >= 2) {
+    const avg = recentKeyIntervals.reduce((sum, value) => sum + value, 0) / recentKeyIntervals.length;
+    const target = clamp01((260 - avg) / (260 - 90));
+    typingSpeedFactor = typingSpeedFactor * 0.65 + target * 0.35;
+  } else {
+    typingSpeedFactor *= 0.85;
+  }
+}
+
+// A quiet visual reward for a sustained fast streak: a small extra sparkle
+// burst at the caret, tinted to the active FX. No numbers, no combo UI.
+function maybeSpawnStreakReward(now, keyType) {
+  const settings = state.settings;
+  if (keyType === "backspace") return;
+  if (settings.reduceMotion || !settings.effectEnabled || settings.particleAmount <= 0.01) return;
+  if (typingStreak < STREAK_REWARD_STEP || typingStreak % STREAK_REWARD_STEP !== 0) return;
+  if (now - lastStreakRewardAt < 3200) return;
+  lastStreakRewardAt = now;
+  requestAnimationFrame(spawnStreakRewardBurst);
+}
+
+function spawnStreakRewardBurst() {
+  if (!fx.ctx) return;
+  const rect = caretRect();
+  if (!rect) return;
+  const settings = state.settings;
+  const effect = EFFECT_PRESETS[settings.effectMode] || EFFECT_PRESETS[defaultSettings.effectMode];
+  const x = rect.left;
+  const y = rect.top + rect.height * 0.4;
+  const count = clamp(Math.round(5 * (0.5 + settings.particleAmount)), 3, 9);
+  for (let i = 0; i < count; i += 1) {
+    const angle = fxRand(0, Math.PI * 2);
+    const speed = fxRand(14, 46);
+    addFxParticle({
+      start: performance.now() + i * 16,
+      life: fxRand(420, 720),
+      x,
+      y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 14,
+      ax: 0,
+      ay: -6,
+      size: fxRand(3, 7),
+      shape: Math.random() < 0.5 ? "star8" : "dot",
+      colorA: effect.secondary,
+      colorB: effect.primary,
+      glow: fxGlow({ settings, effectLevel: 1 }, 4),
+      peakAlpha: fxRand(0.55, 0.85)
+    });
+  }
+  ensureFxLoop();
 }
 
 function getVisualGlyph(event, keyType) {
@@ -2568,7 +2795,7 @@ function cueTypingVisual(tactile = {}) {
   const effect = EFFECT_PRESETS[state.settings.effectMode] || EFFECT_PRESETS[defaultSettings.effectMode];
   const keyType = tactile.keyType || "normal";
   const allowGlyph = tactile.allowGlyph !== false && keyType === "normal";
-  const glyphTargets = allowGlyph ? resolveGlyphTargets() : { current: null, previous: null };
+  const glyphTargets = allowGlyph ? resolveGlyphTargets() : { current: null, previous: null, trail: [] };
   const realGlyphAnimated = animateCommittedGlyph(glyphTargets.current, tactile);
   refs.editor.classList.add("is-typing");
   document.body.classList.add("typing-live");
@@ -4801,12 +5028,12 @@ function animateCommittedGlyph(target, tactile = {}) {
   }
 
   collapseSelectionAfterNode(wrapper);
-  startCommittedGlyphAnimation(wrapper, settings);
+  startCommittedGlyphAnimation(wrapper, settings, target);
   capCommittedGlyphAnimations();
   return true;
 }
 
-function startCommittedGlyphAnimation(wrapper, settings) {
+function startCommittedGlyphAnimation(wrapper, settings, target) {
   const vars = committedGlyphMotionVars(settings);
   const motion = buildCommittedGlyphMotion(settings.effectMode, vars);
   let cleaned = false;
@@ -4819,8 +5046,14 @@ function startCommittedGlyphAnimation(wrapper, settings) {
   wrapper.style.setProperty("--real-glyph-glow", vars.glow);
   wrapper.style.setProperty("--real-glyph-alt-glow", vars.altGlow);
 
+  // The color flash is allowed to run a touch longer than the snap-back
+  // motion itself (color doesn't need to be tied to position), so the
+  // wrapper's actual lifetime is whichever of the two is longer.
+  const flashDuration = startGlyphColorFlash(wrapper, settings, target);
+  const totalLife = Math.max(motion.duration, flashDuration);
+
   if (typeof wrapper.animate !== "function") {
-    window.setTimeout(cleanup, motion.duration);
+    window.setTimeout(cleanup, totalLife);
     return;
   }
 
@@ -4829,10 +5062,70 @@ function startCommittedGlyphAnimation(wrapper, settings) {
     easing: motion.easing,
     fill: "both"
   });
-  animation.addEventListener("finish", cleanup, { once: true });
   animation.addEventListener("cancel", cleanup, { once: true });
-  window.setTimeout(cleanup, motion.duration + 90);
+  if (flashDuration <= motion.duration) {
+    animation.addEventListener("finish", cleanup, { once: true });
+  }
+  window.setTimeout(cleanup, totalLife + 90);
 }
+
+// Fires alongside the main glyph motion: a bold, FX-tinted color change that
+// holds for a beat before fading back to the character's real (inherited)
+// ink color. Runs on the temporary wrapper only, so the note's saved
+// HTML/color is never touched. Returns the duration used (0 if skipped),
+// so the caller can keep the wrapper alive long enough to see it through.
+function startGlyphColorFlash(wrapper, settings, target) {
+  if (typeof wrapper.animate !== "function") return 0;
+  const trueColor = target?.style?.color;
+  if (!trueColor) return 0;
+  const effectLevel = clamp(settings.effectIntensity, 0.05, 1);
+  const strength = clamp01(settings.glyphMotion) * effectLevel;
+  if (strength <= 0.04) return 0;
+  const flash = GLYPH_FLASH_PRESETS[settings.effectMode] || defaultGlyphFlash(settings.effectMode);
+  const speedScale = 1.18 - settings.effectSpeed * 0.46;
+  const duration = Math.max(150, Math.round((flash.life || 240) * speedScale * (1.05 + strength * 0.5)));
+  // Hold at full flash color for over half the duration instead of
+  // starting the fade immediately, so the color change actually reads
+  // before it reverts.
+  const hold = 0.6;
+  const keyframes = flash.colors.length > 1
+    ? [
+        { color: flash.colors[0], offset: 0 },
+        { color: flash.colors[1], offset: hold * 0.6 },
+        { color: flash.colors[1], offset: hold },
+        { color: trueColor, offset: 1 }
+      ]
+    : [
+        { color: flash.colors[0], offset: 0 },
+        { color: flash.colors[0], offset: hold },
+        { color: trueColor, offset: 1 }
+      ];
+  try {
+    wrapper.animate(keyframes, { duration, easing: "cubic-bezier(0.3, 0, 0.2, 1)", fill: "forwards" });
+    return duration;
+  } catch (error) {
+    // Older browsers may reject animating `color`; the transform motion
+    // still plays fine without the flash.
+    return 0;
+  }
+}
+
+function defaultGlyphFlash(mode) {
+  const effect = EFFECT_PRESETS[mode] || EFFECT_PRESETS[defaultSettings.effectMode];
+  // Built from the effect's own saturated brand colors (the same ones used
+  // for its particles), not the paler glow/"hot" tone — that pale tone
+  // barely showed up against light paper themes, which is why the flash
+  // felt almost absent on non-tailored presets.
+  return { colors: [effect.secondary, effect.primary], life: 280, easing: "ease-out" };
+}
+
+// A fast, sharply-decaying echo through the 1-3 characters typed just before
+// the current one is rendered by `appendGlyphOverlay` (decorative, in the
+// fixed feedback layer) rather than by wrapping the real note text — see
+// spawnTypingMark(). Wrapping the live editable DOM for 3-4 characters on
+// every keystroke was found to occasionally interfere with fast/consecutive
+// native key input (e.g. a Space right after a letter), so the trail never
+// touches the actual contenteditable content.
 
 function committedGlyphMotionVars(settings) {
   const mode = settings.effectMode;
@@ -4842,11 +5135,22 @@ function committedGlyphMotionVars(settings) {
   const speedScale = 1.18 - settings.effectSpeed * 0.46;
   const effectLevel = clamp(settings.effectIntensity, 0.05, 1);
   const motionLevel = clamp01(settings.glyphMotion);
-  const strength = (jolt.strength ?? profile.impact ?? 1) * (0.52 + motionLevel * 1.24) * (0.72 + effectLevel * 0.5);
-  let x = (jolt.x ?? effect.glyphX) * strength * 2.2;
-  let y = (jolt.y ?? effect.glyphY) * strength * 2.2;
+  const isPressureMode = PRESSURE_MODES.has(mode);
+  // A little extra punch the faster someone is typing right now — kept
+  // subtle so it reads as "responsive to my hands", not gamified.
+  const handSpeedBoost = 1 + typingSpeedFactor * 0.16;
+  const strength = (jolt.strength ?? profile.impact ?? 1) * (0.52 + motionLevel * 1.24) * (0.72 + effectLevel * 0.5) * handSpeedBoost;
+  // Pushed hard over the base jolt values on purpose — the raw per-mode
+  // jolt numbers (tuned for the old, much subtler feel) read as barely
+  //-there on their own, especially for the gentler presets like the
+  // default Soft Spark. This is the main "how much does it move" dial.
+  let x = (jolt.x ?? effect.glyphX) * strength * 6.2;
+  let y = (jolt.y ?? effect.glyphY) * strength * 6.2;
   const distance = Math.hypot(x, y);
-  const minDistance = 2.2 + motionLevel * 1.5;
+  // A firm floor so even the softest FX preset still visibly moves —
+  // this used to be tiny (3-5px) and was the main reason motion felt
+  // absent at default settings.
+  const minDistance = 8 + motionLevel * 6;
 
   if (distance > 0 && distance < minDistance) {
     const scalar = minDistance / distance;
@@ -4856,17 +5160,26 @@ function committedGlyphMotionVars(settings) {
     y = -minDistance;
   }
 
-  const scalePop = 1 + Math.max(0.018, Math.max(0, (jolt.scale ?? effect.glyphScale) - 1) * (0.95 + strength * 1.35));
-  const squash = clamp((scalePop - 1) * 1.4, 0.018, 0.16);
+  const pressureBoost = isPressureMode ? 1.35 : 1;
+  const scalePop = 1 + Math.max(0.06, Math.max(0, (jolt.scale ?? effect.glyphScale) - 1) * (0.95 + strength * 1.8) * pressureBoost);
+  const squashMultiplier = isPressureMode ? 2.2 : 1.7;
+  const squashCap = isPressureMode ? 0.4 : 0.28;
+  const squash = clamp((scalePop - 1) * squashMultiplier, 0.05, squashCap);
   return {
     x,
     y,
-    rotate: (jolt.rotate ?? effect.glyphRotate) * strength * 2.1,
+    rotate: (jolt.rotate ?? effect.glyphRotate) * strength * 5.2,
     scale: scalePop,
     squash,
-    split: profile.split * (0.42 + motionLevel * 0.9),
-    duration: Math.round(clamp((jolt.life || profile.duration * 0.44 + 54) * speedScale + 70, 120, 360)),
-    glow: hexToRgba(profile.accent, Math.min(0.48, profile.glow * settings.glowAmount * effectLevel * 0.22)),
+    split: profile.split * (0.5 + motionLevel * 1.05),
+    // A little longer than the "safety first" pass: long enough to
+    // actually register as motion, still short enough that the guard in
+    // animateCommittedGlyph (which skips rather than overlaps when a
+    // wrapper is still live) only rarely has to skip a keystroke's
+    // decoration during very fast bursts — text input itself is never
+    // at risk either way.
+    duration: Math.round(clamp((jolt.life || profile.duration * 0.44 + 54) * speedScale + 60, 130, 360)),
+    glow: hexToRgba(profile.accent, Math.min(0.6, profile.glow * settings.glowAmount * effectLevel * 0.3)),
     altGlow: hexToRgba(profile.alt, Math.min(0.38, profile.glow * settings.glowAmount * effectLevel * 0.18))
   };
 }
@@ -4875,245 +5188,322 @@ function buildCommittedGlyphMotion(mode, v) {
   const neutral = "translate3d(0, 0, 0) rotate(0deg) scale(1, 1)";
   const settle = [
     { transform: transformGlyph(v.x, v.y, v.rotate, v.scale, v.scale), offset: 0 },
-    { transform: transformGlyph(v.x * -0.32, v.y * -0.45, v.rotate * -0.26, 1 - (v.scale - 1) * 0.28, 1 + (v.scale - 1) * 0.16), offset: 0.38 },
-    { transform: transformGlyph(v.x * 0.12, v.y * 0.1, v.rotate * 0.1, 1.006, 0.998), offset: 0.68 },
+    { transform: transformGlyph(v.x * -0.32, v.y * -0.45, v.rotate * -0.26, 1 - (v.scale - 1) * 0.28, 1 + (v.scale - 1) * 0.16), offset: 0.36 },
+    { transform: transformGlyph(v.x * 0.14, v.y * 0.12, v.rotate * 0.12, 1.008, 0.996), offset: 0.62 },
+    { transform: transformGlyph(v.x * -0.04, v.y * -0.03, v.rotate * -0.03, 0.998, 1.002), offset: 0.84 },
     { transform: neutral, offset: 1 }
   ];
 
   switch (mode) {
+    // Soft, rounded impact with a real bounce-settle-microbounce tail so it
+    // doesn't just decay smoothly — it lands, springs, and jiggles once more.
     case "candy-pop":
       return {
-        duration: v.duration + 70,
+        duration: v.duration + 75,
         easing: "cubic-bezier(0.34, 1.56, 0.64, 1)",
         keyframes: [
-          { transform: transformGlyph(0, Math.abs(v.y) * 0.95, v.rotate * 0.2, 1 + v.squash * 1.8, 1 - v.squash * 1.35), offset: 0 },
-          { transform: transformGlyph(v.x * 0.22, -Math.abs(v.y) * 1.05, v.rotate * -0.3, 1 - v.squash * 0.45, 1 + v.squash * 1.55), offset: 0.28 },
-          { transform: transformGlyph(0, Math.abs(v.y) * 0.26, v.rotate * 0.16, 1 + v.squash * 0.55, 1 - v.squash * 0.34), offset: 0.52 },
+          { transform: transformGlyph(0, Math.abs(v.y) * 0.95, v.rotate * 0.2, 1 + v.squash * 1.85, 1 - v.squash * 1.4), offset: 0 },
+          { transform: transformGlyph(v.x * 0.24, -Math.abs(v.y) * 1.1, v.rotate * -0.32, 1 - v.squash * 0.5, 1 + v.squash * 1.65), offset: 0.24 },
+          { transform: transformGlyph(v.x * -0.08, Math.abs(v.y) * 0.3, v.rotate * 0.18, 1 + v.squash * 0.6, 1 - v.squash * 0.4), offset: 0.46 },
+          { transform: transformGlyph(v.x * 0.03, -Math.abs(v.y) * 0.09, v.rotate * -0.06, 1 - v.squash * 0.12, 1 + v.squash * 0.16), offset: 0.7 },
           { transform: neutral, offset: 1 }
         ]
       };
+    // Sharp electrical hit-and-flicker: an instant snap out, a hard
+    // overcorrect, then a fast double-flicker before it dies.
     case "electric":
       return {
-        duration: Math.max(120, v.duration - 20),
+        duration: Math.max(120, v.duration - 15),
         easing: "steps(1, end)",
         keyframes: [
-          { transform: `translate3d(${v.x.toFixed(2)}px, ${v.y.toFixed(2)}px, 0) skewX(-8deg) rotate(${v.rotate.toFixed(2)}deg)`, offset: 0 },
-          { transform: `translate3d(${(v.x * -0.78).toFixed(2)}px, ${(v.y * 0.62).toFixed(2)}px, 0) skewX(7deg) rotate(${(v.rotate * -0.8).toFixed(2)}deg)`, offset: 0.2 },
-          { transform: `translate3d(${(v.x * 0.24).toFixed(2)}px, ${(v.y * -0.75).toFixed(2)}px, 0) skewY(-4deg) scale(1.012)`, offset: 0.42 },
-          { transform: transformGlyph(v.x * -0.16, v.y * 0.12, 0, 1, 1), offset: 0.7 },
+          { transform: `translate3d(${(v.x * 1.08).toFixed(2)}px, ${(v.y * 1.08).toFixed(2)}px, 0) skewX(-9deg) rotate(${v.rotate.toFixed(2)}deg)`, offset: 0 },
+          { transform: `translate3d(${(v.x * -0.86).toFixed(2)}px, ${(v.y * 0.68).toFixed(2)}px, 0) skewX(8deg) rotate(${(v.rotate * -0.85).toFixed(2)}deg)`, offset: 0.16 },
+          { transform: `translate3d(${(v.x * 0.3).toFixed(2)}px, ${(v.y * -0.82).toFixed(2)}px, 0) skewY(-5deg) scale(1.014)`, offset: 0.34 },
+          { transform: `translate3d(${(v.x * -0.14).toFixed(2)}px, ${(v.y * 0.22).toFixed(2)}px, 0) skewX(3deg) scale(0.996)`, offset: 0.52 },
+          { transform: transformGlyph(v.x * 0.06, v.y * -0.08, 0, 1, 1), offset: 0.72 },
           { transform: neutral, offset: 1 }
         ]
       };
+    // Chunky, blocky, stepped digital jump — one more step-stage than
+    // before so it reads more like discrete pixel snaps, less like a curve.
     case "pixel":
       return {
-        duration: Math.max(130, v.duration - 8),
-        easing: "steps(4, end)",
+        duration: Math.max(135, v.duration - 4),
+        easing: "steps(5, end)",
         keyframes: [
-          { transform: transformGlyph(v.x, v.y, 0, 1.01, 0.99), offset: 0 },
-          { transform: transformGlyph(v.x * -0.82, v.y * -0.58, 0, 0.995, 1.005), offset: 0.34 },
-          { transform: transformGlyph(v.x * 0.32, v.y * 0.24, 0, 1, 1), offset: 0.68 },
+          { transform: transformGlyph(v.x, v.y, 0, 1.014, 0.986), offset: 0 },
+          { transform: transformGlyph(v.x * -0.68, v.y * -0.5, 0, 0.99, 1.01), offset: 0.26 },
+          { transform: transformGlyph(v.x * 0.4, v.y * 0.3, 0, 1.006, 0.994), offset: 0.52 },
+          { transform: transformGlyph(v.x * -0.14, v.y * -0.1, 0, 1, 1), offset: 0.76 },
           { transform: neutral, offset: 1 }
         ]
       };
+    // Upward twinkle-drift with a tiny mid-flight shimmer wobble instead of
+    // one smooth arc.
     case "star-dust":
+      return {
+        duration: v.duration + 65,
+        easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+        keyframes: [
+          { transform: transformGlyph(v.x * 0.3, -Math.abs(v.y) * 0.45, v.rotate * 0.35, 1.02, 1.02), offset: 0 },
+          { transform: transformGlyph(v.x * 0.2, -Math.abs(v.y) * 1.22, v.rotate * -0.2, 1.036, 1.036), offset: 0.3 },
+          { transform: transformGlyph(v.x * -0.06, -Math.abs(v.y) * 0.88, v.rotate * 0.12, 1.02, 1.02), offset: 0.52 },
+          { transform: transformGlyph(0, -Math.abs(v.y) * 0.26, 0, 1.007, 1.007), offset: 0.76 },
+          { transform: neutral, offset: 1 }
+        ]
+      };
+    // RGB-split glitch: the channel split now has an extra micro-jitter
+    // stage in the middle for a more broken, digital feel.
+    case "cyber-pink":
+      return {
+        duration: Math.max(135, v.duration - 6),
+        easing: "steps(1, end)",
+        keyframes: [
+          { transform: transformGlyph(v.x * 1.05, v.y * 0.32, v.rotate * 0.22, 1.008, 1), filter: `drop-shadow(${(-v.split * 1.15).toFixed(2)}px 0 var(--real-glyph-glow))`, offset: 0 },
+          { transform: transformGlyph(v.x * -0.68, v.y * -0.2, 0, 1, 1), filter: `drop-shadow(${(v.split * 1.1).toFixed(2)}px 0 var(--real-glyph-alt-glow))`, offset: 0.22 },
+          { transform: transformGlyph(v.x * 0.32, v.y * 0.14, v.rotate * -0.1, 1, 1), filter: `drop-shadow(${(-v.split * 0.4).toFixed(2)}px 0 var(--real-glyph-glow))`, offset: 0.44 },
+          { transform: transformGlyph(v.x * 0.14, 0, 0, 1, 1), filter: "none", offset: 0.66 },
+          { transform: neutral, filter: "none", offset: 1 }
+        ]
+      };
+    // Analog ink press: nib presses in, flicks up, and now settles with one
+    // more tiny wobble as the pigment catches the paper grain.
+    case "ink":
+      return {
+        duration: v.duration + 40,
+        easing: "cubic-bezier(0.2, 0.9, 0.25, 1)",
+        keyframes: [
+          { transform: transformGlyph(v.x * 0.3, Math.abs(v.y) * 0.35, v.rotate * 0.58, 1 + v.squash * 0.95, 1 - v.squash * 0.8), offset: 0 },
+          { transform: transformGlyph(v.x * -0.14, -Math.abs(v.y) * 0.68, v.rotate * -0.24, 1 - v.squash * 0.32, 1 + v.squash * 0.6), offset: 0.28 },
+          { transform: transformGlyph(v.x * 0.05, Math.abs(v.y) * 0.14, v.rotate * 0.08, 1.012, 0.99), offset: 0.54 },
+          { transform: transformGlyph(0, Math.abs(v.y) * 0.05, 0, 1.004, 0.998), offset: 0.78 },
+          { transform: neutral, offset: 1 }
+        ]
+      };
+    // Soap-bubble squash: added a small secondary jiggle after the main
+    // stretch so it reads as elastic, not just a single pop.
+    case "bubble":
       return {
         duration: v.duration + 60,
         easing: "cubic-bezier(0.16, 1, 0.3, 1)",
         keyframes: [
-          { transform: transformGlyph(v.x * 0.28, -Math.abs(v.y) * 0.45, v.rotate * 0.35, 1.018, 1.018), offset: 0 },
-          { transform: transformGlyph(v.x * 0.18, -Math.abs(v.y) * 1.18, v.rotate * -0.18, 1.032, 1.032), offset: 0.34 },
-          { transform: transformGlyph(0, -Math.abs(v.y) * 0.3, 0, 1.006, 1.006), offset: 0.72 },
+          { transform: transformGlyph(0, Math.abs(v.y) * 0.5, v.rotate * 0.2, 1 + v.squash, 1 - v.squash * 0.75), offset: 0 },
+          { transform: transformGlyph(v.x * 0.2, -Math.abs(v.y) * 1.18, v.rotate * -0.14, 1.028, 1.045), offset: 0.4 },
+          { transform: transformGlyph(v.x * -0.06, Math.abs(v.y) * 0.18, v.rotate * 0.08, 1 + v.squash * 0.22, 1 - v.squash * 0.16), offset: 0.66 },
           { transform: neutral, offset: 1 }
         ]
       };
-    case "cyber-pink":
-      return {
-        duration: Math.max(130, v.duration - 10),
-        easing: "steps(3, end)",
-        keyframes: [
-          { transform: transformGlyph(v.x, v.y * 0.3, v.rotate * 0.2, 1.006, 1), filter: `drop-shadow(${(-v.split).toFixed(2)}px 0 var(--real-glyph-glow))`, offset: 0 },
-          { transform: transformGlyph(v.x * -0.6, v.y * -0.18, 0, 1, 1), filter: `drop-shadow(${v.split.toFixed(2)}px 0 var(--real-glyph-alt-glow))`, offset: 0.33 },
-          { transform: transformGlyph(v.x * 0.16, 0, 0, 1, 1), filter: "none", offset: 0.66 },
-          { transform: neutral, filter: "none", offset: 1 }
-        ]
-      };
-    case "ink":
-      return {
-        duration: v.duration + 35,
-        easing: "cubic-bezier(0.2, 0.9, 0.25, 1)",
-        keyframes: [
-          { transform: transformGlyph(v.x * 0.28, -Math.abs(v.y) * 0.5, v.rotate * 0.55, 0.98, 1.08), offset: 0 },
-          { transform: transformGlyph(v.x * -0.12, Math.abs(v.y) * 0.9, v.rotate * -0.22, 1.07, 0.9), offset: 0.3 },
-          { transform: transformGlyph(0, Math.abs(v.y) * 0.12, 0, 1.01, 0.995), offset: 0.65 },
-          { transform: neutral, offset: 1 }
-        ]
-      };
-    case "bubble":
-      return {
-        duration: v.duration + 55,
-        easing: "cubic-bezier(0.16, 1, 0.3, 1)",
-        keyframes: [
-          { transform: transformGlyph(0, Math.abs(v.y) * 0.5, v.rotate * 0.2, 1 + v.squash, 1 - v.squash * 0.7), offset: 0 },
-          { transform: transformGlyph(v.x * 0.18, -Math.abs(v.y) * 1.12, v.rotate * -0.12, 1.025, 1.04), offset: 0.48 },
-          { transform: neutral, offset: 1 }
-        ]
-      };
+    // Glass shimmer: a brief secondary glint flick added mid-settle.
     case "crystal-glass":
       return {
-        duration: v.duration + 55,
+        duration: v.duration + 50,
         easing: "cubic-bezier(0.16, 1, 0.3, 1)",
         keyframes: [
-          { transform: transformGlyph(v.x * 0.58, v.y * 0.32, v.rotate, 1.026, 1.026), filter: "drop-shadow(0 0 2px var(--real-glyph-glow))", offset: 0 },
-          { transform: transformGlyph(v.x * -0.18, -Math.abs(v.y) * 0.26, v.rotate * -0.3, 0.998, 1.018), filter: "drop-shadow(0 0 3px var(--real-glyph-alt-glow))", offset: 0.42 },
+          { transform: transformGlyph(v.x * 0.62, v.y * 0.34, v.rotate, 1.03, 1.03), filter: "drop-shadow(0 0 2px var(--real-glyph-glow))", offset: 0 },
+          { transform: transformGlyph(v.x * -0.2, -Math.abs(v.y) * 0.3, v.rotate * -0.32, 0.996, 1.022), filter: "drop-shadow(0 0 3.5px var(--real-glyph-alt-glow))", offset: 0.36 },
+          { transform: transformGlyph(v.x * 0.06, v.y * 0.06, v.rotate * 0.08, 1.01, 1.01), filter: "drop-shadow(0 0 1.5px var(--real-glyph-glow))", offset: 0.6 },
           { transform: neutral, filter: "none", offset: 1 }
         ]
       };
+    // Slow celestial drift with a soft twinkle-wobble instead of a single arc.
     case "constellation":
     case "moon-pearl":
       return {
-        duration: v.duration + 55,
+        duration: v.duration + 50,
         easing: "cubic-bezier(0.16, 1, 0.3, 1)",
         keyframes: [
-          { transform: transformGlyph(v.x * 0.34, -Math.abs(v.y) * 0.34, v.rotate * 0.35, 1.012, 1.012), offset: 0 },
-          { transform: transformGlyph(v.x * 0.12, -Math.abs(v.y) * 0.78, v.rotate * -0.22, 1.024, 1.024), filter: "drop-shadow(0 0 2px var(--real-glyph-glow))", offset: 0.42 },
+          { transform: transformGlyph(v.x * 0.36, -Math.abs(v.y) * 0.34, v.rotate * 0.36, 1.014, 1.014), offset: 0 },
+          { transform: transformGlyph(v.x * 0.14, -Math.abs(v.y) * 0.82, v.rotate * -0.24, 1.028, 1.028), filter: "drop-shadow(0 0 2px var(--real-glyph-glow))", offset: 0.36 },
+          { transform: transformGlyph(v.x * -0.04, -Math.abs(v.y) * 0.5, v.rotate * 0.1, 1.014, 1.014), filter: "drop-shadow(0 0 1px var(--real-glyph-glow))", offset: 0.62 },
           { transform: neutral, filter: "none", offset: 1 }
         ]
       };
+    // Fibrous paper catch: a tiny extra snag/jitter stage as the character
+    // "catches" on the paper grain before settling flat.
     case "paper-fiber":
       return {
-        duration: Math.max(130, v.duration - 5),
+        duration: Math.max(135, v.duration - 2),
         easing: "cubic-bezier(0.22, 1, 0.36, 1)",
         keyframes: [
-          { transform: transformGlyph(v.x, v.y * 0.36, v.rotate, 1.006, 0.998), offset: 0 },
-          { transform: transformGlyph(v.x * -0.34, v.y * -0.14, v.rotate * -0.25, 0.998, 1.004), offset: 0.46 },
+          { transform: transformGlyph(v.x, v.y * 0.36, v.rotate, 1.008, 0.996), offset: 0 },
+          { transform: transformGlyph(v.x * -0.4, v.y * -0.16, v.rotate * -0.28, 0.996, 1.006), offset: 0.36 },
+          { transform: transformGlyph(v.x * 0.1, v.y * 0.06, v.rotate * 0.08, 1.002, 0.999), offset: 0.62 },
           { transform: neutral, offset: 1 }
         ]
       };
+    // Aurora ripple: an extra wave-crest stage so the glow feels like it's
+    // rolling through, not just fading.
     case "aurora-veil":
       return {
-        duration: v.duration + 80,
+        duration: v.duration + 75,
         easing: "cubic-bezier(0.19, 1, 0.22, 1)",
         keyframes: [
-          { transform: transformGlyph(v.x * 0.8, v.y * 0.44, v.rotate, 1.018, 1.026), offset: 0 },
-          { transform: transformGlyph(v.x * -0.28, -Math.abs(v.y) * 0.5, v.rotate * -0.22, 1.026, 1.012), filter: "drop-shadow(0 0 2px var(--real-glyph-glow))", offset: 0.46 },
+          { transform: transformGlyph(v.x * 0.85, v.y * 0.46, v.rotate, 1.022, 1.03), offset: 0 },
+          { transform: transformGlyph(v.x * -0.32, -Math.abs(v.y) * 0.55, v.rotate * -0.24, 1.03, 1.014), filter: "drop-shadow(0 0 2px var(--real-glyph-glow))", offset: 0.38 },
+          { transform: transformGlyph(v.x * 0.1, Math.abs(v.y) * 0.16, v.rotate * 0.1, 1.012, 1.02), filter: "drop-shadow(0 0 1px var(--real-glyph-alt-glow))", offset: 0.66 },
           { transform: neutral, filter: "none", offset: 1 }
         ]
       };
+    // Firefly flicker: an extra pulse so the glow flickers twice, not once.
     case "firefly-glow":
       return {
-        duration: v.duration + 45,
+        duration: v.duration + 42,
         easing: "cubic-bezier(0.18, 1.1, 0.28, 1)",
         keyframes: [
-          { transform: transformGlyph(v.x * 0.52, v.y * 0.4, v.rotate, 1.018, 1.018), offset: 0 },
-          { transform: transformGlyph(v.x * -0.28, -Math.abs(v.y) * 0.8, v.rotate * -0.55, 1.03, 1.006), offset: 0.4 },
-          { transform: transformGlyph(v.x * 0.1, v.y * 0.1, v.rotate * 0.14, 1, 1), offset: 0.72 },
+          { transform: transformGlyph(v.x * 0.56, v.y * 0.42, v.rotate, 1.022, 1.022), filter: "drop-shadow(0 0 2px var(--real-glyph-glow))", offset: 0 },
+          { transform: transformGlyph(v.x * -0.3, -Math.abs(v.y) * 0.84, v.rotate * -0.58, 1.034, 1.006), filter: "drop-shadow(0 0 0.5px transparent)", offset: 0.32 },
+          { transform: transformGlyph(v.x * 0.14, v.y * 0.12, v.rotate * 0.18, 1.016, 1.01), filter: "drop-shadow(0 0 2.5px var(--real-glyph-glow))", offset: 0.56 },
+          { transform: transformGlyph(v.x * -0.02, v.y * 0.02, 0, 1, 1), filter: "none", offset: 0.8 },
           { transform: neutral, offset: 1 }
         ]
       };
+    // Petal unfurl: skew now reverses direction mid-motion for a genuine
+    // "unfolding" read rather than a single lean.
     case "petal-bloom":
       return {
-        duration: v.duration + 30,
+        duration: v.duration + 34,
         easing: "cubic-bezier(0.22, 1, 0.36, 1)",
         keyframes: [
-          { transform: `translate3d(${v.x.toFixed(2)}px, ${v.y.toFixed(2)}px, 0) rotate(${v.rotate.toFixed(2)}deg) skewY(-6deg) scale(${(1 + v.squash).toFixed(3)}, ${(1 - v.squash * 0.55).toFixed(3)})`, offset: 0 },
-          { transform: transformGlyph(v.x * -0.22, v.y * -0.36, v.rotate * -0.35, 0.992, 1.025), offset: 0.44 },
+          { transform: `translate3d(${v.x.toFixed(2)}px, ${v.y.toFixed(2)}px, 0) rotate(${v.rotate.toFixed(2)}deg) skewY(-7deg) scale(${(1 + v.squash).toFixed(3)}, ${(1 - v.squash * 0.55).toFixed(3)})`, offset: 0 },
+          { transform: `translate3d(${(v.x * -0.28).toFixed(2)}px, ${(v.y * -0.4).toFixed(2)}px, 0) rotate(${(v.rotate * -0.4).toFixed(2)}deg) skewY(4deg) scale(0.99, 1.028)`, offset: 0.4 },
+          { transform: `translate3d(${(v.x * 0.08).toFixed(2)}px, ${(v.y * 0.1).toFixed(2)}px, 0) rotate(${(v.rotate * 0.12).toFixed(2)}deg) skewY(-1.5deg) scale(1.004, 0.998)`, offset: 0.68 },
           { transform: neutral, offset: 1 }
         ]
       };
+    // Neon rain streak: one more flicker step for a more electric drip feel.
     case "neon-rain":
       return {
-        duration: Math.max(125, v.duration - 12),
-        easing: "steps(3, end)",
+        duration: Math.max(128, v.duration - 8),
+        easing: "steps(4, end)",
         keyframes: [
-          { transform: transformGlyph(v.x * 0.3, Math.abs(v.y), v.rotate, 1.004, 0.996), offset: 0 },
-          { transform: transformGlyph(v.x * -0.14, -Math.abs(v.y) * 0.92, v.rotate * -0.2, 0.996, 1.012), offset: 0.42 },
-          { transform: transformGlyph(0, Math.abs(v.y) * 0.16, 0, 1, 1), offset: 0.72 },
+          { transform: transformGlyph(v.x * 0.34, Math.abs(v.y) * 1.08, v.rotate, 1.006, 0.994), offset: 0 },
+          { transform: transformGlyph(v.x * -0.16, -Math.abs(v.y) * 1.0, v.rotate * -0.22, 0.994, 1.014), offset: 0.3 },
+          { transform: transformGlyph(v.x * 0.06, Math.abs(v.y) * 0.26, v.rotate * 0.1, 1.002, 0.998), offset: 0.56 },
+          { transform: transformGlyph(0, Math.abs(v.y) * 0.06, 0, 1, 1), offset: 0.78 },
           { transform: neutral, offset: 1 }
         ]
       };
+    // Smoke wisp: an extra drift stage plus a touch more blur so it reads
+    // as curling rather than just fading.
     case "velvet-smoke":
       return {
-        duration: v.duration + 90,
+        duration: v.duration + 85,
         easing: "cubic-bezier(0.16, 1, 0.3, 1)",
         keyframes: [
-          { transform: transformGlyph(v.x * 0.38, Math.abs(v.y) * 0.52, v.rotate * 0.4, 1.024, 0.982), filter: "blur(0.2px)", offset: 0 },
-          { transform: transformGlyph(v.x * -0.12, -Math.abs(v.y) * 0.35, v.rotate * -0.16, 0.996, 1.018), filter: "blur(0.1px)", offset: 0.48 },
+          { transform: transformGlyph(v.x * 0.42, Math.abs(v.y) * 0.55, v.rotate * 0.42, 1.028, 0.978), filter: "blur(0.28px)", offset: 0 },
+          { transform: transformGlyph(v.x * -0.16, -Math.abs(v.y) * 0.42, v.rotate * -0.2, 0.994, 1.022), filter: "blur(0.14px)", offset: 0.42 },
+          { transform: transformGlyph(v.x * 0.05, Math.abs(v.y) * 0.08, v.rotate * 0.06, 1.004, 0.998), filter: "blur(0.05px)", offset: 0.72 },
           { transform: neutral, filter: "none", offset: 1 }
         ]
       };
+    // Ember crackle: added a tiny secondary pop so it flares, dims, then
+    // flares once more like a real spark catching.
     case "ember-glow":
+      return {
+        duration: v.duration + 30,
+        easing: "cubic-bezier(0.19, 1, 0.22, 1)",
+        keyframes: [
+          { transform: transformGlyph(v.x * 1.05, v.y * 1.05, v.rotate, 1.03, 1.03), filter: "drop-shadow(0 0 2.5px var(--real-glyph-glow))", offset: 0 },
+          { transform: transformGlyph(v.x * -0.42, v.y * -0.3, v.rotate * -0.24, 0.996, 1.014), filter: "none", offset: 0.32 },
+          { transform: transformGlyph(v.x * 0.14, v.y * 0.12, v.rotate * 0.1, 1.014, 1.008), filter: "drop-shadow(0 0 1.5px var(--real-glyph-glow))", offset: 0.56 },
+          { transform: neutral, filter: "none", offset: 1 }
+        ]
+      };
+    // Laser etch: one more etched pass for a doubled hard-edged line effect.
+    case "laser-etch":
+      return {
+        duration: Math.max(125, v.duration - 6),
+        easing: "steps(1, end)",
+        keyframes: [
+          { transform: `translate3d(${(v.x * 1.05).toFixed(2)}px, ${(v.y * 1.05).toFixed(2)}px, 0) skewX(-9deg) rotate(${v.rotate.toFixed(2)}deg)`, offset: 0 },
+          { transform: `translate3d(${(v.x * -0.52).toFixed(2)}px, ${(v.y * -0.2).toFixed(2)}px, 0) skewX(6deg) rotate(${(v.rotate * -0.32).toFixed(2)}deg)`, offset: 0.3 },
+          { transform: `translate3d(${(v.x * 0.16).toFixed(2)}px, ${(v.y * 0.06).toFixed(2)}px, 0) skewX(-2deg) rotate(${(v.rotate * 0.1).toFixed(2)}deg)`, offset: 0.58 },
+          { transform: neutral, offset: 1 }
+        ]
+      };
+    // Keycap "dokak" click: this is the one place we want a genuine
+    // mechanical-key sensation — a hard, near-instant bottom-out (steps),
+    // then a springy pop-back, then one tiny rattle before it settles, the
+    // way a real keycap bounces on its stem.
+    case "keycap-pop":
+      return {
+        duration: v.duration + 55,
+        easing: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        keyframes: [
+          { transform: transformGlyph(0, Math.abs(v.y) * 1.08, v.rotate, 1 + v.squash * 1.6, 1 - v.squash * 1.45), offset: 0 },
+          { transform: transformGlyph(0, Math.abs(v.y) * 1.14, v.rotate * 1.05, 1 + v.squash * 1.7, 1 - v.squash * 1.55), easing: "steps(1, end)", offset: 0.1 },
+          { transform: transformGlyph(0, -Math.abs(v.y) * 0.58, v.rotate * -0.22, 0.99, 1.05), offset: 0.36 },
+          { transform: transformGlyph(0, Math.abs(v.y) * 0.14, v.rotate * 0.1, 1 + v.squash * 0.22, 1 - v.squash * 0.2), offset: 0.58 },
+          { transform: transformGlyph(0, -Math.abs(v.y) * 0.04, 0, 0.998, 1.004), offset: 0.8 },
+          { transform: neutral, offset: 1 }
+        ]
+      };
+    // 3D flip snap: an extra half-turn settle wobble after the main flip.
+    case "magnetic-flip":
       return {
         duration: v.duration + 25,
         easing: "cubic-bezier(0.19, 1, 0.22, 1)",
         keyframes: [
-          { transform: transformGlyph(v.x, v.y, v.rotate, 1.024, 1.024), filter: "drop-shadow(0 0 2px var(--real-glyph-glow))", offset: 0 },
-          { transform: transformGlyph(v.x * -0.38, v.y * -0.28, v.rotate * -0.22, 0.998, 1.012), filter: "none", offset: 0.45 },
-          { transform: neutral, filter: "none", offset: 1 }
-        ]
-      };
-    case "laser-etch":
-      return {
-        duration: Math.max(120, v.duration - 10),
-        easing: "steps(2, end)",
-        keyframes: [
-          { transform: `translate3d(${v.x.toFixed(2)}px, ${v.y.toFixed(2)}px, 0) skewX(-8deg) rotate(${v.rotate.toFixed(2)}deg)`, offset: 0 },
-          { transform: `translate3d(${(v.x * -0.46).toFixed(2)}px, ${(v.y * -0.18).toFixed(2)}px, 0) skewX(5deg) rotate(${(v.rotate * -0.28).toFixed(2)}deg)`, offset: 0.46 },
+          { transform: `translate3d(${(v.x * 1.05).toFixed(2)}px, 0, 0) rotateY(0deg) rotate(${v.rotate.toFixed(2)}deg) scale(1.014)`, offset: 0 },
+          { transform: `translate3d(${(v.x * -0.78).toFixed(2)}px, 0, 0) rotateY(20deg) rotate(${(v.rotate * -0.42).toFixed(2)}deg) scale(0.996)`, offset: 0.34 },
+          { transform: `translate3d(${(v.x * 0.22).toFixed(2)}px, 0, 0) rotateY(-6deg) rotate(${(v.rotate * 0.18).toFixed(2)}deg) scale(1.004)`, offset: 0.6 },
+          { transform: transformGlyph(v.x * 0.05, 0, v.rotate * -0.04, 1, 1), offset: 0.82 },
           { transform: neutral, offset: 1 }
         ]
       };
-    case "keycap-pop":
-      return {
-        duration: v.duration + 45,
-        easing: "cubic-bezier(0.34, 1.56, 0.64, 1)",
-        keyframes: [
-          { transform: transformGlyph(0, Math.abs(v.y), v.rotate, 1 + v.squash * 1.45, 1 - v.squash * 1.3), offset: 0 },
-          { transform: transformGlyph(0, -Math.abs(v.y) * 0.5, v.rotate * -0.2, 0.992, 1.045), offset: 0.38 },
-          { transform: neutral, offset: 1 }
-        ]
-      };
-    case "magnetic-flip":
-      return {
-        duration: v.duration + 20,
-        easing: "cubic-bezier(0.19, 1, 0.22, 1)",
-        keyframes: [
-          { transform: `translate3d(${v.x.toFixed(2)}px, 0, 0) rotateY(0deg) rotate(${v.rotate.toFixed(2)}deg) scale(1.01)`, offset: 0 },
-          { transform: `translate3d(${(v.x * -0.7).toFixed(2)}px, 0, 0) rotateY(18deg) rotate(${(v.rotate * -0.38).toFixed(2)}deg) scale(0.998)`, offset: 0.42 },
-          { transform: transformGlyph(v.x * 0.12, 0, v.rotate * 0.12, 1, 1), offset: 0.7 },
-          { transform: neutral, offset: 1 }
-        ]
-      };
+    // Mosaic tile shift: one more step-stage for a more visible tile-swap feel.
     case "mosaic-shift":
       return {
-        duration: Math.max(125, v.duration),
-        easing: "steps(3, end)",
+        duration: Math.max(130, v.duration + 4),
+        easing: "steps(4, end)",
         keyframes: [
-          { transform: transformGlyph(v.x, v.y, v.rotate, 1.012, 0.998), offset: 0 },
-          { transform: transformGlyph(v.x * -0.42, v.y * -0.5, v.rotate * -0.24, 0.998, 1.008), offset: 0.38 },
-          { transform: transformGlyph(v.x * 0.16, v.y * 0.18, 0, 1, 1), offset: 0.7 },
+          { transform: transformGlyph(v.x, v.y, v.rotate, 1.016, 0.996), offset: 0 },
+          { transform: transformGlyph(v.x * -0.5, v.y * -0.56, v.rotate * -0.28, 0.996, 1.01), offset: 0.28 },
+          { transform: transformGlyph(v.x * 0.24, v.y * 0.26, v.rotate * 0.1, 1.006, 0.998), offset: 0.54 },
+          { transform: transformGlyph(v.x * -0.08, v.y * -0.08, 0, 1, 1), offset: 0.78 },
           { transform: neutral, offset: 1 }
         ]
       };
+    // Lens ripple: an extra ring-wave stage so it pulses out and back once
+    // more before settling.
     case "ripple-lens":
       return {
-        duration: v.duration + 70,
+        duration: v.duration + 62,
         easing: "cubic-bezier(0.16, 1, 0.3, 1)",
         keyframes: [
-          { transform: transformGlyph(v.x * 0.36, v.y * 0.38, v.rotate, 0.982, 1.05), offset: 0 },
-          { transform: transformGlyph(v.x * -0.12, -Math.abs(v.y) * 0.34, v.rotate * -0.18, 1.052, 0.986), filter: "drop-shadow(0 0 2px var(--real-glyph-alt-glow))", offset: 0.44 },
+          { transform: transformGlyph(v.x * 0.4, v.y * 0.4, v.rotate, 0.976, 1.06), offset: 0 },
+          { transform: transformGlyph(v.x * -0.16, -Math.abs(v.y) * 0.36, v.rotate * -0.2, 1.058, 0.982), filter: "drop-shadow(0 0 2px var(--real-glyph-alt-glow))", offset: 0.36 },
+          { transform: transformGlyph(v.x * 0.06, v.y * 0.1, v.rotate * 0.08, 0.99, 1.016), filter: "drop-shadow(0 0 1px var(--real-glyph-glow))", offset: 0.62 },
           { transform: neutral, filter: "none", offset: 1 }
         ]
       };
+    // Plasma thread: one more flicker step for a more crackling arc feel.
     case "plasma-thread":
       return {
-        duration: Math.max(125, v.duration),
-        easing: "steps(2, end)",
+        duration: Math.max(130, v.duration + 4),
+        easing: "steps(3, end)",
         keyframes: [
-          { transform: `translate3d(${v.x.toFixed(2)}px, ${v.y.toFixed(2)}px, 0) skewX(-7deg) rotate(${v.rotate.toFixed(2)}deg)`, offset: 0 },
-          { transform: `translate3d(${(v.x * -0.55).toFixed(2)}px, ${(v.y * -0.36).toFixed(2)}px, 0) skewX(6deg) rotate(${(v.rotate * -0.3).toFixed(2)}deg)`, offset: 0.42 },
+          { transform: `translate3d(${(v.x * 1.02).toFixed(2)}px, ${(v.y * 1.02).toFixed(2)}px, 0) skewX(-8deg) rotate(${v.rotate.toFixed(2)}deg)`, offset: 0 },
+          { transform: `translate3d(${(v.x * -0.62).toFixed(2)}px, ${(v.y * -0.42).toFixed(2)}px, 0) skewX(6deg) rotate(${(v.rotate * -0.32).toFixed(2)}deg)`, offset: 0.3 },
+          { transform: `translate3d(${(v.x * 0.18).toFixed(2)}px, ${(v.y * 0.1).toFixed(2)}px, 0) skewX(-2deg) rotate(${(v.rotate * 0.12).toFixed(2)}deg)`, offset: 0.58 },
           { transform: neutral, offset: 1 }
         ]
       };
+    // The default preset gets its own gentle-but-textured signature (a soft
+    // hit, a light overshoot, a tiny secondary settle) instead of relying
+    // purely on the raw fallback curve.
     case "soft-spark":
+      return {
+        duration: v.duration + 20,
+        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+        keyframes: [
+          { transform: transformGlyph(v.x, v.y, v.rotate, v.scale, v.scale), filter: "drop-shadow(0 0 1.5px var(--real-glyph-glow))", offset: 0 },
+          { transform: transformGlyph(v.x * -0.34, v.y * -0.42, v.rotate * -0.26, 1 - (v.scale - 1) * 0.3, 1 + (v.scale - 1) * 0.18), filter: "none", offset: 0.34 },
+          { transform: transformGlyph(v.x * 0.12, v.y * 0.1, v.rotate * 0.1, 1.008, 0.996), filter: "none", offset: 0.6 },
+          { transform: transformGlyph(v.x * -0.03, v.y * -0.03, 0, 0.999, 1.001), filter: "none", offset: 0.82 },
+          { transform: neutral, filter: "none", offset: 1 }
+        ]
+      };
     default:
       return {
         duration: v.duration,
@@ -5252,10 +5642,10 @@ function pointForEditorTextOffset(spans, offset) {
 
 function resolveGlyphTargets() {
   const selection = window.getSelection();
-  if (!selection || !selection.rangeCount) return { current: null, previous: null };
+  if (!selection || !selection.rangeCount) return { current: null, previous: null, trail: [] };
   const caretRange = selection.getRangeAt(0).cloneRange();
   if (!caretRange.collapsed || !refs.editor.contains(caretRange.startContainer)) {
-    return { current: null, previous: null };
+    return { current: null, previous: null, trail: [] };
   }
 
   const textStream = collectTextBeforeCaret(caretRange);
@@ -5263,7 +5653,7 @@ function resolveGlyphTargets() {
   const currentIndex = segments.length - 1;
   const currentSegment = segments[currentIndex];
   if (!currentSegment || !isRenderableGlyph(currentSegment.text)) {
-    return { current: null, previous: null };
+    return { current: null, previous: null, trail: [] };
   }
 
   const current = glyphTargetFromSegment(currentSegment, textStream.spans);
@@ -5271,7 +5661,19 @@ function resolveGlyphTargets() {
   const previous = previousSegment && isRenderableGlyph(previousSegment.text)
     ? glyphTargetFromSegment(previousSegment, textStream.spans)
     : null;
-  return { current, previous };
+
+  // The last few committed characters before the caret, used for a fast,
+  // sharply-decaying "energy wave" that trails behind fast typing. Reuses
+  // the same segment math as `previous`, just a little further back.
+  const trail = [];
+  for (let back = 1; back <= 4; back += 1) {
+    const segment = segments[currentIndex - back];
+    if (!segment || !isRenderableGlyph(segment.text)) break;
+    const target = glyphTargetFromSegment(segment, textStream.spans);
+    if (target) trail.push(target);
+  }
+
+  return { current, previous, trail };
 }
 
 function collectTextBeforeCaret(caretRange) {
@@ -5462,20 +5864,20 @@ function isRenderableGlyph(glyph) {
   return Boolean(glyph && !/^\s+$/.test(glyph));
 }
 
-function appendGlyphOverlay(mark, target, role, originX, originY, profile, settings, effectLevel, speedScale, isSpecial, effect) {
+function appendGlyphOverlay(mark, target, role, originX, originY, profile, settings, effectLevel, speedScale, isSpecial, effect, decay = 1) {
   if (!target || !isRenderableGlyph(target.glyph)) return;
-  const roleStrength = role === "echo" ? profile.echo : 1;
+  const roleStrength = (role === "echo" ? profile.echo : 1) * decay;
   if (roleStrength <= 0.01) return;
 
   const rect = target.rect;
   const style = target.style;
   const lifeBase = role === "echo" ? profile.echoDuration : profile.duration;
-  const life = Math.round(lifeBase * speedScale * (isSpecial && role === "current" ? 1.12 : 1));
-  const motion = profile.motion * (0.35 + settings.glyphMotion * 1.15) * (0.72 + effectLevel * 0.5) * roleStrength;
-  const split = profile.split * (0.28 + settings.glyphMotion * 1.12) * (0.68 + effectLevel * 0.52) * roleStrength;
+  const life = Math.round(lifeBase * speedScale * (isSpecial && role === "current" ? 1.12 : 1) * (0.7 + decay * 0.3));
+  const motion = profile.motion * (0.35 + settings.glyphMotion * 1.45) * (0.72 + effectLevel * 0.5) * roleStrength;
+  const split = profile.split * (0.28 + settings.glyphMotion * 1.35) * (0.68 + effectLevel * 0.52) * roleStrength;
   const glowAlpha = clamp01(profile.glow * settings.glowAmount * effectLevel * roleStrength);
-  const flashAlpha = clamp01(profile.flash * effectLevel * (role === "echo" ? 0.36 : 1));
-  const maxAlpha = role === "echo" ? 0.34 : 0.96;
+  const flashAlpha = clamp01(profile.flash * effectLevel * (role === "echo" ? 0.6 : 1));
+  const maxAlpha = role === "echo" ? 0.62 : 0.96;
   const alpha = clamp(profile.alpha * (0.34 + effectLevel * 0.78) * roleStrength, 0, maxAlpha);
   const scalePop = 1 + profile.scale * settings.glyphMotion * (0.012 + effectLevel * 0.026) * roleStrength;
   const scaleDelta = Math.max(0, scalePop - 1);
@@ -5525,9 +5927,9 @@ function appendGlyphOverlay(mark, target, role, originX, originY, profile, setti
   const jolt = GLYPH_JOLT_PRESETS[settings.effectMode] || GLYPH_JOLT_PRESETS[defaultSettings.effectMode];
   const impactStrength = (jolt.strength ?? profile.impact ?? 1) * (0.35 + settings.glyphMotion * 1.15) * (0.7 + effectLevel * 0.5) * roleStrength;
   const impactLife = Math.max(60, Math.round((jolt.life || profile.duration * 0.4 + 40) * speedScale * (role === "echo" ? 0.7 : 1)));
-  const impactX = (jolt.x ?? effect.glyphX) * impactStrength * 2.1;
-  const impactY = (jolt.y ?? effect.glyphY) * impactStrength * 2.1;
-  const impactRotate = (jolt.rotate ?? effect.glyphRotate) * impactStrength * 2.6;
+  const impactX = (jolt.x ?? effect.glyphX) * impactStrength * 3.2;
+  const impactY = (jolt.y ?? effect.glyphY) * impactStrength * 3.2;
+  const impactRotate = (jolt.rotate ?? effect.glyphRotate) * impactStrength * 3.8;
   const impactScale = 1 + Math.max(0, (jolt.scale ?? effect.glyphScale) - 1) * Math.min(2.4, 0.55 + impactStrength * 1.35);
   const recoil = jolt.recoil || [-0.34, -0.2];
   const kick = jolt.kick || [0.12, 0.08];
@@ -5587,9 +5989,12 @@ function spawnTypingMark(tactile = {}, resolvedGlyphTargets = null) {
   const isSpecial = settings.specialFrequency > 0.01 && seeded01(seed, 77) < specialChance;
   const speedScale = 1.18 - settings.effectSpeed * 0.46;
   const life = Math.round(effect.life * speedScale);
+  // A gentle boost while the hands are typing fast, so particles/glow feel
+  // like they're keeping pace rather than a flat, constant reaction.
+  const handSpeedBoost = 1 + typingSpeedFactor * 0.12;
   const particleCount = settings.particleAmount <= 0.01
     ? 0
-    : Math.round((effect.particles + (isSpecial ? 2 : 0)) * keyParticleScale * (0.32 + settings.particleAmount * 1.42));
+    : Math.round((effect.particles + (isSpecial ? 2 : 0)) * keyParticleScale * (0.4 + settings.particleAmount * 1.55) * handSpeedBoost);
   const maxParticles = clamp(particleCount, 0, locality.maxDomParticles || 16);
   const originX = glyphRect ? glyphRect.left + glyphWidth * (locality.originX ?? 0.78) : rect.left;
   const originY = glyphRect ? glyphRect.top + glyphHeight * (locality.originY ?? 0.56) : rect.top + rect.height * 0.55;
@@ -5611,7 +6016,7 @@ function spawnTypingMark(tactile = {}, resolvedGlyphTargets = null) {
   mark.style.left = `${originX}px`;
   mark.style.top = `${originY}px`;
   mark.style.setProperty("--burst-life", `${life}ms`);
-  mark.style.setProperty("--core-scale", (effect.core * (0.74 + effectLevel * 0.44)).toFixed(2));
+  mark.style.setProperty("--core-scale", (effect.core * (0.82 + effectLevel * 0.52) * (1 + typingSpeedFactor * 0.08)).toFixed(2));
   mark.style.setProperty("--shake-x", `${(seededSigned(seed, 4) * settings.shakeAmount * 2.5).toFixed(2)}px`);
   mark.style.setProperty("--shake-y", `${(seededSigned(seed, 9) * settings.shakeAmount * 1.8).toFixed(2)}px`);
   mark.style.setProperty("--glyph-life", `${Math.round(life * 0.54)}ms`);
@@ -5629,9 +6034,35 @@ function spawnTypingMark(tactile = {}, resolvedGlyphTargets = null) {
     mark.append(accent);
   }
 
+  // Small, FX-tinted tactile accents for the non-character keys: a short
+  // horizontal ripple for Space, a downward flow for Enter, and a "sucked
+  // toward the caret" shrink for Backspace.
+  if (keyType === "space") {
+    const ripple = document.createElement("span");
+    ripple.className = "typing-space-ripple";
+    mark.append(ripple);
+  } else if (keyType === "enter") {
+    const flow = document.createElement("span");
+    flow.className = "typing-enter-flow";
+    mark.append(flow);
+  } else if (keyType === "backspace") {
+    const erase = document.createElement("span");
+    erase.className = "typing-erase";
+    mark.append(erase);
+  }
+
   appendGlyphOverlay(mark, glyphTargets.previous, "echo", originX, originY, profile, settings, effectLevel, speedScale, isSpecial, effect);
   if (!tactile.realGlyphAnimated) {
     appendGlyphOverlay(mark, glyphTargets.current, "current", originX, originY, profile, settings, effectLevel, speedScale, isSpecial, effect);
+  }
+  // Typing wave: 1-2 more already-committed characters, rendered as the same
+  // kind of decorative (non-editable) overlay as the echo above rather than
+  // by touching the real note text, so it never risks the live contenteditable
+  // during fast/consecutive typing. Each step back decays sharply.
+  if (Array.isArray(glyphTargets.trail)) {
+    for (let deep = 1; deep < glyphTargets.trail.length; deep += 1) {
+      appendGlyphOverlay(mark, glyphTargets.trail[deep], "echo", originX, originY, profile, settings, effectLevel, speedScale, false, effect, Math.pow(0.78, deep));
+    }
   }
 
   for (let index = 0; index < maxParticles; index += 1) {
